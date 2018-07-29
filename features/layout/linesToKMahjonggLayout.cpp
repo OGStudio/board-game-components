@@ -1,7 +1,7 @@
 FEATURE layout.h/Include
 #include "format.h"
 
-FEATURE format.h/Impl
+FEATURE layout.h/Impl
 bool linesToKMahjonggLayout(
     const std::vector<std::string> &lines,
     KMahjonggLayout &layout
@@ -35,7 +35,7 @@ bool linesToKMahjonggLayout(
             continue;
         }
         // Remove spaces.
-        auto sln = format::trimString(ln);
+        auto sln = format::trimmedString(ln);
         // Version.
         if (format::stringStartsWith(sln, PREFIX_VERSION))
         {

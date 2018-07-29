@@ -6,9 +6,10 @@ Application+setupWindow-desktop
 Application+Logging
 Application+Rendering
 
-OSGCPE_MAIN_EXAMPLE_LOG
+MC_MAIN_EXAMPLE_LOG
 Example
 Example+01
+Example+Layout
 
 main-desktop
 
@@ -17,6 +18,7 @@ MC_LAYOUT_LOG
 Layout
 KMahjonggLayout
 kmahjonggLayoutFieldsToPositions
+layoutToString
 linesToKMahjonggLayout
 parseLayout
 
@@ -28,6 +30,12 @@ Logger
 
 # format
 printfString
+stringStartsWith
+trimmedString
+
+# resource
+Resource
+ResourceStreamBuffer
 
 # render
 createGraphicsContext-desktop

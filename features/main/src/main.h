@@ -30,13 +30,10 @@ freely, subject to the following restrictions:
 // FEATURE Application+Logging/Include
 // FEATURE Application+Rendering/Include
 
-// FEATURE OSGCPE_MAIN_APPLICATION_LOG/Impl
-
-// FEATURE Example+BoxScene/Include
-// FEATURE Example+TextureImageScene/Include
 // FEATURE Example+VBO/Include
+// FEATURE Example+Layout/Include
 
-// FEATURE OSGCPE_MAIN_EXAMPLE_LOG/Impl
+// FEATURE MC_MAIN_EXAMPLE_LOG/Impl
 
 // FEATURE Example+StaticPluginImageIO/Impl
 // FEATURE Example+StaticPluginOSG/Impl
@@ -68,15 +65,12 @@ namespace main
 // FEATURE Example+01/Title
 
 // FEATURE Example/Setup
-    // FEATURE Example+BoxScene/Setup
     // FEATURE Example+VBO/Setup
-    // FEATURE Example+SingleColorScene/Setup
-    // FEATURE Example+TextureImageScene/Setup
+    // FEATURE Example+Layout/Setup
 // FEATURE Example/TearDown
 // FEATURE Example/Impl
-    // FEATURE Example+BoxScene/Impl
-    // FEATURE Example+TextureImageScene/Impl
     // FEATURE Example+VBO/Impl
+    // FEATURE Example+Layout/Impl
 // FEATURE Example/End
 
 } // namespace main

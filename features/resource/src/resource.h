@@ -22,28 +22,31 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef MAHJONG_COMPONENTS_LAYOUT_H
-#define MAHJONG_COMPONENTS_LAYOUT_H
+#ifndef MAHJONG_COMPONENTS_RESOURCE_H
+#define MAHJONG_COMPONENTS_RESOURCE_H
 
-// FEATURE Layout/Include
+// FEATURE node/Include
+// FEATURE setTextureImage/Include
+// FEATURE createTexture/Include
 
-// FEATURE MC_LAYOUT_LOG/Impl
+// FEATURE OSGCPE_RESOURCE_LOG/Impl
 
 namespace mc
 {
-namespace layout
+namespace resource
 {
 
-// FEATURE Layout/Impl
-// FEATURE KMahjonggLayout/Impl
+// FEATURE Resource/Impl
+// FEATURE ResourceStreamBuffer/Impl
 
-// FEATURE kmahjonggLayoutFieldsToPositions/Impl
-// FEATURE linesToKMahjonggLayout/Impl
-// FEATURE parseLayout/Impl
-// FEATURE layoutToString/Impl
+// FEATURE extension/Impl
+// FEATURE node/Impl
+// FEATURE string/Impl
+// FEATURE setTextureImage/Impl
+// FEATURE createTexture/Impl
 
-} // namespace layout
+} // namespace resource
 } // namespace mc
 
-#endif // MAHJONG_COMPONENTS_LAYOUT_H
+#endif // MAHJONG_COMPONENTS_RESOURCE_H
 

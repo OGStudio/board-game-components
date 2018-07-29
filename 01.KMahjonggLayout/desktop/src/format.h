@@ -48,6 +48,46 @@ std::string printfString(const char *fmt, ...)
     return msg;
 }
 // printfString End
+// stringStartsWith Start
+//! Find prefix in the provided string.
+bool stringStartsWith(const std::string &s, const std::string &prefix)
+{
+    // Source: https://stackoverflow.com/a/8095127
+    // Topic: how to check string start in C++
+    return
+        (prefix.length() <= s.length()) &&
+        std::equal(prefix.begin(), prefix.end(), s.begin())
+        ;
+}
+// stringStartsWith End
+// trimmedString Start
+//! Trim non-visible characters at the beginning and at the end.
+std::string trimmedString(const std::string &s)
+{
+    // Source: https://stackoverflow.com/a/21698913
+    // Topic: What's the best way to trim std::string?
+
+    // Find the first position without space characters.
+    std::string::const_iterator it = s.begin();
+    while (
+        (it != s.end()) &&
+        std::isspace(*it)
+    ) {
+        ++it;
+    }
+
+    // Find the last position without space characters.
+    std::string::const_reverse_iterator rit = s.rbegin();
+    while (
+        (rit.base() != it) &&
+        std::isspace(*rit)
+    ) {
+        ++rit;
+    }
+
+    return std::string(it, rit.base());
+}
+// trimmedString End
 
 } // namespace format
 } // namespace mc

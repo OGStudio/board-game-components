@@ -38,19 +38,27 @@ freely, subject to the following restrictions:
 
 // Application+Rendering End
 
+// Example+Layout Start
+#include "layout.h"
+#include "log.h"
 
+#include "resource.h"
+#include "cat.layout.h"
+#include "X_shaped.layout.h"
 
-// OSGCPE_MAIN_EXAMPLE_LOG Start
+// Example+Layout End
+
+// MC_MAIN_EXAMPLE_LOG Start
 #include "log.h"
 #include "format.h"
-#define OSGCPE_MAIN_EXAMPLE_LOG_PREFIX "osgcpe::main::Example(%p) %s"
-#define OSGCPE_MAIN_EXAMPLE_LOG(...) \
-    osgcpe::log::logprintf( \
-        OSGCPE_MAIN_EXAMPLE_LOG_PREFIX, \
+#define MC_MAIN_EXAMPLE_LOG_PREFIX "main::Example(%p) %s"
+#define MC_MAIN_EXAMPLE_LOG(...) \
+    log::logprintf( \
+        MC_MAIN_EXAMPLE_LOG_PREFIX, \
         this, \
-        osgcpe::format::printfString(__VA_ARGS__).c_str() \
+        format::printfString(__VA_ARGS__).c_str() \
     )
-// OSGCPE_MAIN_EXAMPLE_LOG End
+// MC_MAIN_EXAMPLE_LOG End
 
 
 namespace mc
@@ -187,6 +195,10 @@ struct Example
         this->app = new Application(EXAMPLE_TITLE);
 
 // Example End
+    // Example+Layout Start
+    this->testLayout();
+    
+    // Example+Layout End
 // Example Start
     }
     ~Example()
@@ -198,6 +210,40 @@ struct Example
     }
 
 // Example End
+    // Example+Layout Start
+    private:
+        void testLayout()
+        {
+            resource::Resource res(
+                "layouts",
+                "cat.layout",
+                cat_layout,
+                cat_layout_len
+            );
+            resource::ResourceStreamBuffer buf(res);
+            std::istream in(&buf);
+            layout::Layout layout;
+            if (layout::parseLayout(in, layout))
+            {
+                MC_MAIN_EXAMPLE_LOG("Parsed layout:");
+                auto msg = layout::layoutToString(layout);
+                log::log(msg.c_str());
+            }
+            else
+            {
+                MC_MAIN_EXAMPLE_LOG("Failed to parse cat layout");
+            }
+    
+            /*
+            resource::Resource layout2(
+                "layouts",
+                "X_shaped.layout",
+                X_shaped_layout,
+                X_shaped_layout_len
+            );
+            */
+        }
+    // Example+Layout End
 // Example Start
 };
 // Example End
