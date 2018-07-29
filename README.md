@@ -2,7 +2,7 @@
 
 * [Overview](#overview)
 * [Components](#components)
-    * [01. KMahjongg layout parsing](#co01)
+    * [01. KMahjongg layout parsing](#mc01)
 * [Help](#help)
 
 <a name="overview"/>
@@ -17,11 +17,11 @@ Mahjong components are a set of components used by OGS Mahjong game.
 
 # Components
 
-<a name="co01"/>
+<a name="mc01"/>
 
-### [01. KMahjongg layout parsing][co01]
+### [01. KMahjongg layout parsing][mc01]
 
-  ![Screenshot][co01-screenshot]
+  ![Screenshot][mc01-screenshot]
 
   Learn how to parse KMahjongg layout.
 
@@ -36,6 +36,6 @@ improve components.
 [osgcpe]: https://github.com/OGStudio/openscenegraph-cross-platform-examples
 [issues]: https://github.com/OGStudio/mahjong-components/issues
 
-[co01]: 01.KMahjonggLayout
-[co01-screenshot]: 01.KMahjonggLayout/shot.png
+[mc01]: 01.KMahjonggLayout
+[mc01-screenshot]: 01.KMahjonggLayout/shot.png
 
