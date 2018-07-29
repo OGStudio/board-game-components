@@ -48,8 +48,12 @@ freely, subject to the following restrictions:
 #include "scene.h"
 
 #include "resource.h"
+// Layouts.
 #include "cat.layout.h"
 #include "X_shaped.layout.h"
+// Shaders.
+#include "ppl-color.vert.h"
+#include "ppl-color.frag.h"
 
 // Example+Layout End
 // Example+Scene Start
@@ -259,7 +263,34 @@ struct Example
             );
             */
     
-            this->scene->addChild(scene::createSphere(1));
+            auto node = scene::createSphere(1);
+    
+            // Create shader program.
+            resource::Resource shaderVert(
+                "shaders",
+                "ppl-color.vert",
+                ppl_color_vert,
+                ppl_color_vert_len
+            );
+            resource::Resource shaderFrag(
+                "shaders",
+                "ppl-color.frag",
+                ppl_color_frag,
+                ppl_color_frag_len
+            );
+            auto prog =
+                render::createShaderProgram(
+                    resource::string(shaderVert),
+                    resource::string(shaderFrag)
+                );
+            // Apply the program.
+            auto material = scene->getOrCreateStateSet();
+            material->setAttribute(prog);
+            // Set color.
+            osg::Vec3 color(0.6, 0.4, 0.4);
+            material->addUniform(new osg::Uniform("color", color));
+    
+            this->scene->addChild(node);
         }
     // Example+Layout End
     // Example+Scene Start

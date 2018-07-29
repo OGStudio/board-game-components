@@ -25,6 +25,10 @@ freely, subject to the following restrictions:
 #ifndef MAHJONG_COMPONENTS_RENDER_H
 #define MAHJONG_COMPONENTS_RENDER_H
 
+// createShaderProgram Start
+#include <osg/Program>
+
+// createShaderProgram End
 // setupCamera Start
 #include <osg/Camera>
 
@@ -62,6 +66,21 @@ osg::GraphicsContext *createGraphicsContext(
     return osg::GraphicsContext::createGraphicsContext(traits);
 }
 // createGraphicsContext-desktop End
+// createShaderProgram Start
+osg::Program *createShaderProgram(
+    const std::string &vertexShader,
+    const std::string &fragmentShader
+) {
+    // Load shaders.
+    osg::Shader *vs = new osg::Shader(osg::Shader::VERTEX, vertexShader);
+    osg::Shader *fs = new osg::Shader(osg::Shader::FRAGMENT, fragmentShader);
+    // Compile shaders and compose shader program.
+    osg::ref_ptr<osg::Program> prog = new osg::Program;
+    prog->addShader(vs);
+    prog->addShader(fs);
+    return prog.release();
+}
+// createShaderProgram End
 // setupCamera Start
 // Configure camera with common defaults.
 void setupCamera(

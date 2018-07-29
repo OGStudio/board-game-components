@@ -83,6 +83,13 @@ struct ResourceStreamBuffer : std::streambuf
 };
 // ResourceStreamBuffer End
 
+// string Start
+std::string string(const Resource &resource)
+{
+    const char *contents = reinterpret_cast<const char *>(resource.contents);
+    return std::string(contents, resource.len);
+}
+// string End
 
 } // namespace resource
 } // namespace mc

@@ -40,9 +40,11 @@ trimmedString
 # resource
 Resource
 ResourceStreamBuffer
+string
 
 # render
 createGraphicsContext-desktop
+createShaderProgram
 setupCamera
 
 # scene
