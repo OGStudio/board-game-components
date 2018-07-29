@@ -44,3 +44,8 @@ ResourceStreamBuffer
 # render
 createGraphicsContext-desktop
 setupCamera
+
+# scene
+createShape
+createSphere
+setSimplePosition

@@ -45,12 +45,18 @@ freely, subject to the following restrictions:
 // Example+Layout Start
 #include "layout.h"
 #include "log.h"
+#include "scene.h"
 
 #include "resource.h"
 #include "cat.layout.h"
 #include "X_shaped.layout.h"
 
 // Example+Layout End
+// Example+Scene Start
+#include "scene.h"
+#include <osg/MatrixTransform>
+
+// Example+Scene End
 
 // MC_MAIN_EXAMPLE_LOG Start
 #include "log.h"
@@ -201,6 +207,10 @@ struct Example
         this->app = new Application(EXAMPLE_TITLE);
 
 // Example End
+    // Example+Scene Start
+    this->setupScene();
+    
+    // Example+Scene End
     // Example+Layout Start
     this->testLayout();
     
@@ -248,8 +258,33 @@ struct Example
                 X_shaped_layout_len
             );
             */
+    
+            this->scene->addChild(scene::createSphere(1));
         }
     // Example+Layout End
+    // Example+Scene Start
+    private:
+        osg::ref_ptr<osg::MatrixTransform> scene;
+        const std::string sceneSetupCallbackName = "SceneSetup";
+    
+        void setupScene()
+        {
+            this->scene = new osg::MatrixTransform;
+    
+            // Provide scene to application after the first frame
+            // to let other components configure scene prior that event.
+            this->app->frameReporter.addCallback(
+                [&] {
+                    this->app->setScene(this->scene);
+                    // Unsubscribe from the rest of frame reports.
+                    this->app->frameReporter.removeCallback(
+                        this->sceneSetupCallbackName
+                    );
+                },
+                this->sceneSetupCallbackName
+            );
+        }
+    // Example+Scene End
 // Example Start
 };
 // Example End

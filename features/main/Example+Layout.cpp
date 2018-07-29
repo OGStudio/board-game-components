@@ -1,6 +1,7 @@
 FEATURE main.h/Include
 #include "layout.h"
 #include "log.h"
+#include "scene.h"
 
 #include "resource.h"
 #include "cat.layout.h"
@@ -41,4 +42,6 @@ private:
             X_shaped_layout_len
         );
         */
+
+        this->scene->addChild(scene::createSphere(1));
     }

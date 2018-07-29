@@ -31,8 +31,9 @@ freely, subject to the following restrictions:
 // FEATURE Application+Logging/Include
 // FEATURE Application+Rendering/Include
 
-// FEATURE Example+VBO/Include
 // FEATURE Example+Layout/Include
+// FEATURE Example+Scene/Include
+// FEATURE Example+VBO/Include
 
 // FEATURE MC_MAIN_EXAMPLE_LOG/Impl
 
@@ -66,12 +67,14 @@ namespace main
 // FEATURE Example+01/Title
 
 // FEATURE Example/Setup
-    // FEATURE Example+VBO/Setup
+    // FEATURE Example+Scene/Setup
     // FEATURE Example+Layout/Setup
+    // FEATURE Example+VBO/Setup
 // FEATURE Example/TearDown
 // FEATURE Example/Impl
-    // FEATURE Example+VBO/Impl
     // FEATURE Example+Layout/Impl
+    // FEATURE Example+Scene/Impl
+    // FEATURE Example+VBO/Impl
 // FEATURE Example/End
 
 } // namespace main

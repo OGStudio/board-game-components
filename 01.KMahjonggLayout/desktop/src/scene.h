@@ -25,18 +25,37 @@ freely, subject to the following restrictions:
 #ifndef MAHJONG_COMPONENTS_SCENE_H
 #define MAHJONG_COMPONENTS_SCENE_H
 
-// FEATURE createShape/Include
-// FEATURE simplePosition/Include
+// createShape Start
+#include <osg/Geode>
+#include <osg/MatrixTransform>
+#include <osg/ShapeDrawable>
+
+// createShape End
 
 namespace mc
 {
 namespace scene
 {
 
-// FEATURE createShape/Impl
-// FEATURE createSphere/Impl
-// FEATURE setSimplePosition/Impl
-// FEATURE simplePosition/Impl
+// createShape Start
+osg::MatrixTransform *createShape(osg::Shape *shape)
+{
+    auto hints = new osg::TessellationHints;
+    hints->setDetailRatio(0.5);
+    auto geode = new osg::Geode();
+    geode->addDrawable(new osg::ShapeDrawable(shape, hints));
+    osg::ref_ptr<osg::MatrixTransform> node = new osg::MatrixTransform;
+    node->addChild(geode);
+    return node.release();
+}
+// createShape End
+// createSphere Start
+osg::MatrixTransform *createSphere(float radius)
+{
+    auto sphere = new osg::Sphere(osg::Vec3f(0, 0, 0), radius);
+    return createShape(sphere);
+}
+// createSphere End
 
 } // namespace scene
 } // namespace mc
