@@ -13,7 +13,7 @@ ADD_DEFINITIONS("-std=c++11")
 # Reference source headers.
 INCLUDE_DIRECTORIES(src)
 # Reference resource headers.
-#INCLUDE_DIRECTORIES(../../data)
+INCLUDE_DIRECTORIES(../../data)
 # Create executable.
 ADD_EXECUTABLE(mc01-kmahjongg-layout src/main.cpp)
 # Link executable with OpenSceneGraph libraries.
