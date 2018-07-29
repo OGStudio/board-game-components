@@ -12,6 +12,14 @@ Example+01
 
 main-desktop
 
+# layout
+MC_LAYOUT_LOG
+Layout
+KMahjonggLayout
+kmahjonggLayoutFieldsToPositions
+linesToKMahjonggLayout
+parseLayout
+
 # log
 log-default
 logLevelToString
