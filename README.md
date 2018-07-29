@@ -11,7 +11,8 @@
 
 Mahjong components are a set of components used by OGS Mahjong game.
 
-**Note**: Mahjong components use [OpenSceneGraph cross-platform examples][osgcpe].
+**Note**: Mahjong components use [OpenSceneGraph cross-platform examples][osgcpe]
+so make sure their repository is located alongside `Mahjong components` one.
 
 <a name="components"/>
 

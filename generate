@@ -1,0 +1,122 @@
+#!/bin/bash
+# This script generats complete source code for each mahjong component
+# by using the same source base with the help of
+# Feature Tool ( https://bitbucket.org/ogstudio/feature-tool )
+
+# Make sure we have at least Bash 3.
+# NOTE Why not Bash 4? Because Apple sucks: https://apple.stackexchange.com/a/197172
+if ((BASH_VERSINFO[0] < 3)); then
+    echo "ERROR You need to have Bash 3+"
+    exit 1
+fi
+
+DIR=`dirname $0`
+DIR_OSGCPE=$DIR/../openscenegraph-cross-platform-examples
+FEATURES_FILENAME=Features.txt
+
+# List of components.
+COMPONENTS="
+01.KMahjonggLayout
+"
+
+# Platform -> Path to Features.txt
+PLATFORMS=(
+    "desktop"
+)
+#    "android"
+#    "ios"
+#    "web"
+
+FEATURES_TXT_DIR="src" 
+FEATURE_DIRS=(
+    "/core"
+    "/format"
+    "/log"
+    "/main"
+    "/render"
+)
+#    "/resource"
+#    "/scene"
+#    "/network"
+#    "/debug"
+#    "/input"
+
+FEATURES_TXT_DIR_ANDROID_CPP="app/src/main/cpp"
+FEATURES_TXT_DIR_ANDROID_JAVA="app/src/main/java"
+FEATURE_DIR_ANDROID="/android"
+
+FEATURES_TXT_DIR_IOS="xcodeproject/App"
+FEATURE_DIR_IOS="/ios"
+
+processFeatureDir()
+{
+    PATH_TO_FEATURES_FILENAME=$1
+    FEATURES_FILENAME=$2
+    PATH_TO_FEATURES_OSGCPE=$3
+    PATH_TO_FEATURES=$4
+
+    PATH_TO_FEATURES_TXT=$PATH_TO_FEATURES_FILENAME/$FEATURES_FILENAME
+    PATH_TO_SRC=$PATH_TO_FEATURES/src
+
+    echo "feature-tool $PATH_TO_FEATURES_TXT $PATH_TO_SRC $PATH_TO_FEATURES_OSGCPE $PATH_TO_FEATURES_MC"
+    feature-tool $PATH_TO_FEATURES_TXT $PATH_TO_SRC $PATH_TO_FEATURES_OSGCPE $PATH_TO_FEATURES_MC
+}
+
+processFeatureDirs()
+{
+    dirFeaturesAbs=$1
+
+    for ((id=0; id < ${#FEATURE_DIRS[@]}; id++)); do
+        dirFeaturesOSGCPE=$DIR_OSGCPE/features${FEATURE_DIRS[$id]}
+        dirFeaturesMC=$DIR/features${FEATURE_DIRS[$id]}
+        processFeatureDir $dirFeaturesAbs Features.txt $dirFeaturesOSGCPE $dirFeaturesMC
+    done
+}
+
+main()
+{
+    for component in $COMPONENTS; do
+        echo "Generating component '$component'"
+
+        # For each platform.
+        for ((platformId=0; platformId < ${#PLATFORMS[@]}; platformId++)); do
+            platform=${PLATFORMS[$platformId]}
+
+            # C++ features for desktop, web, and iOS.
+            if [ $platform == "desktop" ] || [ $platform == "web" ] || [ $platform == "ios" ]; then
+                echo "process C++ features for '$platform'"
+                dirFeaturesAbs=$DIR/$component/$platform/$FEATURES_TXT_DIR
+                processFeatureDirs $dirFeaturesAbs
+            fi
+
+            # Objective-C features for iOS.
+            if [ $platform == "ios" ]; then
+                echo "process Objective-C features for '$platform'"
+                dirFeaturesAbs=$DIR/$component/$platform/$FEATURES_TXT_DIR_IOS
+                dir=$DIR/features${FEATURE_DIR_IOS}
+                # TODO
+#        dirFeaturesOSGCPE=$DIR/features${FEATURE_DIRS[$id]}
+#        dirFeaturesMC=$DIR/features${FEATURE_DIRS[$id]}
+#                processFeatureDir $dirFeaturesAbs Features.txt $dir
+            fi
+
+            # C++ and Java features for Android.
+            if [ $platform == "android" ]; then
+                echo "process C++ features for '$platform'"
+                dirFeaturesAbs=$DIR/$component/$platform/${FEATURES_TXT_DIR_ANDROID_CPP}
+                processFeatureDirs $dirFeaturesAbs
+
+                echo "process Java features for '$platform'"
+                dirFeaturesAbs=$DIR/$component/$platform/$FEATURES_TXT_DIR_ANDROID_JAVA
+                dir=$DIR/features${FEATURE_DIR_ANDROID}
+                # TODO
+                #processFeatureDir $dirFeaturesAbs Features.txt $dir
+#        dirFeaturesOSGCPE=$DIR/features${FEATURE_DIRS[$id]}
+#        dirFeaturesMC=$DIR/features${FEATURE_DIRS[$id]}
+            fi
+        done
+    done
+}
+
+main
+

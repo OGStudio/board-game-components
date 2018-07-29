@@ -8,11 +8,7 @@ Application+Rendering
 
 OSGCPE_MAIN_EXAMPLE_LOG
 Example
-Example+MC01
-
-# !!! TODO Replace !!!
-Example+BoxScene
-Example+TextureImageScene
+Example+01
 
 main-desktop
 
@@ -25,20 +21,6 @@ Logger
 # format
 printfString
 
-# resource
-OSGCPE_RESOURCE_LOG
-createTexture
-extension
-node
-setTextureImage
-string
-Resource
-ResourceStreamBuffer
-
 # render
 createGraphicsContext-desktop
-createShaderProgram
 setupCamera
-
-# scene
-textureImageScene

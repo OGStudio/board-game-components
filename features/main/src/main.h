@@ -1,6 +1,6 @@
 
 /*
-This file is part of OpenSceneGraph cross-platform examples:
+This file is part of Mahjong components:
   https://github.com/OGStudio/mahjong-components
 
 Copyright (C) 2018 Opensource Game Studio
@@ -32,7 +32,6 @@ freely, subject to the following restrictions:
 
 // FEATURE OSGCPE_MAIN_APPLICATION_LOG/Impl
 
-// FEATURE Example/Include
 // FEATURE Example+BoxScene/Include
 // FEATURE Example+TextureImageScene/Include
 // FEATURE Example+VBO/Include
@@ -80,8 +79,8 @@ namespace main
     // FEATURE Example+VBO/Impl
 // FEATURE Example/End
 
-} // namespace main.
-} // namespace mc.
+} // namespace main
+} // namespace mc
 
 #endif // MAHJONG_COMPONENTS_MAIN_H
 
