@@ -56,6 +56,44 @@ osg::MatrixTransform *createSphere(float radius)
     return createShape(sphere);
 }
 // createSphere End
+// degreesToQuaternion Start
+//! Convert from degrees to quaternion.
+osg::Quat degreesToQuaternion(const osg::Vec3f &degrees)
+{
+    osg::Quat q;
+    q.makeRotate(
+        osg::DegreesToRadians(degrees.x()), osg::Vec3(1, 0, 0),
+        osg::DegreesToRadians(degrees.y()), osg::Vec3(0, 1, 0),
+        osg::DegreesToRadians(degrees.z()), osg::Vec3(0, 0, 1)
+    );
+    return q;
+}
+// degreesToQuaternion End
+// setSimplePosition Start
+//! Set node position.
+//! NOTE Only works for non-rotated/scaled nodes.
+void setSimplePosition(osg::MatrixTransform *node, const osg::Vec3f &position)
+{
+    auto matrix = node->getMatrix();
+    node->setMatrix(
+        osg::Matrix::scale(matrix.getScale()) *
+        osg::Matrix::rotate(matrix.getRotate()) *
+        osg::Matrix::translate(position)
+    );
+}
+// setSimplePosition End
+// setSimpleRotation Start
+//! Set node rotation.
+void setSimpleRotation(osg::MatrixTransform *node, const osg::Vec3f &rotation)
+{
+    osg::Quat quat = degreesToQuaternion(rotation);
+    node->setMatrix(
+        osg::Matrix::scale(node->getMatrix().getScale()) *
+        osg::Matrix::rotate(quat) *
+        osg::Matrix::translate(node->getMatrix().getTrans())
+    );
+}
+// setSimpleRotation End
 
 } // namespace scene
 } // namespace mc

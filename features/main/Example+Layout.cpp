@@ -16,38 +16,52 @@ this->testLayout();
 
 FEATURE main.h/Impl
 private:
+    osg::ref_ptr<osg::MatrixTransform> layoutScene;
     void testLayout()
     {
-        resource::Resource res(
+        // NOTE Test X_shaped.layout?
+        resource::Resource cat(
             "layouts",
             "cat.layout",
             cat_layout,
             cat_layout_len
         );
-        resource::ResourceStreamBuffer buf(res);
-        std::istream in(&buf);
         layout::Layout layout;
-        if (layout::parseLayout(in, layout))
+        if (!this->loadLayout(cat, layout))
         {
-            MC_MAIN_EXAMPLE_LOG("Parsed layout:");
-            auto msg = layout::layoutToString(layout);
-            log::log(msg.c_str());
+            MC_MAIN_EXAMPLE_LOG("Could not load layout");
+            return;
         }
-        else
+        osg::Vec3 color(0.7, 0.5, 0.3);
+        this->setupLayoutScene(color);
+        this->createSpheres(layout);
+    }
+    void createSpheres(const layout::Layout &layout)
+    {
+        for (auto pos : layout.positions)
         {
-            MC_MAIN_EXAMPLE_LOG("Failed to parse cat layout");
+            float z = pos.x();
+            float y = pos.y();
+            float x = pos.z();
+            auto node = scene::createSphere(1);
+            this->layoutScene->addChild(node);
+            scene::setSimplePosition(node, {x, y, z});
         }
-
-        /*
-        resource::Resource layout2(
-            "layouts",
-            "X_shaped.layout",
-            X_shaped_layout,
-            X_shaped_layout_len
-        );
-        */
-
-        auto node = scene::createSphere(1);
+    }
+    bool loadLayout(
+        const resource::Resource &layoutResource,
+        layout::Layout &layout
+    ) {
+        resource::ResourceStreamBuffer buf(layoutResource);
+        std::istream in(&buf);
+        return layout::parseLayout(in, layout);
+    }
+    void setupLayoutScene(const osg::Vec3 &color)
+    {
+        this->layoutScene = new osg::MatrixTransform;
+        // Rotate layout sceen for better depiction.
+        scene::setSimpleRotation(this->layoutScene, {45, 0, 0});
+        this->scene->addChild(this->layoutScene);
 
         // Create shader program.
         resource::Resource shaderVert(
@@ -68,11 +82,8 @@ private:
                 resource::string(shaderFrag)
             );
         // Apply the program.
-        auto material = scene->getOrCreateStateSet();
+        auto material = this->layoutScene->getOrCreateStateSet();
         material->setAttribute(prog);
         // Set color.
-        osg::Vec3 color(0.6, 0.4, 0.4);
         material->addUniform(new osg::Uniform("color", color));
-
-        this->scene->addChild(node);
     }

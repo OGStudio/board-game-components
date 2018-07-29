@@ -22,7 +22,6 @@ MC_LAYOUT_LOG
 Layout
 KMahjonggLayout
 kmahjonggLayoutFieldsToPositions
-layoutToString
 linesToKMahjonggLayout
 parseLayout
 
@@ -50,4 +49,6 @@ setupCamera
 # scene
 createShape
 createSphere
+degreesToQuaternion
 setSimplePosition
+setSimpleRotation
