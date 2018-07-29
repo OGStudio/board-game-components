@@ -42,7 +42,7 @@ bool linesToKMahjonggLayout(
             layoutDraft.version = sln.substr(PREFIX_VERSION.length());
             // Explicitely support expected versions.
             if (
-                layoutDraft.version != "1.0" ||
+                layoutDraft.version != "1.0" &&
                 layoutDraft.version != "1.1"
             ) {
                 return false;
@@ -73,7 +73,7 @@ bool linesToKMahjonggLayout(
             ++fieldLineId;
             // Once we have collected enough lines, add current
             // field to the list of fields.
-            if (fieldLineId >= layout.height)
+            if (fieldLineId >= layoutDraft.height)
             {
                 fields.push_back(field);
                 // Reset field buffer for the next field lines.
@@ -89,7 +89,9 @@ bool linesToKMahjonggLayout(
         if (fields.size() != layoutDraft.depth)
         {
             MC_LAYOUT_LOG(
-                "ERROR Specified layout depth is not equal to actual one"
+                "ERROR Specified layout depth (%d) is not equal to actual one (%d)",
+                layoutDraft.depth,
+                fields.size()
             );
             return false;
         }
