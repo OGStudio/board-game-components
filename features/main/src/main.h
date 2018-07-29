@@ -25,6 +25,7 @@ freely, subject to the following restrictions:
 #ifndef MAHJONG_COMPONENTS_MAIN_H
 #define MAHJONG_COMPONENTS_MAIN_H
 
+// FEATURE Application+frame+Reporting/Include
 // FEATURE Application+handleEvent-web/Include
 
 // FEATURE Application+Logging/Include
@@ -51,7 +52,7 @@ namespace main
     // FEATURE Application+Rendering/TearDown
     // FEATURE Application+Logging/TearDown
 // FEATURE Application/Impl
-    // FEATURE Application+frame/Impl
+    // FEATURE Application+frame+Reporting/Impl
     // FEATURE Application+handleEvent-web/Impl
     // FEATURE Application+run/Impl
     // FEATURE Application+setupWindow-desktop/Impl

@@ -25,6 +25,10 @@ freely, subject to the following restrictions:
 #ifndef MAHJONG_COMPONENTS_MAIN_H
 #define MAHJONG_COMPONENTS_MAIN_H
 
+// Application+frame+Reporting Start
+#include "core.h"
+
+// Application+frame+Reporting End
 
 // Application+Logging Start
 #include "log.h"
@@ -100,13 +104,15 @@ class Application
         }
 
 // Application End
-    // Application+frame Start
+    // Application+frame+Reporting Start
     public:
+        core::Reporter frameReporter;
         void frame()
         {
             this->viewer->frame();
+            this->frameReporter.report();
         }
-    // Application+frame End
+    // Application+frame+Reporting End
     // Application+run Start
     public:
         void run()

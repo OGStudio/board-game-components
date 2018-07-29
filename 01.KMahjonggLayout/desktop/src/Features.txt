@@ -1,6 +1,6 @@
 # main
 Application
-Application+frame
+Application+frame+Reporting
 Application+run
 Application+setupWindow-desktop
 Application+Logging
@@ -10,8 +10,12 @@ MC_MAIN_EXAMPLE_LOG
 Example
 Example+01
 Example+Layout
+Example+Scene
 
 main-desktop
+
+# core
+Reporter
 
 # layout
 MC_LAYOUT_LOG
