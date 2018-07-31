@@ -40,29 +40,33 @@ private:
     }
     void setTileIdForGeometry(int tileId, osg::Geometry *geom)
     {
+        MC_MAIN_EXAMPLE_LOG("update geometry of tile id '%d'", tileId);
         // TODO Extract some entity to manage these specs.
         // NOTE These values are only valid for 1024x2048 texture with
         // NOTE 200x300 tile items.
         const float tileWidth = 0.19531;
         const float tileHeight = 0.14648;
 
-        const float id = static_cast<float>(tileId);
+        const int tilesPerRow = 5;
+
+        int row = tileId / tilesPerRow;
+        int column = tileId - row * tilesPerRow;
 
         const osg::Vec2 topRight = {
-            tileWidth * (id + 1),
-            1.0f - tileHeight * id
+            tileWidth * (column + 1),
+            1.0f - tileHeight * row
         };
         const osg::Vec2 topLeft = {
-            tileWidth * id,
-            1.0f - tileHeight * id
+            tileWidth * column,
+            1.0f - tileHeight * row
         };
         const osg::Vec2 bottomLeft = {
-            tileWidth * id,
-            1.0f - tileHeight * (id + 1)
+            tileWidth * column,
+            1.0f - tileHeight * (row + 1)
         };
         const osg::Vec2 bottomRight = {
-            tileWidth * (id + 1),
-            1.0f - tileHeight * (id + 1)
+            tileWidth * (column + 1),
+            1.0f - tileHeight * (row + 1)
         };
 
         auto texCoordsCount = geom->getNumTexCoordArrays();
@@ -73,17 +77,15 @@ private:
         }
 
         // Take the first array.
-        auto coords = geom->getTexCoordArray(0);
-        auto coordsCount = coords->getNumElements();
-        MC_MAIN_EXAMPLE_LOG("Coords count: '%d'", coordsCount);
-        // Define start/end points of coords to change.
-        auto coordsIdStart = coordsCount - 4;
-        auto coordsIdEnd = coordsCount;
-        for (int i = coordsIdStart; i < coordsIdEnd; ++i)
-        {
-            auto coord = reinterpret_cast<const osg::Vec2 *>(coords->getDataPointer(i));
-            MC_MAIN_EXAMPLE_LOG("id: '%d' coord: '%f x %f'", i, coord->x(), coord->y());
-        }
+        auto coords = reinterpret_cast<osg::Vec2Array *>(geom->getTexCoordArray(0));
+        // TODO If coords...
+
+        // Change the last four coordinates.
+        auto index = coords->size() - 4;
+        (*coords)[index++] = topRight;
+        (*coords)[index++] = topLeft;
+        (*coords)[index++] = bottomLeft;
+        (*coords)[index] = bottomRight;
 
         // NOTE Other models would need other vertices to be overrident
         // NOTE they might not be the last ones. So be ready to update
