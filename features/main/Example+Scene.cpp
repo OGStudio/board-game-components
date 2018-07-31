@@ -1,5 +1,4 @@
 FEATURE main.h/Include
-#include "scene.h"
 #include <osg/MatrixTransform>
 
 FEATURE main.h/Setup

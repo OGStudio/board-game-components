@@ -77,7 +77,7 @@ namespace main
 // FEATURE Example/Impl
     // FEATURE Example+Layout/Impl
     // FEATURE Example+Scene/Impl
-    // FEATURE Example+TileTheme/Setup
+    // FEATURE Example+TileTheme/Impl
     // FEATURE Example+VBO/Impl
 // FEATURE Example/End
 

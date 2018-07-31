@@ -57,7 +57,6 @@ freely, subject to the following restrictions:
 
 // Example+Layout End
 // Example+Scene Start
-#include "scene.h"
 #include <osg/MatrixTransform>
 
 // Example+Scene End

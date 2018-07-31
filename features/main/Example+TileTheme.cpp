@@ -21,6 +21,7 @@ private:
 
         resource::Resource tile("models", "tile-low.osgt", tile_low_osgt, tile_low_osgt_len);
         auto node = resource::node(tile);
+        this->themeScene->addChild(node);
         auto group = reinterpret_cast<osg::Group *>(node.get());
 
         // TODO If group has been casted successfully...
@@ -43,7 +44,7 @@ private:
         // NOTE These values are only valid for 1024x2048 texture with
         // NOTE 200x300 tile items.
         const float tileWidth = 0.19531;
-        const float tileHeight = 0.14648
+        const float tileHeight = 0.14648;
 
         const float id = static_cast<float>(tileId);
 
@@ -67,21 +68,21 @@ private:
         auto texCoordsCount = geom->getNumTexCoordArrays();
         if (!texCoordsCount)
         {
-            OSGCPE_MAIN_EXAMPLE_LOG("ERROR Model has no texture coordinates");
+            MC_MAIN_EXAMPLE_LOG("ERROR Model has no texture coordinates");
             return;
         }
 
         // Take the first array.
         auto coords = geom->getTexCoordArray(0);
         auto coordsCount = coords->getNumElements();
-        OSGCPE_MAIN_EXAMPLE_LOG("Coords count: '%d'", coordsCount);
+        MC_MAIN_EXAMPLE_LOG("Coords count: '%d'", coordsCount);
         // Define start/end points of coords to change.
         auto coordsIdStart = coordsCount - 4;
         auto coordsIdEnd = coordsCount;
         for (int i = coordsIdStart; i < coordsIdEnd; ++i)
         {
             auto coord = reinterpret_cast<const osg::Vec2 *>(coords->getDataPointer(i));
-            OSGCPE_MAIN_EXAMPLE_LOG("id: '%d' coord: '%f x %f'", i, coord->x(), coord->y());
+            MC_MAIN_EXAMPLE_LOG("id: '%d' coord: '%f x %f'", i, coord->x(), coord->y());
         }
 
         // NOTE Other models would need other vertices to be overrident
@@ -137,7 +138,7 @@ private:
                 resource::string(shaderFrag)
             );
         // Apply the program.
-        auto material = scene->getOrCreateStateSet();
+        auto material = this->themeScene->getOrCreateStateSet();
         material->setAttribute(prog);
         // Set texture image.
         material->setTextureAttributeAndModes(0, resource::createTexture(tileTex));
