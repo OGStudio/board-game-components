@@ -15,10 +15,10 @@ INCLUDE_DIRECTORIES(src)
 # Reference resource headers.
 INCLUDE_DIRECTORIES(../../data)
 # Create executable.
-ADD_EXECUTABLE(ex02-tile-theme src/main.cpp)
+ADD_EXECUTABLE(mc02-tile-theme src/main.cpp)
 # Link executable with libraries.
 TARGET_LINK_LIBRARIES(
-    ex02-tile-theme
+    mc02-tile-theme
     osgViewer
     osgDB
     osgGA

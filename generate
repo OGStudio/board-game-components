@@ -17,6 +17,7 @@ FEATURES_FILENAME=Features.txt
 # List of components.
 COMPONENTS="
 01.KMahjonggLayout
+02.TileTheme
 "
 
 # Platform -> Path to Features.txt

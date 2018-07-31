@@ -33,6 +33,7 @@ freely, subject to the following restrictions:
 
 // FEATURE Example+Layout/Include
 // FEATURE Example+Scene/Include
+// FEATURE Example+TileTheme/Include
 // FEATURE Example+VBO/Include
 
 // FEATURE MC_MAIN_EXAMPLE_LOG/Impl
@@ -65,15 +66,18 @@ namespace main
 // FEATURE Application/End
 
 // FEATURE Example+01/Title
+// FEATURE Example+02/Title
 
 // FEATURE Example/Setup
     // FEATURE Example+Scene/Setup
+    // FEATURE Example+TileTheme/Setup
     // FEATURE Example+Layout/Setup
     // FEATURE Example+VBO/Setup
 // FEATURE Example/TearDown
 // FEATURE Example/Impl
     // FEATURE Example+Layout/Impl
     // FEATURE Example+Scene/Impl
+    // FEATURE Example+TileTheme/Setup
     // FEATURE Example+VBO/Impl
 // FEATURE Example/End
 

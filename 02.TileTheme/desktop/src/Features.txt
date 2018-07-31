@@ -1,6 +1,6 @@
 # main
 Application
-Application+frame
+Application+frame+Reporting
 Application+run
 Application+setupWindow-desktop
 Application+Logging
@@ -9,9 +9,12 @@ Application+Rendering
 MC_MAIN_EXAMPLE_LOG
 Example
 Example+02
-Example+TextureAtlas
+Example+TileTheme
 
 main-desktop
+
+# core
+Reporter
 
 # log
 log-default
