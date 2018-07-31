@@ -5,6 +5,8 @@ FEATURE main.h/Include
 #include "tile-theme.png.h"
 #include "resource.h"
 
+#include "scene.h"
+
 #include <osg/MatrixTransform>
 
 FEATURE main.h/Setup
@@ -18,12 +20,27 @@ private:
     {
         this->themeScene = new osg::MatrixTransform;
         this->scene->addChild(this->themeScene);
+        this->setupTexture();
 
         resource::Resource tile("models", "tile-low.osgt", tile_low_osgt, tile_low_osgt_len);
+
         auto node = resource::node(tile);
         this->themeScene->addChild(node);
-        auto group = reinterpret_cast<osg::Group *>(node.get());
+        this->setTileId(node, 0);
 
+        auto leftNode =
+            reinterpret_cast<osg::Node *>(node->clone(osg::CopyOp::DEEP_COPY_ALL));
+        auto leftNodeTransform =
+            new osg::MatrixTransform;
+        leftNodeTransform->addChild(leftNode);
+        // TODO If leftNode...
+        scene::setSimplePosition(leftNodeTransform, {-3, 0, 0});
+        this->themeScene->addChild(leftNodeTransform);
+        this->setTileId(leftNode, 6);
+    }
+    void setTileId(osg::Node *node, int id)
+    {
+        auto group = reinterpret_cast<osg::Group *>(node);
         // TODO If group has been casted successfully...
         // Get geometry from the node.
         auto transform =
@@ -34,13 +51,7 @@ private:
         // TODO If geom...
         auto geom = reinterpret_cast<osg::Geometry *>(geode->getDrawable(0));
 
-        // Configure geometry.
-        this->setTileIdForGeometry(1, geom);
-        this->setupTexture();
-    }
-    void setTileIdForGeometry(int tileId, osg::Geometry *geom)
-    {
-        MC_MAIN_EXAMPLE_LOG("update geometry of tile id '%d'", tileId);
+        MC_MAIN_EXAMPLE_LOG("update geometry to use face of tile id '%d'", id);
         // TODO Extract some entity to manage these specs.
         // NOTE These values are only valid for 1024x2048 texture with
         // NOTE 200x300 tile items.
@@ -49,8 +60,8 @@ private:
 
         const int tilesPerRow = 5;
 
-        int row = tileId / tilesPerRow;
-        int column = tileId - row * tilesPerRow;
+        int row = id / tilesPerRow;
+        int column = id - row * tilesPerRow;
 
         const osg::Vec2 topRight = {
             tileWidth * (column + 1),
@@ -90,37 +101,6 @@ private:
         // NOTE Other models would need other vertices to be overrident
         // NOTE they might not be the last ones. So be ready to update
         // NOTE at any offset.
-        // TODO Override last four vertices of the geometry.
-
-        /* NOTE
-         *
-         * tile id = 1 coords:
-         * (top-right) w, 1.0
-         * (top-left) 0.0, 1.0
-         * (bottom-left) 0.0, 1.0 - h
-         * (bottom-right) w, 1.0 - h
-         *
-         * tile id = 2 coords:
-         * (tr) w * 2, 1.0
-         * (tl) w, 1.0
-         * (bl) w, 1.0 - h
-         * (br) w * 2, 1.0 - h
-         *
-         * tile id = 3 coords:
-         * (tr) w * 3, 1.0
-         * (tl) w * 2, 1.0
-         * (bl) w * 2, 1.0 - h
-         * (br) w * 3, 1.0 -h
-         *
-         * tile id = 4 coords:
-         * (tr) w, 1.0 - h
-         * (tl) 0.0, 1.0 - h
-         * (bl) 0.0, 1.0 - h * 2
-         * (br) w, 1.0 - h * 2
-         */
-
-
-
     }
     void setupTexture()
     {

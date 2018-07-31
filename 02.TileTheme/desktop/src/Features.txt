@@ -40,3 +40,6 @@ ResourceStreamBuffer
 createGraphicsContext-desktop
 createShaderProgram
 setupCamera
+
+# scene
+setSimplePosition
