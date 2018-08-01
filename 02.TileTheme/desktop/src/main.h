@@ -279,14 +279,9 @@ struct Example
         }
         void setTileId(osg::Node *node, int id)
         {
-            auto group = reinterpret_cast<osg::Group *>(node);
-            // TODO If group has been casted successfully...
-            // Get geometry from the node.
-            auto transform =
-                reinterpret_cast<osg::MatrixTransform *>(group->getChild(0));
             // TODO If geode...
-            auto geode =
-                reinterpret_cast<osg::Geode *>(transform->getChild(0));
+            auto geode = reinterpret_cast<osg::Geode *>(node);
+                //reinterpret_cast<osg::Geode *>(transform->getChild(0));
             // TODO If geom...
             auto geom = reinterpret_cast<osg::Geometry *>(geode->getDrawable(0));
     
