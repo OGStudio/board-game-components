@@ -2,12 +2,12 @@
 #Version 92
 #Generator osgexport 0.13.0
 
-        osg::Geode {
-          UniqueID 19
+osg::Geode {
+          UniqueID 40
           Name "GeodeCube.001"
           Drawables 1 {
             osg::Geometry {
-              UniqueID 2
+              UniqueID 23
               Name "Cube"
               PrimitiveSetList 1 {
                   DrawElementsUInt GL_QUADS 24 {
@@ -20,7 +20,7 @@
                   }
               }
               VertexData {
-                Array TRUE ArrayID 0 Vec3fArray 24 {
+                Array TRUE ArrayID 4 Vec3fArray 24 {
                   -1.00000 -1.50000 0.00000
                   -1.00000 -1.50000 1.00000
                   -1.00000 1.50000 1.00000
@@ -51,7 +51,7 @@
                 Normalize 0
               }
               NormalData {
-                Array TRUE ArrayID 1 Vec3fArray 24 {
+                Array TRUE ArrayID 5 Vec3fArray 24 {
                   -1.00000 -0.00000 0.00000
                   -1.00000 -0.00000 0.00000
                   -1.00000 -0.00000 0.00000
@@ -83,7 +83,7 @@
               }
               TexCoordData 1 {
                 Data {
-                  Array TRUE ArrayID 2 Vec2fArray 24 {
+                  Array TRUE ArrayID 6 Vec2fArray 24 {
                     0.70703 0.19532
                     0.60938 0.19532
                     0.60938 0.04883
@@ -117,3 +117,4 @@
             }
           }
         }
+      

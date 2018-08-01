@@ -56,7 +56,7 @@ class TileTheme
             }
 
             // Make sure provided start index is in bounds.
-            auto indexIsInBounds = (coords->size() - texCoordStartIndex >= 0);
+            auto indexIsInBounds = (coords->size() - texCoordStartIndex >= 4);
             if (!indexIsInBounds)
             {
                 MC_RENDER_TILE_THEME_LOG(
