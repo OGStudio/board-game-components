@@ -1,4 +1,4 @@
-PROJECT(MC01_KMAHJONGG_LAYOUT)
+PROJECT(MC01_LAYOUT)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 # OpenSceneGraph directories.
@@ -15,10 +15,10 @@ INCLUDE_DIRECTORIES(src)
 # Reference resource headers.
 INCLUDE_DIRECTORIES(../../data)
 # Create executable.
-ADD_EXECUTABLE(mc01-kmahjongg-layout src/main.cpp)
+ADD_EXECUTABLE(mc01-layout src/main.cpp)
 # Link executable with OpenSceneGraph libraries.
 TARGET_LINK_LIBRARIES(
-    mc01-kmahjongg-layout
+    mc01-layout
     osgViewer
     osgDB
     osgGA

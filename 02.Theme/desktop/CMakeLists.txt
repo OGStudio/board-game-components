@@ -1,4 +1,4 @@
-PROJECT(MC02_TILE_THEME)
+PROJECT(MC02_THEME)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 # OpenSceneGraph directories.
@@ -15,10 +15,10 @@ INCLUDE_DIRECTORIES(src)
 # Reference resource headers.
 INCLUDE_DIRECTORIES(../../data)
 # Create executable.
-ADD_EXECUTABLE(mc02-tile-theme src/main.cpp)
+ADD_EXECUTABLE(mc02-theme src/main.cpp)
 # Link executable with libraries.
 TARGET_LINK_LIBRARIES(
-    mc02-tile-theme
+    mc02-theme
     osgViewer
     osgDB
     osgGA
