@@ -257,6 +257,7 @@ struct Example
         void testTileTheme()
         {
             this->themeScene = new osg::MatrixTransform;
+            scene::setSimpleRotation(this->themeScene, {45, 0, 0});
             this->scene->addChild(this->themeScene);
             this->setupTexture();
     
