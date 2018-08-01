@@ -29,7 +29,10 @@ freely, subject to the following restrictions:
 // FEATURE createGraphicsContext-ios/Include
 // FEATURE createShaderProgram/Include
 // FEATURE setupCamera/Include
+// FEATURE TileTheme/Include
 // FEATURE VBOSetupVisitor/Include
+
+// FEATURE MC_RENDER_TILE_THEME_LOG/Impl
 
 namespace mc
 {
@@ -43,6 +46,7 @@ namespace render
 
 // FEATURE shaders/Impl
 
+// FEATURE TileTheme/Impl
 // FEATURE VBOSetupVisitor/Impl
 
 } // namespace render

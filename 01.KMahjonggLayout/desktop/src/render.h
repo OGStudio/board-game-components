@@ -34,6 +34,7 @@ freely, subject to the following restrictions:
 
 // setupCamera End
 
+
 namespace mc
 {
 namespace render

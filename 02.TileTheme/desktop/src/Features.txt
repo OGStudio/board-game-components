@@ -11,6 +11,7 @@ Example
 Example+02
 Example+Scene
 Example+TileTheme
+Example+TileThemeTest
 
 main-desktop
 
@@ -40,6 +41,8 @@ ResourceStreamBuffer
 createGraphicsContext-desktop
 createShaderProgram
 setupCamera
+MC_RENDER_TILE_THEME_LOG
+TileTheme
 
 # scene
 degreesToQuaternion
