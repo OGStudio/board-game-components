@@ -1,11 +1,11 @@
 PROJECT(MC01_LAYOUT)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-# OpenSceneGraph directories.
-SET(OSG_INC_DIR "" CACHE PATH "Path to OpenSceneGraph include directory")
-SET(OSG_LIB_DIR "" CACHE PATH "Path to OpenSceneGraph lib directory")
-INCLUDE_DIRECTORIES(${OSG_INC_DIR})
-LINK_DIRECTORIES(${OSG_LIB_DIR})
+SET(OMC_DIR "${CMAKE_SOURCE_DIR}/../../../osg-mahjong-components")
+SET(OSGCPE_DIR "${OMC_DIR}/../openscenegraph-cross-platform-examples")
+
+# Build OpenSceneGraph statically.
+INCLUDE(${OSGCPE_DIR}/libs/OpenSceneGraph/CMakeLists.txt)
 
 # Use C++11.
 ADD_DEFINITIONS("-std=c++11")
@@ -16,10 +16,11 @@ INCLUDE_DIRECTORIES(src)
 INCLUDE_DIRECTORIES(../../data)
 # Create executable.
 ADD_EXECUTABLE(mc01-layout src/main.cpp)
-# Link executable with OpenSceneGraph libraries.
+# Link executable with libraries.
 TARGET_LINK_LIBRARIES(
     mc01-layout
     osgViewer
+    osgUtil
     osgDB
     osgGA
     osg

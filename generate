@@ -23,10 +23,10 @@ COMPONENTS="
 # Platform -> Path to Features.txt
 PLATFORMS=(
     "desktop"
+    "web"
 )
 #    "android"
 #    "ios"
-#    "web"
 
 FEATURES_TXT_DIR="src" 
 FEATURE_DIRS=(

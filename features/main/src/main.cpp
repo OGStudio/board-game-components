@@ -25,9 +25,9 @@ freely, subject to the following restrictions:
 // FEATURE main-desktop/Include
 // FEATURE main-web/Include
 
-// FEATURE main-web/Loop
-
 using namespace mc;
+
+// FEATURE main-web/Loop
 
 int main(int argc, char *argv[])
 {
