@@ -46,24 +46,26 @@ freely, subject to the following restrictions:
 
 // Application+Rendering End
 
-// Example+Layout Start
-#include "layout.h"
-#include "log.h"
-#include "scene.h"
-
-#include "resource.h"
-// Layouts.
-#include "cat.layout.h"
-#include "X_shaped.layout.h"
-// Shaders.
-#include "ppl-color.vert.h"
-#include "ppl-color.frag.h"
-
-// Example+Layout End
 // Example+Scene Start
 #include <osg/MatrixTransform>
 
 // Example+Scene End
+// Example+TileTheme Start
+#include "render.h"
+
+// Example+TileTheme End
+// Example+TileThemeTest Start
+#include "ppl.frag.h"
+#include "ppl.vert.h"
+#include "tile-low.osgt.h"
+#include "tile-theme.png.h"
+#include "resource.h"
+
+#include "scene.h"
+
+#include <osg/MatrixTransform>
+
+// Example+TileThemeTest End
 // Example+VBO Start
 #include "render.h"
 
@@ -81,6 +83,15 @@ freely, subject to the following restrictions:
     )
 // MC_MAIN_EXAMPLE_LOG End
 
+// Example+StaticPluginOSG Start
+// Reference (statically) plugins to read `osgt` file.
+USE_OSGPLUGIN(osg2)
+USE_SERIALIZER_WRAPPER_LIBRARY(osg)
+// Example+StaticPluginOSG End
+// Example+StaticPluginPNG Start
+// Reference (statically) plugins to read `png` file.
+USE_OSGPLUGIN(png)
+// Example+StaticPluginPNG End
 
 namespace mc
 {
@@ -271,9 +282,9 @@ class Application
 };
 // Application End
 
-// Example+01 Start
-const auto EXAMPLE_TITLE = "Mc01";
-// Example+01 End
+// Example+02 Start
+const auto EXAMPLE_TITLE = "Mc02";
+// Example+02 End
 
 // Example Start
 struct Example
@@ -289,10 +300,14 @@ struct Example
             this->setupScene();
             
             // Example+Scene End
-            // Example+Layout Start
-            this->testLayout();
+            // Example+TileTheme Start
+            this->setupTileTheme();
             
-            // Example+Layout End
+            // Example+TileTheme End
+            // Example+TileThemeTest Start
+            this->setupTileThemeTest();
+            
+            // Example+TileThemeTest End
             // Example+VBO Start
             this->setupSceneVBO();
             
@@ -303,85 +318,15 @@ struct Example
     {
 
 // Example End
+            // Example+TileTheme Start
+            this->tearTileThemeDown();
+            
+            // Example+TileTheme End
 // Example Start
         delete this->app;
     }
 
 // Example End
-            // Example+Layout Start
-            private:
-                osg::ref_ptr<osg::MatrixTransform> layoutScene;
-                void testLayout()
-                {
-                    // NOTE Test X_shaped.layout?
-                    resource::Resource cat(
-                        "layouts",
-                        "cat.layout",
-                        cat_layout,
-                        cat_layout_len
-                    );
-                    layout::Layout layout;
-                    if (!this->loadLayout(cat, layout))
-                    {
-                        MC_MAIN_EXAMPLE_LOG("Could not load layout");
-                        return;
-                    }
-                    osg::Vec3 color(0.7, 0.5, 0.3);
-                    this->setupLayoutScene(color);
-                    this->createSpheres(layout);
-                }
-                void createSpheres(const layout::Layout &layout)
-                {
-                    for (auto pos : layout.positions)
-                    {
-                        float z = pos.x();
-                        float y = pos.y();
-                        float x = pos.z();
-                        auto node = scene::createSphere(1);
-                        this->layoutScene->addChild(node);
-                        scene::setSimplePosition(node, {x, y, z});
-                    }
-                }
-                bool loadLayout(
-                    const resource::Resource &layoutResource,
-                    layout::Layout &layout
-                ) {
-                    resource::ResourceStreamBuffer buf(layoutResource);
-                    std::istream in(&buf);
-                    return layout::parseLayout(in, layout);
-                }
-                void setupLayoutScene(const osg::Vec3 &color)
-                {
-                    this->layoutScene = new osg::MatrixTransform;
-                    // Rotate layout sceen for better depiction.
-                    scene::setSimpleRotation(this->layoutScene, {45, 0, 0});
-                    this->scene->addChild(this->layoutScene);
-            
-                    // Create shader program.
-                    resource::Resource shaderVert(
-                        "shaders",
-                        "ppl-color.vert",
-                        ppl_color_vert,
-                        ppl_color_vert_len
-                    );
-                    resource::Resource shaderFrag(
-                        "shaders",
-                        "ppl-color.frag",
-                        ppl_color_frag,
-                        ppl_color_frag_len
-                    );
-                    auto prog =
-                        render::createShaderProgram(
-                            resource::string(shaderVert),
-                            resource::string(shaderFrag)
-                        );
-                    // Apply the program.
-                    auto material = this->layoutScene->getOrCreateStateSet();
-                    material->setAttribute(prog);
-                    // Set color.
-                    material->addUniform(new osg::Uniform("color", color));
-                }
-            // Example+Layout End
             // Example+Scene Start
             private:
                 osg::ref_ptr<osg::MatrixTransform> scene;
@@ -405,6 +350,112 @@ struct Example
                     );
                 }
             // Example+Scene End
+            // Example+TileTheme Start
+            private:
+                render::TileTheme *tileTheme;
+                const osg::Vec2 textureSize = {1024, 2048};
+                const osg::Vec2 tileFaceSize = {200, 300};
+            
+                void setupTileTheme()
+                {
+                    // TODO Specify start/end indices based on model. Or just indices.
+                    this->tileTheme = new render::TileTheme(textureSize, tileFaceSize);
+                }
+                void tearTileThemeDown()
+                {
+                    delete this->tileTheme;
+                }
+            // Example+TileTheme End
+            // Example+TileThemeTest Start
+            private:
+                osg::ref_ptr<osg::MatrixTransform> tileScene;
+                void setupTileThemeTest()
+                {
+                    MC_MAIN_EXAMPLE_LOG("setupTileThemeTest");
+                    // Create tile scene to host tiles.
+                    this->tileScene = new osg::MatrixTransform;
+                    this->scene->addChild(this->tileScene);
+                    // Setup single texture atlas for the tile scene.
+                    this->setupTexture();
+                    // Rotate the tile scene to have a better view.
+                    scene::setSimpleRotation(this->tileScene, {60, 0, 0});
+            
+                    // Load model with geode only.
+                    resource::Resource res(
+                        "models",
+                        "tile-low.osgt",
+                        tile_low_osgt,
+                        tile_low_osgt_len
+                    );
+                    auto node = resource::node(res);
+                    auto tile = reinterpret_cast<osg::Geode *>(node.get());
+                    // Make sure tile is valid.
+                    if (!tile)
+                    {
+                        MC_MAIN_EXAMPLE_LOG(
+                            "ERROR Could not load model '%s/%s'",
+                            res.group.c_str(),
+                            res.name.c_str()
+                        );
+                        return;
+                    }
+                    // This specific model has four face texture coordinates at 20th position.
+                    const int texCoordStartIndex = 20;
+            
+                    // Configure tile.
+                    //!!this->tileTheme->setFaceId(0, tile, texCoordStartIndex);
+                    // Add it to the scene.
+                    this->tileScene->addChild(tile);
+            
+                    // Create another tile.
+                    auto leftTile = new osg::Geode(*tile, osg::CopyOp::DEEP_COPY_ALL);
+                    // Configure it.
+                    //!!this->tileTheme->setFaceId(6, leftTile, texCoordStartIndex);
+                    // Move it to the left.
+                    auto leftTransform = new osg::MatrixTransform;
+                    leftTransform->addChild(leftTile);
+                    scene::setSimplePosition(leftTransform, {-3, 0, 0});
+                    // Add it to the scene.
+                    this->tileScene->addChild(leftTransform);
+            
+                    // Create one more tile.
+                    auto rightTile = new osg::Geode(*tile, osg::CopyOp::DEEP_COPY_ALL);
+                    // Configure it.
+                    //!!this->tileTheme->setFaceId(3, rightTile, texCoordStartIndex);
+                    // Move it to the right.
+                    auto rightTransform = new osg::MatrixTransform;
+                    rightTransform->addChild(rightTile);
+                    scene::setSimplePosition(rightTransform, {3, 0, 0});
+                    // Add it to the scene.
+                    this->tileScene->addChild(rightTransform);
+                }
+                void setupTexture()
+                {
+                    // Create resources.
+                    resource::Resource shaderFrag("shaders", "ppl.frag", ppl_frag, ppl_frag_len);
+                    resource::Resource shaderVert("shaders", "ppl.vert", ppl_vert, ppl_vert_len);
+                    resource::Resource texRes(
+                        "textures",
+                        "tile-theme.png",
+                        tile_theme_png,
+                        tile_theme_png_len
+                    );
+            
+                    // Create shader program.
+                    auto prog =
+                        render::createShaderProgram(
+                            resource::string(shaderVert),
+                            resource::string(shaderFrag)
+                        );
+                    // Apply the program.
+                    auto material = this->tileScene->getOrCreateStateSet();
+                    material->setAttribute(prog);
+                    // Set texture image.
+                    auto texture = resource::createTexture(texRes);
+                    material->setTextureAttributeAndModes(0, texture);
+                    material->addUniform(new osg::Uniform("image", 0));
+                }
+            // Example+TileThemeTest End
             // Example+VBO Start
             private:
                 void setupSceneVBO()

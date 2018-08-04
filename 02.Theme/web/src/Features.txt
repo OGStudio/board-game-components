@@ -1,8 +1,8 @@
 # main
 Application
 Application+frame+Reporting
-Application+run
-Application+setupWindow-desktop
+Application+handleEvent-web
+Application+setupWindow-embedded
 Application+Logging
 Application+Rendering
 
@@ -14,8 +14,9 @@ Example+TileTheme
 Example+TileThemeTest
 Example+StaticPluginOSG
 Example+StaticPluginPNG
+Example+VBO
 
-main-desktop
+main-web
 
 # core
 Reporter
@@ -41,10 +42,10 @@ ResourceStreamBuffer
 
 # render
 MC_RENDER_TILE_THEME_LOG
-createGraphicsContext-desktop
 createShaderProgram
 setupCamera
 TileTheme
+VBOSetupVisitor
 
 # scene
 degreesToQuaternion

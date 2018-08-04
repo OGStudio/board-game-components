@@ -17,6 +17,7 @@ private:
     osg::ref_ptr<osg::MatrixTransform> tileScene;
     void setupTileThemeTest()
     {
+        MC_MAIN_EXAMPLE_LOG("setupTileThemeTest");
         // Create tile scene to host tiles.
         this->tileScene = new osg::MatrixTransform;
         this->scene->addChild(this->tileScene);
@@ -48,14 +49,14 @@ private:
         const int texCoordStartIndex = 20;
 
         // Configure tile.
-        this->tileTheme->setFaceId(0, tile, texCoordStartIndex);
+        //!!this->tileTheme->setFaceId(0, tile, texCoordStartIndex);
         // Add it to the scene.
         this->tileScene->addChild(tile);
 
         // Create another tile.
         auto leftTile = new osg::Geode(*tile, osg::CopyOp::DEEP_COPY_ALL);
         // Configure it.
-        this->tileTheme->setFaceId(6, leftTile, texCoordStartIndex);
+        //!!this->tileTheme->setFaceId(6, leftTile, texCoordStartIndex);
         // Move it to the left.
         auto leftTransform = new osg::MatrixTransform;
         leftTransform->addChild(leftTile);
@@ -66,7 +67,7 @@ private:
         // Create one more tile.
         auto rightTile = new osg::Geode(*tile, osg::CopyOp::DEEP_COPY_ALL);
         // Configure it.
-        this->tileTheme->setFaceId(3, rightTile, texCoordStartIndex);
+        //!!this->tileTheme->setFaceId(3, rightTile, texCoordStartIndex);
         // Move it to the right.
         auto rightTransform = new osg::MatrixTransform;
         rightTransform->addChild(rightTile);
