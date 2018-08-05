@@ -14,9 +14,6 @@ ADD_DEFINITIONS("-std=c++11")
 INCLUDE_DIRECTORIES(src)
 # Reference resource headers.
 INCLUDE_DIRECTORIES(${OMC_DIR}/data)
-
-            INCLUDE_DIRECTORIES(${OSGCPE_DIR}/data)
-
 # Create executable.
 ADD_EXECUTABLE(mc02-theme src/main.cpp)
 # Link executable with libraries.
