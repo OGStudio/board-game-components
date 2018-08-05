@@ -55,8 +55,8 @@ freely, subject to the following restrictions:
 
 // Example+TileTheme End
 // Example+TileThemeTest Start
-#include "ppl.frag.h"
-#include "ppl.vert.h"
+#include "ppl-theme.frag.h"
+#include "ppl-theme.vert.h"
 #include "tile-low.osgt.h"
 #include "tile-theme.png.h"
 #include "resource.h"
@@ -371,7 +371,6 @@ struct Example
                 osg::ref_ptr<osg::MatrixTransform> tileScene;
                 void setupTileThemeTest()
                 {
-                    MC_MAIN_EXAMPLE_LOG("setupTileThemeTest");
                     // Create tile scene to host tiles.
                     this->tileScene = new osg::MatrixTransform;
                     this->scene->addChild(this->tileScene);
@@ -400,7 +399,7 @@ struct Example
                         return;
                     }
                     // This specific model has four face texture coordinates at 20th position.
-                    const int texCoordStartIndex = 20;
+                    //const int texCoordStartIndex = 20;
             
                     // Configure tile.
                     //!!this->tileTheme->setFaceId(0, tile, texCoordStartIndex);
@@ -432,8 +431,8 @@ struct Example
                 void setupTexture()
                 {
                     // Create resources.
-                    resource::Resource shaderFrag("shaders", "ppl.frag", ppl_frag, ppl_frag_len);
-                    resource::Resource shaderVert("shaders", "ppl.vert", ppl_vert, ppl_vert_len);
+                    resource::Resource shaderFrag("shaders", "ppl-theme.frag", ppl_theme_frag, ppl_theme_frag_len);
+                    resource::Resource shaderVert("shaders", "ppl-theme.vert", ppl_theme_vert, ppl_theme_vert_len);
                     resource::Resource texRes(
                         "textures",
                         "tile-theme.png",

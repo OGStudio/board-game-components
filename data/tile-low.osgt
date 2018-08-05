@@ -2,15 +2,7 @@
 #Version 92
 #Generator osgexport 0.13.0
 
-osg::Group {
-  UniqueID 14
-  Name "Root"
-  Children 1 {
-    osg::MatrixTransform {
-      UniqueID 10
-      Name "Cube"
-      Children 1 {
-        osg::Geode {
+osg::Geode {
           UniqueID 13
           Name "GeodeCube.001"
           Drawables 1 {
@@ -193,13 +185,4 @@ osg::Group {
             }
           }
         }
-      }
-      Matrix {
-        1.00000 0.00000 0.00000 0.00000
-        0.00000 1.00000 0.00000 0.00000
-        0.00000 0.00000 1.00000 0.00000
-        0.00000 0.00000 0.00000 1.00000
-      }
-    }
-  }
-}
+      
