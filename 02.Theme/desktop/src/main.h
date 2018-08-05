@@ -290,13 +290,18 @@ struct Example
             // Example+TileThemeTest Start
             private:
                 osg::ref_ptr<osg::MatrixTransform> tileScene;
+                osg::ref_ptr<osg::StateSet> normalMaterial;
+                osg::ref_ptr<osg::StateSet> selectedMaterial;
                 void setupTileThemeTest()
                 {
                     // Create tile scene to host tiles.
                     this->tileScene = new osg::MatrixTransform;
                     this->scene->addChild(this->tileScene);
-                    // Setup single texture atlas for the tile scene.
-                    this->setupTexture();
+            
+                    this->setupMaterials();
+                    // Apply normal state material to the whole scene.
+                    this->tileScene->setStateSet(this->normalMaterial);
+            
                     // Rotate the tile scene to have a better view.
                     scene::setSimpleRotation(this->tileScene, {60, 0, 0});
             
@@ -337,6 +342,8 @@ struct Example
                     scene::setSimplePosition(leftTransform, {-3, 0, 0});
                     // Add it to the scene.
                     this->tileScene->addChild(leftTransform);
+                    // Assign selected state material to the left tile.
+                    leftTile->setStateSet(this->selectedMaterial);
             
                     // Create one more tile.
                     auto rightTile = new osg::Geode(*tile, osg::CopyOp::DEEP_COPY_ALL);
@@ -349,11 +356,21 @@ struct Example
                     // Add it to the scene.
                     this->tileScene->addChild(rightTransform);
                 }
-                void setupTexture()
+                void setupMaterials()
                 {
                     // Create resources.
-                    resource::Resource shaderFrag("shaders", "ppl-theme.frag", ppl_theme_frag, ppl_theme_frag_len);
-                    resource::Resource shaderVert("shaders", "ppl-theme.vert", ppl_theme_vert, ppl_theme_vert_len);
+                    resource::Resource shaderFrag(
+                        "shaders",
+                        "ppl-theme.frag",
+                        ppl_theme_frag,
+                        ppl_theme_frag_len
+                    );
+                    resource::Resource shaderVert(
+                        "shaders",
+                        "ppl-theme.vert",
+                        ppl_theme_vert,
+                        ppl_theme_vert_len
+                    );
                     resource::Resource texRes(
                         "textures",
                         "tile-theme.png",
@@ -367,13 +384,22 @@ struct Example
                             resource::string(shaderVert),
                             resource::string(shaderFrag)
                         );
-                    // Apply the program.
-                    auto material = this->tileScene->getOrCreateStateSet();
-                    material->setAttribute(prog);
-                    // Set texture image.
+                    // Create texture.
                     auto texture = resource::createTexture(texRes);
-                    material->setTextureAttributeAndModes(0, texture);
-                    material->addUniform(new osg::Uniform("image", 0));
+            
+                    // Create normal state material.
+                    this->normalMaterial = new osg::StateSet;
+                    this->normalMaterial->setAttribute(prog);
+                    this->normalMaterial->setTextureAttributeAndModes(0, texture);
+                    this->normalMaterial->addUniform(new osg::Uniform("image", 0));
+                    this->normalMaterial->addUniform(new osg::Uniform("isSelected", false));
+            
+                    // Create selected state material.
+                    this->selectedMaterial = new osg::StateSet;
+                    this->selectedMaterial->setAttribute(prog);
+                    this->selectedMaterial->setTextureAttributeAndModes(0, texture);
+                    this->selectedMaterial->addUniform(new osg::Uniform("image", 0));
+                    this->selectedMaterial->addUniform(new osg::Uniform("isSelected", true));
                 }
             // Example+TileThemeTest End
 // Example Start

@@ -16,6 +16,8 @@ varying vec2 selectedStateTexCoord;
 
 // Image to texture with.
 uniform sampler2D image;
+// If we want selected texture coordinates or normal ones.
+uniform bool isSelected;
 
 float lambertianReflectanceStrength(vec3 position, vec3 lightPosition)
 {
@@ -34,9 +36,11 @@ void main()
 {
     //vec2 pos = faceTexCoord;
     
-    // Take normal state color as the base one.
-    // TODO: Take selected state when selected?
-    vec3 color = texture2D(image, normalStateTexCoord).rgb;
+    // Take normal or selected state color as the base one.
+    vec3 color =
+        isSelected ?
+        texture2D(image, selectedStateTexCoord).rgb :
+        texture2D(image, normalStateTexCoord).rgb;
 
     // Mix the base color with face one if face color is not transparent.
     vec4 faceColor = texture2D(image, faceTexCoord);
