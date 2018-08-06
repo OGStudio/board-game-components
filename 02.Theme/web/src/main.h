@@ -354,12 +354,17 @@ struct Example
             private:
                 render::TileTheme *tileTheme;
                 const osg::Vec2 textureSize = {1024, 2048};
-                const osg::Vec2 tileFaceSize = {200, 300};
+                const osg::Vec2 tileFaceSize = {160, 240};
+                const render::TileTheme::Indices faceIndices = {15, 23, 16, 17};
             
                 void setupTileTheme()
                 {
-                    // TODO Specify start/end indices based on model. Or just indices.
-                    this->tileTheme = new render::TileTheme(textureSize, tileFaceSize);
+                    this->tileTheme =
+                        new render::TileTheme(
+                            this->textureSize,
+                            this->tileFaceSize,
+                            this->faceIndices
+                        );
                 }
                 void tearTileThemeDown()
                 {
@@ -403,18 +408,16 @@ struct Example
                         );
                         return;
                     }
-                    // This specific model has four face texture coordinates at 20th position.
-                    //const int texCoordStartIndex = 20;
             
                     // Configure tile.
-                    //!!this->tileTheme->setFaceId(0, tile, texCoordStartIndex);
+                    this->tileTheme->setFaceId(0, tile);
                     // Add it to the scene.
                     this->tileScene->addChild(tile);
             
                     // Create another tile.
                     auto leftTile = new osg::Geode(*tile, osg::CopyOp::DEEP_COPY_ALL);
                     // Configure it.
-                    //!!this->tileTheme->setFaceId(6, leftTile, texCoordStartIndex);
+                    this->tileTheme->setFaceId(6, leftTile);
                     // Move it to the left.
                     auto leftTransform = new osg::MatrixTransform;
                     leftTransform->addChild(leftTile);
@@ -427,7 +430,7 @@ struct Example
                     // Create one more tile.
                     auto rightTile = new osg::Geode(*tile, osg::CopyOp::DEEP_COPY_ALL);
                     // Configure it.
-                    //!!this->tileTheme->setFaceId(3, rightTile, texCoordStartIndex);
+                    this->tileTheme->setFaceId(3, rightTile);
                     // Move it to the right.
                     auto rightTransform = new osg::MatrixTransform;
                     rightTransform->addChild(rightTile);

@@ -49,18 +49,16 @@ private:
             );
             return;
         }
-        // This specific model has four face texture coordinates at 20th position.
-        //const int texCoordStartIndex = 20;
 
         // Configure tile.
-        //!!this->tileTheme->setFaceId(0, tile, texCoordStartIndex);
+        this->tileTheme->setFaceId(0, tile);
         // Add it to the scene.
         this->tileScene->addChild(tile);
 
         // Create another tile.
         auto leftTile = new osg::Geode(*tile, osg::CopyOp::DEEP_COPY_ALL);
         // Configure it.
-        //!!this->tileTheme->setFaceId(6, leftTile, texCoordStartIndex);
+        this->tileTheme->setFaceId(6, leftTile);
         // Move it to the left.
         auto leftTransform = new osg::MatrixTransform;
         leftTransform->addChild(leftTile);
@@ -73,7 +71,7 @@ private:
         // Create one more tile.
         auto rightTile = new osg::Geode(*tile, osg::CopyOp::DEEP_COPY_ALL);
         // Configure it.
-        //!!this->tileTheme->setFaceId(3, rightTile, texCoordStartIndex);
+        this->tileTheme->setFaceId(3, rightTile);
         // Move it to the right.
         auto rightTransform = new osg::MatrixTransform;
         rightTransform->addChild(rightTile);
