@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# This script strips osgt files (produced by osgexport)
+# of unnecessary node hierarchy, leaving only osg::Geode.
+
 fileName=$1
 
 if [ -z "$fileName" ]; then

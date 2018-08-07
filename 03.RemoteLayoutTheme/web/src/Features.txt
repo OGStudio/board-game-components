@@ -18,6 +18,9 @@ Example+VBO
 
 main-web
 
+MC_MAIN_LOG
+main+Arguments
+
 # core
 Reporter
 

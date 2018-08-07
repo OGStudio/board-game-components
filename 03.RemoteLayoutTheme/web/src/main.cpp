@@ -53,6 +53,14 @@ void loop()
 
 int main(int argc, char *argv[])
 {
+    // main+Arguments Start
+    // Print all arguments.
+    for (auto i = 0; i < argc; ++i)
+    {
+        MC_MAIN_LOG("id: '%d' argument: '%s'", i, argv[i]);
+    }
+    
+    // main+Arguments End
     // main-web Start
     // Make sure SDL is working.
     if (SDL_Init(SDL_INIT_VIDEO) < 0)

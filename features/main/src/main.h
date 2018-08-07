@@ -37,6 +37,7 @@ freely, subject to the following restrictions:
 // FEATURE Example+TileThemeTest/Include
 // FEATURE Example+VBO/Include
 
+// FEATURE MC_MAIN_LOG/Impl
 // FEATURE MC_MAIN_EXAMPLE_LOG/Impl
 
 // FEATURE Example+StaticPluginImageIO/Impl
