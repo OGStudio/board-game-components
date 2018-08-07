@@ -1,0 +1,53 @@
+# main
+Application
+Application+frame+Reporting
+Application+handleEvent-web
+Application+setupWindow-embedded
+Application+Logging
+Application+Rendering
+
+MC_MAIN_EXAMPLE_LOG
+Example
+Example+03
+Example+Scene
+Example+TileTheme
+Example+TileThemeTest
+Example+StaticPluginOSG
+Example+StaticPluginPNG
+Example+VBO
+
+main-web
+
+# core
+Reporter
+
+# log
+log-default
+logLevelToString
+logprintf
+Logger
+
+# format
+printfString
+
+# resource
+OSGCPE_RESOURCE_LOG
+createTexture
+extension
+node
+setTextureImage
+string
+Resource
+ResourceStreamBuffer
+
+# render
+MC_RENDER_TILE_THEME_LOG
+createShaderProgram
+setupCamera
+TileTheme
+VBOSetupVisitor
+
+# scene
+degreesToQuaternion
+setSimplePosition
+setSimpleRotation
