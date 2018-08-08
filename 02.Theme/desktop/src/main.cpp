@@ -33,7 +33,11 @@ using namespace mc;
 int main(int argc, char *argv[])
 {
     // main-desktop Start
-    auto example = new main::Example();
+    main::Example::Parameters parameters;
+    
+    // main-desktop End
+    // main-desktop Start
+    auto example = new main::Example(parameters);
     example->app->setupWindow(main::EXAMPLE_TITLE, 100, 100, 480, 320);
     
     // main-desktop End
@@ -41,6 +45,8 @@ int main(int argc, char *argv[])
     example->app->run();
     delete example;
     // main-desktop End
+ 
+
     return 0;
 }
 

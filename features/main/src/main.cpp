@@ -31,12 +31,16 @@ using namespace mc;
 
 int main(int argc, char *argv[])
 {
-    // FEATURE main+Arguments-web/Impl
-    // FEATURE main+Arguments-desktop/Impl
     // FEATURE main-desktop/Setup
-    // FEATURE main-web/Setup
+        // FEATURE main+Arguments-desktop/Impl
+    // FEATURE main-desktop/End
     // FEATURE main-desktop/Run
+ 
+    // FEATURE main-web/Setup
+        // FEATURE main+Arguments-web/Impl
+    // FEATURE main-web/End
     // FEATURE main-web/Run
+
     return 0;
 }
 

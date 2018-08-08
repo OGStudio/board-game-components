@@ -40,7 +40,6 @@ freely, subject to the following restrictions:
 // FEATURE MC_MAIN_LOG/Impl
 // FEATURE MC_MAIN_EXAMPLE_LOG/Impl
 
-// FEATURE Example+StaticPluginImageIO/Impl
 // FEATURE Example+StaticPluginOSG/Impl
 // FEATURE Example+StaticPluginPNG/Impl
 
@@ -76,11 +75,13 @@ namespace main
             // FEATURE Example+TileTheme/Setup
             // FEATURE Example+TileThemeTest/Setup
             // FEATURE Example+Layout/Setup
+            // FEATURE Example+RemoteLayoutTheme/Setup
             // FEATURE Example+VBO/Setup
 // FEATURE Example/TearDown
             // FEATURE Example+TileTheme/TearDown
 // FEATURE Example/Impl
             // FEATURE Example+Layout/Impl
+            // FEATURE Example+RemoteLayoutTheme/Impl
             // FEATURE Example+Scene/Impl
             // FEATURE Example+TileTheme/Impl
             // FEATURE Example+TileThemeTest/Impl

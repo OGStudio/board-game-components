@@ -89,6 +89,7 @@ std::string trimmedString(const std::string &s)
 }
 // trimmedString End
 
+
 } // namespace format
 } // namespace mc
 

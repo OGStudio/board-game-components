@@ -37,6 +37,9 @@ namespace format
 // FEATURE stringStartsWith/Impl
 // FEATURE trimmedString/Impl
 
+// FEATURE commandLineArgumentsToParameters/Impl
+// FEATURE urlQueryToParameters/Impl
+
 } // namespace format
 } // namespace mc
 

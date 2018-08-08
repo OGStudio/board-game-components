@@ -9,6 +9,7 @@ Application+Rendering
 MC_MAIN_EXAMPLE_LOG
 Example
 Example+03
+Example+RemoteLayoutTheme
 Example+Scene
 Example+TileTheme
 Example+TileThemeTest
@@ -16,9 +17,8 @@ Example+StaticPluginOSG
 Example+StaticPluginPNG
 Example+VBO
 
-main-web
-
 MC_MAIN_LOG
+main-web
 main+Arguments-web
 
 # core
@@ -31,8 +31,10 @@ logprintf
 Logger
 
 # format
+urlQueryToParameters
 printfString
 splitString
+stringStartsWith
 
 # resource
 OSGCPE_RESOURCE_LOG

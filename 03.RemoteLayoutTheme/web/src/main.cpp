@@ -53,30 +53,7 @@ void loop()
 
 int main(int argc, char *argv[])
 {
-    // main+Arguments-web Start
-    // The first argument (if present) under web
-    // contains all query parameters after `?` sign.
-    if (argc >= 2)
-    {
-        auto query = argv[1];
-        auto items = format::splitString(query, "&");
-    
-        for (auto item : items)
-        {
-            auto keyAndValue = format::splitString(item, "=");
-            if (keyAndValue.size() == 2)
-            {
-                auto key = keyAndValue[0];
-                auto value = keyAndValue[1];
-                MC_MAIN_LOG(
-                    "Argument key: '%s' value: '%s'",
-                    key.c_str(),
-                    value.c_str()
-                );
-            }
-        }
-    }
-    // main+Arguments-web End
+ 
     // main-web Start
     // Make sure SDL is working.
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -109,8 +86,14 @@ int main(int argc, char *argv[])
         return 1;
     }
     SDL_GL_CreateContext(window);
-    // Create example.
-    example = new main::Example;
+    main::Example::Parameters parameters;
+    
+    // main-web End
+        // main+Arguments-web Start
+        parameters = format::urlQueryToParameters(argc, argv);
+        // main+Arguments-web End
+    // main-web Start
+    example = new main::Example(parameters);
     example->app->setupWindow(width, height);
     
     // main-web End
@@ -118,6 +101,7 @@ int main(int argc, char *argv[])
     // Render asynchronously.
     emscripten_set_main_loop(loop, -1, 0);
     // main-web End
+
     return 0;
 }
 

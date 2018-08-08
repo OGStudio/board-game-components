@@ -76,6 +76,50 @@ std::vector<std::string> splitString(const std::string &s, const char *c)
     return result;
 }
 // splitString End
+// stringStartsWith Start
+//! Find prefix in the provided string.
+bool stringStartsWith(const std::string &s, const std::string &prefix)
+{
+    // Source: https://stackoverflow.com/a/8095127
+    // Topic: how to check string start in C++
+    return
+        (prefix.length() <= s.length()) &&
+        std::equal(prefix.begin(), prefix.end(), s.begin())
+        ;
+}
+// stringStartsWith End
+
+// urlQueryToParameters Start
+typedef std::map<std::string, std::string> Parameters;
+//! Convert query parameters starting after `?` that are in the form of `key=value` to parameters.
+Parameters urlQueryToParameters(
+    int argc,
+    char *argv[]
+) {
+    Parameters parameters;
+
+    // No query has been provided. Nothing to parse.
+    if (argc < 2)
+    {
+        return parameters;
+    }
+
+    auto query = argv[1];
+    auto options = format::splitString(query, "&");
+
+    for (auto option : options)
+    {
+        auto keyAndValue = format::splitString(option, "=");
+        if (keyAndValue.size() == 2)
+        {
+            auto key = keyAndValue[0];
+            auto value = keyAndValue[1];
+            parameters[key] = value;
+        }
+    }
+    return parameters;
+}
+// urlQueryToParameters End
 
 } // namespace format
 } // namespace mc

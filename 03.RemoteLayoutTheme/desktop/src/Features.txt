@@ -9,15 +9,15 @@ Application+Rendering
 MC_MAIN_EXAMPLE_LOG
 Example
 Example+03
+Example+RemoteLayoutTheme
 Example+Scene
 Example+TileTheme
 Example+TileThemeTest
 Example+StaticPluginOSG
 Example+StaticPluginPNG
 
-main-desktop
-
 MC_MAIN_LOG
+main-desktop
 main+Arguments-desktop
 
 # core
@@ -30,6 +30,7 @@ logprintf
 Logger
 
 # format
+commandLineArgumentsToParameters
 printfString
 splitString
 stringStartsWith

@@ -232,7 +232,9 @@ struct Example
 {
     Application *app;
 
-    Example()
+    typedef std::map<std::string, std::string> Parameters;
+
+    Example(const Parameters &parameters)
     {
         this->app = new Application(EXAMPLE_TITLE);
 
@@ -249,6 +251,10 @@ struct Example
             this->setupTileThemeTest();
             
             // Example+TileThemeTest End
+            // Example+RemoteLayoutTheme Start
+            this->setupRemoteLayoutTheme(parameters);
+            
+            // Example+RemoteLayoutTheme End
 // Example Start
     }
     ~Example()
@@ -264,6 +270,23 @@ struct Example
     }
 
 // Example End
+            // Example+RemoteLayoutTheme Start
+            private:
+                void setupRemoteLayoutTheme(const Parameters &parameters)
+                {
+                    for (auto parameter : parameters)
+                    {
+                        MC_MAIN_EXAMPLE_LOG(
+                            "parameter key '%s' value '%s'",
+                            parameter.first.c_str(),
+                            parameter.second.c_str()
+                        );
+                    }
+                    // TODO load remote layout
+                    // TODO load remote theme
+                    // TODO load local layout/theme when desktop
+                }
+            // Example+RemoteLayoutTheme End
             // Example+Scene Start
             private:
                 osg::ref_ptr<osg::MatrixTransform> scene;

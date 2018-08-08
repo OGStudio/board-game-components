@@ -53,6 +53,7 @@ void loop()
 
 int main(int argc, char *argv[])
 {
+ 
     // main-web Start
     // Make sure SDL is working.
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -85,8 +86,11 @@ int main(int argc, char *argv[])
         return 1;
     }
     SDL_GL_CreateContext(window);
-    // Create example.
-    example = new main::Example;
+    main::Example::Parameters parameters;
+    
+    // main-web End
+    // main-web Start
+    example = new main::Example(parameters);
     example->app->setupWindow(width, height);
     
     // main-web End
@@ -94,6 +98,7 @@ int main(int argc, char *argv[])
     // Render asynchronously.
     emscripten_set_main_loop(loop, -1, 0);
     // main-web End
+
     return 0;
 }
 

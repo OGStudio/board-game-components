@@ -32,32 +32,15 @@ using namespace mc;
 
 int main(int argc, char *argv[])
 {
-    // main+Arguments-desktop Start
-    // Print all arguments.
-    for (auto i = 1; i < argc; ++i)
-    {
-        auto argument = std::string(argv[i]);
-        if (format::stringStartsWith(argument, "--"))
-        {
-            // Skip the dashes.
-            auto option = argument.substr(2);
-            auto keyAndValue = format::splitString(option, "=");
-            if (keyAndValue.size() == 2)
-            {
-                auto key = keyAndValue[0];
-                auto value = keyAndValue[1];
-                MC_MAIN_LOG(
-                    "Argument key: '%s' value: '%s'",
-                    key.c_str(),
-                    value.c_str()
-                );
-            }
-    
-        }
-    }
-    // main+Arguments-desktop End
     // main-desktop Start
-    auto example = new main::Example();
+    main::Example::Parameters parameters;
+    
+    // main-desktop End
+        // main+Arguments-desktop Start
+        parameters = format::commandLineArgumentsToParameters(argc, argv);
+        // main+Arguments-desktop End
+    // main-desktop Start
+    auto example = new main::Example(parameters);
     example->app->setupWindow(main::EXAMPLE_TITLE, 100, 100, 480, 320);
     
     // main-desktop End
@@ -65,6 +48,8 @@ int main(int argc, char *argv[])
     example->app->run();
     delete example;
     // main-desktop End
+ 
+
     return 0;
 }
 
