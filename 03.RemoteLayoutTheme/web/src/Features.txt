@@ -19,7 +19,7 @@ Example+VBO
 main-web
 
 MC_MAIN_LOG
-main+Arguments
+main+Arguments-web
 
 # core
 Reporter
@@ -32,6 +32,7 @@ Logger
 
 # format
 printfString
+splitString
 
 # resource
 OSGCPE_RESOURCE_LOG

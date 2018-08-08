@@ -53,14 +53,30 @@ void loop()
 
 int main(int argc, char *argv[])
 {
-    // main+Arguments Start
-    // Print all arguments.
-    for (auto i = 0; i < argc; ++i)
+    // main+Arguments-web Start
+    // The first argument (if present) under web
+    // contains all query parameters after `?` sign.
+    if (argc >= 2)
     {
-        MC_MAIN_LOG("id: '%d' argument: '%s'", i, argv[i]);
-    }
+        auto query = argv[1];
+        auto items = format::splitString(query, "&");
     
-    // main+Arguments End
+        for (auto item : items)
+        {
+            auto keyAndValue = format::splitString(item, "=");
+            if (keyAndValue.size() == 2)
+            {
+                auto key = keyAndValue[0];
+                auto value = keyAndValue[1];
+                MC_MAIN_LOG(
+                    "Argument key: '%s' value: '%s'",
+                    key.c_str(),
+                    value.c_str()
+                );
+            }
+        }
+    }
+    // main+Arguments-web End
     // main-web Start
     // Make sure SDL is working.
     if (SDL_Init(SDL_INIT_VIDEO) < 0)

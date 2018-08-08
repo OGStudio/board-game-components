@@ -14,4 +14,4 @@ fi
 #   `Module["arguments"]=[]`
 # with
 #   `Module["arguments"]=[window.location.search]`
-sed 's|Module\["arguments"\]=\[\]|Module\["arguments"\]=\[window.location.search\]|' $fileName
+sed 's|Module\["arguments"\]=\[\]|Module\["arguments"\]=\[window.location.search.substr(1)\]|' $fileName
