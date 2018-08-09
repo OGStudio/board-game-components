@@ -29,15 +29,15 @@ freely, subject to the following restrictions:
 #include <osgDB/Registry>
 
 // node End
-// setTextureImage Start
+// setTextureImage-istream Start
 #include <osg/Texture2D>
 #include <osgDB/Registry>
 
-// setTextureImage End
-// createTexture Start
+// setTextureImage-istream End
+// createTexture-istream Start
 #include <osg/Texture2D>
 
-// createTexture End
+// createTexture-istream End
 
 // OSGCPE_RESOURCE_LOG Start
 #include "log.h"
@@ -180,36 +180,21 @@ std::string string(const Resource &resource)
     return std::string(contents, resource.len);
 }
 // string End
-// setTextureImage Start
-//! Set image for texture.
+// setTextureImage-istream Start
+//! Set image for texture from std::istream.
 
 // \param texture Texture to set image for.
-// \param resource Resource to take image from.
-// \param ext (optional) If extension is present it won't be autodetected from the resource's name
+// \param in Input stream to take image from.
+// \param ext Extension to find suitable plugin.
 void setTextureImage(
     osg::Texture2D *texture,
-    const Resource &resource,
-    const std::string ext = ""
+    std::istream &in,
+    const std::string ext
 ) {
-    // Get extension from resource's name if extension is not specified.
-    std::string ex = ext.empty() ?  extension(resource) : ext;
-    // Do nothing if extension is absent.
-    if (ex.empty())
-    {
-        OSGCPE_RESOURCE_LOG(
-            "ERROR Could not read image of '%s/%s' resource "
-            "because extension is absent",
-            resource.group.c_str(),
-            resource.name.c_str()
-        );
-        return;
-    }
     auto reader =
-        osgDB::Registry::instance()->getReaderWriterForExtension(ex);
+        osgDB::Registry::instance()->getReaderWriterForExtension(ext);
     if (reader)
     {
-        ResourceStreamBuffer buf(resource);
-        std::istream in(&buf);
         auto result = reader->readImage(in, 0);
         if (result.success())
         {
@@ -220,37 +205,37 @@ void setTextureImage(
         else
         {
             OSGCPE_RESOURCE_LOG(
-                "ERROR Could not read image of '%s/%s' resource from buffer.",
-                resource.group.c_str(),
-                resource.name.c_str()
+                "ERROR Could not read image of 'TODO' resource from buffer."//,
+                //resource.group.c_str(),
+                //resource.name.c_str()
             );
         }
     }
     else
     {
         OSGCPE_RESOURCE_LOG(
-            "ERROR Could not read image of '%s/%s' resource because "
+            "ERROR Could not read image of 'TODO' resource because "
             "image reader for extension '%s' is absent.",
-            resource.group.c_str(),
-            resource.name.c_str(),
-            ex.c_str()
+            //resource.group.c_str(),
+            //resource.name.c_str(),
+            ext.c_str()
         );
     }
 }
-// setTextureImage End
-// createTexture Start
+// setTextureImage-istream End
+// createTexture-istream Start
 //! Create texture from a resource.
-osg::Texture2D *createTexture(const Resource &resource)
+osg::Texture2D *createTexture(std::istream &in)
 {
     osg::ref_ptr<osg::Texture2D> tex = new osg::Texture2D;
-    setTextureImage(tex, resource);
+    setTextureImage(tex, in, "png");
     tex->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
     tex->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
     tex->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
     tex->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
     return tex.release();
 }
-// createTexture End
+// createTexture-istream End
 
 } // namespace resource
 } // namespace mc

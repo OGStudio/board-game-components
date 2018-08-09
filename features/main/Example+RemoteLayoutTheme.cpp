@@ -95,14 +95,28 @@ private:
     void loadRemoteTheme(const std::string &url)
     {
         MC_MAIN_EXAMPLE_LOG("Loading theme from '%s'", url.c_str());
-
+        auto success = [&](std::string response) {
+            // Set texture to materials.
+            std::istringstream in(response);
+            auto texture = resource::createTexture(in);
+            this->normalMaterial->setTextureAttributeAndModes(0, texture);
+            this->selectedMaterial->setTextureAttributeAndModes(0, texture);
+            MC_MAIN_EXAMPLE_LOG("Successfully loaded theme");
+        };
+        auto failure = [&](std::string reason) {
+            MC_MAIN_EXAMPLE_LOG(
+                "ERROR Could not load theme: %s",
+                reason.c_str()
+            );
+        };
+        this->app->httpClient->get(url, success, failure);
     }
     void createTiles(const layout::Layout &layout)
     {
         for (auto pos : layout.positions)
         {
             float z = pos.x();
-            float y = pos.y();
+            float y = pos.y() * 1.5;
             float x = pos.z();
             auto tile = new osg::Geode(*this->tile, osg::CopyOp::DEEP_COPY_ALL);
             auto node = new osg::MatrixTransform;
@@ -145,8 +159,4 @@ private:
         this->selectedMaterial->setAttribute(prog);
         this->selectedMaterial->addUniform(new osg::Uniform("image", 0));
         this->selectedMaterial->addUniform(new osg::Uniform("isSelected", true));
-
-        // TODO Set texture when loaded.
-        //this->normalMaterial->setTextureAttributeAndModes(0, texture);
-        //this->selectedMaterial->setTextureAttributeAndModes(0, texture);
     }

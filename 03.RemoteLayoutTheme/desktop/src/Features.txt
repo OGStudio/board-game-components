@@ -47,10 +47,10 @@ trimmedString
 
 # resource
 OSGCPE_RESOURCE_LOG
-createTexture
+createTexture-istream
 extension
 node
-setTextureImage
+setTextureImage-istream
 string
 Resource
 ResourceStreamBuffer
