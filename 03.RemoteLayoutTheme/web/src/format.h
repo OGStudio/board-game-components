@@ -29,6 +29,10 @@ freely, subject to the following restrictions:
 #include <cstdarg>
 
 // printfString End
+// urlQueryToParameters Start
+#include <map>
+
+// urlQueryToParameters End
 
 namespace mc
 {

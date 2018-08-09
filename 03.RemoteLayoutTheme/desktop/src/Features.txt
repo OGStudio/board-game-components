@@ -3,6 +3,8 @@ Application
 Application+frame+Reporting
 Application+run
 Application+setupWindow-desktop
+Application+HTTPClient
+Application+HTTPClientProcessor
 Application+Logging
 Application+Rendering
 
@@ -12,7 +14,6 @@ Example+03
 Example+RemoteLayoutTheme
 Example+Scene
 Example+TileTheme
-Example+TileThemeTest
 Example+StaticPluginOSG
 Example+StaticPluginPNG
 
@@ -22,6 +23,14 @@ main+Arguments-desktop
 
 # core
 Reporter
+
+# layout
+MC_LAYOUT_LOG
+Layout
+KMahjonggLayout
+kmahjonggLayoutFieldsToPositions
+linesToKMahjonggLayout
+parseLayout
 
 # log
 log-default
@@ -34,6 +43,7 @@ commandLineArgumentsToParameters
 printfString
 splitString
 stringStartsWith
+trimmedString
 
 # resource
 OSGCPE_RESOURCE_LOG
@@ -56,3 +66,10 @@ TileTheme
 degreesToQuaternion
 setSimplePosition
 setSimpleRotation
+
+# network
+HTTPClient
+HTTPClientProcessor
+HTTPRequest
+HTTPRequestProcessorMongoose
+mongoose

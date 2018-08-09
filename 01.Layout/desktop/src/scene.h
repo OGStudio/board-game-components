@@ -31,6 +31,10 @@ freely, subject to the following restrictions:
 #include <osg/ShapeDrawable>
 
 // createShape End
+// setSimplePosition Start
+#include <osg/MatrixTransform>
+
+// setSimplePosition End
 
 namespace mc
 {

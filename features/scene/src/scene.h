@@ -27,6 +27,7 @@ freely, subject to the following restrictions:
 
 // FEATURE createShape/Include
 // FEATURE simplePosition/Include
+// FEATURE setSimplePosition/Include
 
 namespace mc
 {

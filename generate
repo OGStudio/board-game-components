@@ -36,11 +36,11 @@ FEATURE_DIRS=(
     "/layout"
     "/log"
     "/main"
+    "/network"
     "/render"
     "/resource"
     "/scene"
 )
-#    "/network"
 #    "/debug"
 #    "/input"
 

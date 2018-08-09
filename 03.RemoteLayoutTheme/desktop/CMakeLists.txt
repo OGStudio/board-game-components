@@ -5,6 +5,9 @@ SET(OMC_DIR "${CMAKE_SOURCE_DIR}/../../../ogs-mahjong-components")
 # Include common CMakeLists.txt.
 INCLUDE(${CMAKE_SOURCE_DIR}/../CMakeLists.txt)
 
+# Build mongoose statically.
+INCLUDE(${OSGCPE_DIR}/libs/mongoose/CMakeLists.txt)
+
 # Reference sources.
 INCLUDE_DIRECTORIES(src)
 # Create executable.
@@ -18,10 +21,10 @@ ELSE ()
     SET(IMAGE_LINK_LIBS "osgdb_png" "png")
 ENDIF ()
 
-
 # Link executable with libraries.
 TARGET_LINK_LIBRARIES(
     ${COMPONENT_BINARY_NAME}
     ${OMC_LINK_LIBS}
     ${IMAGE_LINK_LIBS}
+    mongoose
 )

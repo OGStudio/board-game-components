@@ -28,10 +28,12 @@ freely, subject to the following restrictions:
 // FEATURE Application+frame+Reporting/Include
 // FEATURE Application+handleEvent-web/Include
 
+// FEATURE Application+HTTPClient/Include
 // FEATURE Application+Logging/Include
 // FEATURE Application+Rendering/Include
 
 // FEATURE Example+Layout/Include
+// FEATURE Example+RemoteLayoutTheme/Include
 // FEATURE Example+Scene/Include
 // FEATURE Example+TileTheme/Include
 // FEATURE Example+TileThemeTest/Include
@@ -51,19 +53,25 @@ namespace main
 // FEATURE Application/Setup
             // FEATURE Application+Logging/Setup
             // FEATURE Application+Rendering/Setup
+            // FEATURE Application+HTTPClient/Setup
+            // FEATURE Application+HTTPClientProcessor/Setup
 // FEATURE Application/TearDown
+            // FEATURE Application+HTTPClientProcessor/TearDown
+            // FEATURE Application+HTTPClient/TearDown
             // FEATURE Application+Rendering/TearDown
             // FEATURE Application+Logging/TearDown
 // FEATURE Application/Impl
-            // FEATURE Application+frame+Reporting/Impl
-            // FEATURE Application+handleEvent-web/Impl
-            // FEATURE Application+run/Impl
-            // FEATURE Application+setupWindow-desktop/Impl
-            // FEATURE Application+setupWindow-embedded/Impl
-            // FEATURE Application+setupWindow-ios/Impl
+    // FEATURE Application+frame+Reporting/Impl
+    // FEATURE Application+handleEvent-web/Impl
+    // FEATURE Application+run/Impl
+    // FEATURE Application+setupWindow-desktop/Impl
+    // FEATURE Application+setupWindow-embedded/Impl
+    // FEATURE Application+setupWindow-ios/Impl
 
-            // FEATURE Application+Logging/Impl
-            // FEATURE Application+Rendering/Impl
+    // FEATURE Application+HTTPClient/Impl
+    // FEATURE Application+HTTPClientProcessor/Impl
+    // FEATURE Application+Logging/Impl
+    // FEATURE Application+Rendering/Impl
 // FEATURE Application/End
 
 // FEATURE Example+01/Title
@@ -71,21 +79,21 @@ namespace main
 // FEATURE Example+03/Title
 
 // FEATURE Example/Setup
-            // FEATURE Example+Scene/Setup
-            // FEATURE Example+TileTheme/Setup
-            // FEATURE Example+TileThemeTest/Setup
-            // FEATURE Example+Layout/Setup
-            // FEATURE Example+RemoteLayoutTheme/Setup
-            // FEATURE Example+VBO/Setup
+        // FEATURE Example+Scene/Setup
+        // FEATURE Example+TileTheme/Setup
+        // FEATURE Example+TileThemeTest/Setup
+        // FEATURE Example+Layout/Setup
+        // FEATURE Example+RemoteLayoutTheme/Setup
+        // FEATURE Example+VBO/Setup
 // FEATURE Example/TearDown
-            // FEATURE Example+TileTheme/TearDown
+        // FEATURE Example+TileTheme/TearDown
 // FEATURE Example/Impl
-            // FEATURE Example+Layout/Impl
-            // FEATURE Example+RemoteLayoutTheme/Impl
-            // FEATURE Example+Scene/Impl
-            // FEATURE Example+TileTheme/Impl
-            // FEATURE Example+TileThemeTest/Impl
-            // FEATURE Example+VBO/Impl
+    // FEATURE Example+Layout/Impl
+    // FEATURE Example+RemoteLayoutTheme/Impl
+    // FEATURE Example+Scene/Impl
+    // FEATURE Example+TileTheme/Impl
+    // FEATURE Example+TileThemeTest/Impl
+    // FEATURE Example+VBO/Impl
 // FEATURE Example/End
 
 } // namespace main

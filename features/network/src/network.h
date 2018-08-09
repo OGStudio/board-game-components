@@ -22,28 +22,32 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef MAHJONG_COMPONENTS_FORMAT_H
-#define MAHJONG_COMPONENTS_FORMAT_H
+#ifndef MAHJONG_COMPONENTS_NETWORK_H
+#define MAHJONG_COMPONENTS_NETWORK_H
 
-// FEATURE printfString/Include
-// FEATURE commandLineArgumentsToParameters/Include
-// FEATURE urlQueryToParameters/Include
+// FEATURE fetch/Include
+// FEATURE mongoose/Include
+// FEATURE HTTPClient/Include
+// FEATURE HTTPRequest/Include
+// FEATURE HTTPRequestProcessorFetch/Include
+// FEATURE HTTPRequestProcessorMongoose/Include
 
 namespace mc
 {
-namespace format
+namespace network
 {
 
-// FEATURE printfString/Impl
-// FEATURE splitString/Impl
-// FEATURE stringStartsWith/Impl
-// FEATURE trimmedString/Impl
+// FEATURE HTTPRequest/Impl
+// FEATURE HTTPRequestProcessorFetch/Impl
+// FEATURE HTTPRequestProcessorFetch/TypeDef
+// FEATURE HTTPRequestProcessorMongoose/Impl
+// FEATURE HTTPRequestProcessorMongoose/TypeDef
 
-// FEATURE commandLineArgumentsToParameters/Impl
-// FEATURE urlQueryToParameters/Impl
+// FEATURE HTTPClient/Impl
+// FEATURE HTTPClientProcessor/Impl
 
-} // namespace format
+} // namespace network
 } // namespace mc
 
-#endif // MAHJONG_COMPONENTS_FORMAT_H
+#endif // MAHJONG_COMPONENTS_NETWORK_H
 

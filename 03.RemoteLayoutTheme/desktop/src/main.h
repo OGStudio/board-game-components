@@ -30,6 +30,10 @@ freely, subject to the following restrictions:
 
 // Application+frame+Reporting End
 
+// Application+HTTPClient Start
+#include "network.h"
+
+// Application+HTTPClient End
 // Application+Logging Start
 #include "log.h"
 
@@ -42,6 +46,17 @@ freely, subject to the following restrictions:
 
 // Application+Rendering End
 
+// Example+RemoteLayoutTheme Start
+#include "ppl-theme.frag.h"
+#include "ppl-theme.vert.h"
+#include "tile-low.osgt.h"
+#include "layout.h"
+#include "resource.h"
+#include "scene.h"
+
+#include <osg/MatrixTransform>
+
+// Example+RemoteLayoutTheme End
 // Example+Scene Start
 #include <osg/MatrixTransform>
 
@@ -50,18 +65,6 @@ freely, subject to the following restrictions:
 #include "render.h"
 
 // Example+TileTheme End
-// Example+TileThemeTest Start
-#include "ppl-theme.frag.h"
-#include "ppl-theme.vert.h"
-#include "tile-low.osgt.h"
-#include "tile-theme.png.h"
-#include "resource.h"
-
-#include "scene.h"
-
-#include <osg/MatrixTransform>
-
-// Example+TileThemeTest End
 
 // MC_MAIN_LOG Start
 #include "log.h"
@@ -122,12 +125,28 @@ class Application
             this->setupRendering();
             
             // Application+Rendering End
+            // Application+HTTPClient Start
+            this->setupHTTPClient();
+            
+            // Application+HTTPClient End
+            // Application+HTTPClientProcessor Start
+            this->setupHTTPClientProcessor();
+            
+            // Application+HTTPClientProcessor End
 // Application Start
         }
         ~Application()
         {
 
 // Application End
+            // Application+HTTPClientProcessor Start
+            this->tearHTTPClientProcessorDown();
+            
+            // Application+HTTPClientProcessor End
+            // Application+HTTPClient Start
+            this->tearHTTPClientDown();
+            
+            // Application+HTTPClient End
             // Application+Rendering Start
             this->tearRenderingDown();
             
@@ -140,85 +159,123 @@ class Application
         }
 
 // Application End
-            // Application+frame+Reporting Start
-            public:
-                core::Reporter frameReporter;
-                void frame()
-                {
-                    this->viewer->frame();
-                    this->frameReporter.report();
-                }
-            // Application+frame+Reporting End
-            // Application+run Start
-            public:
-                void run()
-                {
-                    while (!this->viewer->done())
-                    {
-                        this->frame();
-                    }
-                }
-            // Application+run End
-            // Application+setupWindow-desktop Start
-            public:
-                void setupWindow(
-                    const std::string &title,
-                    int x,
-                    int y,
-                    int width,
-                    int height
-                ) {
-                    osg::GraphicsContext *gc =
-                        render::createGraphicsContext(title, x, y, width, height);
-                    // Configure viewer's camera with FOVY and window size.
-                    osg::Camera *cam = this->viewer->getCamera();
-                    render::setupCamera(cam, gc, 30, width, height);
-                }
-            // Application+setupWindow-desktop End
+    // Application+frame+Reporting Start
+    public:
+        core::Reporter frameReporter;
+        void frame()
+        {
+            this->viewer->frame();
+            this->frameReporter.report();
+        }
+    // Application+frame+Reporting End
+    // Application+run Start
+    public:
+        void run()
+        {
+            while (!this->viewer->done())
+            {
+                this->frame();
+            }
+        }
+    // Application+run End
+    // Application+setupWindow-desktop Start
+    public:
+        void setupWindow(
+            const std::string &title,
+            int x,
+            int y,
+            int width,
+            int height
+        ) {
+            osg::GraphicsContext *gc =
+                render::createGraphicsContext(title, x, y, width, height);
+            // Configure viewer's camera with FOVY and window size.
+            osg::Camera *cam = this->viewer->getCamera();
+            render::setupCamera(cam, gc, 30, width, height);
+        }
+    // Application+setupWindow-desktop End
 
-            // Application+Logging Start
-            private:
-                log::Logger *logger;
-                void setupLogging(const std::string &appName)
-                {
-                    // Create custom logger.
-                    this->logger = new log::Logger(appName);
-                    // Provide the logger to OpenSceneGraph.
-                    osg::setNotifyHandler(this->logger);
-                    // Only accept notifications of Info level or higher
-                    // like warnings and errors.
-                    //osg::setNotifyLevel(osg::INFO);
-                    osg::setNotifyLevel(osg::WARN);
-                }
-                void tearLoggingDown()
-                {
-                    // Remove the logger from OpenSceneGraph.
-                    // This also destroys the logger: no need to deallocate it manually.
-                    osg::setNotifyHandler(0);
-                }
-            // Application+Logging End
-            // Application+Rendering Start
-            public:
-                void setScene(osg::Node *scene)
-                {
-                    this->viewer->setSceneData(scene);
-                }
-            private:
-                osgViewer::Viewer *viewer;
-                void setupRendering()
-                {
-                    // Create OpenSceneGraph viewer.
-                    this->viewer = new osgViewer::Viewer;
-                    // Use single thread: CRITICAL for mobile and web.
-                    this->viewer->setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
-                    // Create manipulator: CRITICAL for mobile and web.
-                    this->viewer->setCameraManipulator(new osgGA::TrackballManipulator);
-                }
-                void tearRenderingDown()
-                {
-                    delete this->viewer;
-                }
-            // Application+Rendering End
+    // Application+HTTPClient Start
+    public:
+        network::HTTPClient *httpClient;
+    private:
+        void setupHTTPClient()
+        {
+            this->httpClient = new network::HTTPClient;
+        }
+        void tearHTTPClientDown()
+        {
+            delete this->httpClient;
+        }
+    // Application+HTTPClient End
+    // Application+HTTPClientProcessor Start
+    public:
+        network::HTTPClientProcessor *httpClientProcessor;
+    private:
+        const std::string httpClientProcessorCallbackName = "HTTPClientProcessor";
+    
+        void setupHTTPClientProcessor()
+        {
+            this->httpClientProcessor = new network::HTTPClientProcessor(this->httpClient);
+            // Subscribe processor to be processed each frame.
+            this->frameReporter.addCallback(
+                [&] {
+                    this->httpClientProcessor->process();
+                },
+                this->httpClientProcessorCallbackName
+            );
+        }
+        void tearHTTPClientProcessorDown()
+        {
+            this->frameReporter.removeCallback(this->httpClientProcessorCallbackName);
+            delete this->httpClientProcessor;
+        }
+    // Application+HTTPClientProcessor End
+    // Application+Logging Start
+    private:
+        log::Logger *logger;
+        void setupLogging(const std::string &appName)
+        {
+            // Create custom logger.
+            this->logger = new log::Logger(appName);
+            // Provide the logger to OpenSceneGraph.
+            osg::setNotifyHandler(this->logger);
+            // Only accept notifications of Info level or higher
+            // like warnings and errors.
+            //osg::setNotifyLevel(osg::INFO);
+            osg::setNotifyLevel(osg::WARN);
+        }
+        void tearLoggingDown()
+        {
+            // Remove the logger from OpenSceneGraph.
+            // This also destroys the logger: no need to deallocate it manually.
+            osg::setNotifyHandler(0);
+        }
+    // Application+Logging End
+    // Application+Rendering Start
+    public:
+        void setScene(osg::Node *scene)
+        {
+            // Make sure we reset the scene upon setting the same scene again.
+            this->viewer->setSceneData(0);
+            this->viewer->setSceneData(scene);
+        }
+    private:
+        osgViewer::Viewer *viewer;
+        void setupRendering()
+        {
+            // Create OpenSceneGraph viewer.
+            this->viewer = new osgViewer::Viewer;
+            // Use single thread: CRITICAL for mobile and web.
+            this->viewer->setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
+            // Create manipulator: CRITICAL for mobile and web.
+            this->viewer->setCameraManipulator(new osgGA::TrackballManipulator);
+        }
+        void tearRenderingDown()
+        {
+            delete this->viewer;
+        }
+    // Application+Rendering End
 // Application Start
 };
 // Application End
@@ -239,211 +296,217 @@ struct Example
         this->app = new Application(EXAMPLE_TITLE);
 
 // Example End
-            // Example+Scene Start
-            this->setupScene();
-            
-            // Example+Scene End
-            // Example+TileTheme Start
-            this->setupTileTheme();
-            
-            // Example+TileTheme End
-            // Example+TileThemeTest Start
-            this->setupTileThemeTest();
-            
-            // Example+TileThemeTest End
-            // Example+RemoteLayoutTheme Start
-            this->setupRemoteLayoutTheme(parameters);
-            
-            // Example+RemoteLayoutTheme End
+        // Example+Scene Start
+        this->setupScene();
+        
+        // Example+Scene End
+        // Example+TileTheme Start
+        this->setupTileTheme();
+        
+        // Example+TileTheme End
+        // Example+RemoteLayoutTheme Start
+        this->setupRemoteLayoutTheme(parameters);
+        
+        // Example+RemoteLayoutTheme End
 // Example Start
     }
     ~Example()
     {
 
 // Example End
-            // Example+TileTheme Start
-            this->tearTileThemeDown();
-            
-            // Example+TileTheme End
+        // Example+TileTheme Start
+        this->tearTileThemeDown();
+        
+        // Example+TileTheme End
 // Example Start
         delete this->app;
     }
 
 // Example End
-            // Example+RemoteLayoutTheme Start
-            private:
-                void setupRemoteLayoutTheme(const Parameters &parameters)
+    // Example+RemoteLayoutTheme Start
+    private:
+        osg::ref_ptr<osg::MatrixTransform> tileScene;
+        osg::ref_ptr<osg::StateSet> normalMaterial;
+        osg::ref_ptr<osg::StateSet> selectedMaterial;
+        osg::ref_ptr<osg::Geode> tile;
+    
+        void setupRemoteLayoutTheme(const Parameters &parameters)
+        {
+            // Create tile scene to host tiles.
+            this->tileScene = new osg::MatrixTransform;
+            this->scene->addChild(this->tileScene);
+    
+            this->setupMaterials();
+            // Apply normal state material to the whole scene.
+            this->tileScene->setStateSet(this->normalMaterial);
+    
+            // Rotate the tile scene to have a better view.
+            scene::setSimpleRotation(this->tileScene, {60, 0, 0});
+    
+            // Load model with geode only.
+            resource::Resource res(
+                "models",
+                "tile-low.osgt",
+                tile_low_osgt,
+                tile_low_osgt_len
+            );
+            auto node = resource::node(res);
+            this->tile = reinterpret_cast<osg::Geode *>(node.get());
+            // Make sure tile is valid.
+            if (!this->tile)
+            {
+                MC_MAIN_EXAMPLE_LOG(
+                    "ERROR Could not load model '%s/%s'",
+                    res.group.c_str(),
+                    res.name.c_str()
+                );
+                return;
+            }
+    
+            // Load remote layout and/or theme.
+            for (auto parameter : parameters)
+            {
+                auto key = parameter.first;
+                auto value = parameter.second;
+                if (key == "layout")
                 {
-                    for (auto parameter : parameters)
-                    {
-                        MC_MAIN_EXAMPLE_LOG(
-                            "parameter key '%s' value '%s'",
-                            parameter.first.c_str(),
-                            parameter.second.c_str()
-                        );
-                    }
-                    // TODO load remote layout
-                    // TODO load remote theme
-                    // TODO load local layout/theme when desktop
+                    this->loadRemoteLayout(value);
                 }
-            // Example+RemoteLayoutTheme End
-            // Example+Scene Start
-            private:
-                osg::ref_ptr<osg::MatrixTransform> scene;
-                const std::string sceneSetupCallbackName = "SceneSetup";
-            
-                void setupScene()
+                else if (key == "theme")
                 {
-                    this->scene = new osg::MatrixTransform;
-            
-                    // Provide scene to application after the first frame
-                    // to let other components configure scene prior that event.
-                    this->app->frameReporter.addCallback(
-                        [&] {
-                            this->app->setScene(this->scene);
-                            // Unsubscribe from the rest of frame reports.
-                            this->app->frameReporter.removeCallback(
-                                this->sceneSetupCallbackName
-                            );
-                        },
+                    this->loadRemoteTheme(value);
+                }
+            }
+        }
+        void loadRemoteLayout(const std::string &url)
+        {
+            MC_MAIN_EXAMPLE_LOG("Loading layout from '%s'", url.c_str());
+            auto success = [&](std::string response) {
+                std::istringstream in(response);
+                layout::Layout layout;
+                if (layout::parseLayout(in, layout))
+                {
+                    this->createTiles(layout);
+                    // Reset scene.
+                    this->app->setScene(this->scene);
+                    MC_MAIN_EXAMPLE_LOG("Successfully loaded layout");
+                }
+                else
+                {
+                    MC_MAIN_EXAMPLE_LOG("ERROR Could not parse loaded layout");
+                }
+            };
+            auto failure = [&](std::string reason) {
+                MC_MAIN_EXAMPLE_LOG(
+                    "ERROR Could not load layout: %s",
+                    reason.c_str()
+                );
+            };
+            this->app->httpClient->get(url, success, failure);
+        }
+        void loadRemoteTheme(const std::string &url)
+        {
+            MC_MAIN_EXAMPLE_LOG("Loading theme from '%s'", url.c_str());
+    
+        }
+        void createTiles(const layout::Layout &layout)
+        {
+            for (auto pos : layout.positions)
+            {
+                float z = pos.x();
+                float y = pos.y();
+                float x = pos.z();
+                auto tile = new osg::Geode(*this->tile, osg::CopyOp::DEEP_COPY_ALL);
+                auto node = new osg::MatrixTransform;
+                node->addChild(tile);
+                this->tileScene->addChild(node);
+                scene::setSimplePosition(node, {x, y, z});
+            }
+        }
+        void setupMaterials()
+        {
+            // Create built-in resources.
+            resource::Resource shaderFrag(
+                "shaders",
+                "ppl-theme.frag",
+                ppl_theme_frag,
+                ppl_theme_frag_len
+            );
+            resource::Resource shaderVert(
+                "shaders",
+                "ppl-theme.vert",
+                ppl_theme_vert,
+                ppl_theme_vert_len
+            );
+    
+            // Create shader program.
+            auto prog =
+                render::createShaderProgram(
+                    resource::string(shaderVert),
+                    resource::string(shaderFrag)
+                );
+    
+            // Create normal state material.
+            this->normalMaterial = new osg::StateSet;
+            this->normalMaterial->setAttribute(prog);
+            this->normalMaterial->addUniform(new osg::Uniform("image", 0));
+            this->normalMaterial->addUniform(new osg::Uniform("isSelected", false));
+    
+            // Create selected state material.
+            this->selectedMaterial = new osg::StateSet;
+            this->selectedMaterial->setAttribute(prog);
+            this->selectedMaterial->addUniform(new osg::Uniform("image", 0));
+            this->selectedMaterial->addUniform(new osg::Uniform("isSelected", true));
+    
+            // TODO Set texture when loaded.
+            //this->normalMaterial->setTextureAttributeAndModes(0, texture);
+            //this->selectedMaterial->setTextureAttributeAndModes(0, texture);
+        }
+    // Example+RemoteLayoutTheme End
+    // Example+Scene Start
+    private:
+        osg::ref_ptr<osg::MatrixTransform> scene;
+        const std::string sceneSetupCallbackName = "SceneSetup";
+    
+        void setupScene()
+        {
+            this->scene = new osg::MatrixTransform;
+    
+            // Provide scene to application after the first frame
+            // to let other components configure scene prior that event.
+            this->app->frameReporter.addCallback(
+                [&] {
+                    this->app->setScene(this->scene);
+                    // Unsubscribe from the rest of frame reports.
+                    this->app->frameReporter.removeCallback(
                         this->sceneSetupCallbackName
                     );
-                }
-            // Example+Scene End
-            // Example+TileTheme Start
-            private:
-                render::TileTheme *tileTheme;
-                const osg::Vec2 textureSize = {1024, 2048};
-                const osg::Vec2 tileFaceSize = {160, 240};
-                const render::TileTheme::Indices faceIndices = {15, 23, 16, 17};
-            
-                void setupTileTheme()
-                {
-                    this->tileTheme =
-                        new render::TileTheme(
-                            this->textureSize,
-                            this->tileFaceSize,
-                            this->faceIndices
-                        );
-                }
-                void tearTileThemeDown()
-                {
-                    delete this->tileTheme;
-                }
-            // Example+TileTheme End
-            // Example+TileThemeTest Start
-            private:
-                osg::ref_ptr<osg::MatrixTransform> tileScene;
-                osg::ref_ptr<osg::StateSet> normalMaterial;
-                osg::ref_ptr<osg::StateSet> selectedMaterial;
-                void setupTileThemeTest()
-                {
-                    // Create tile scene to host tiles.
-                    this->tileScene = new osg::MatrixTransform;
-                    this->scene->addChild(this->tileScene);
-            
-                    this->setupMaterials();
-                    // Apply normal state material to the whole scene.
-                    this->tileScene->setStateSet(this->normalMaterial);
-            
-                    // Rotate the tile scene to have a better view.
-                    scene::setSimpleRotation(this->tileScene, {60, 0, 0});
-            
-                    // Load model with geode only.
-                    resource::Resource res(
-                        "models",
-                        "tile-low.osgt",
-                        tile_low_osgt,
-                        tile_low_osgt_len
-                    );
-                    auto node = resource::node(res);
-                    auto tile = reinterpret_cast<osg::Geode *>(node.get());
-                    // Make sure tile is valid.
-                    if (!tile)
-                    {
-                        MC_MAIN_EXAMPLE_LOG(
-                            "ERROR Could not load model '%s/%s'",
-                            res.group.c_str(),
-                            res.name.c_str()
-                        );
-                        return;
-                    }
-            
-                    // Configure tile.
-                    this->tileTheme->setFaceId(0, tile);
-                    // Add it to the scene.
-                    this->tileScene->addChild(tile);
-            
-                    // Create another tile.
-                    auto leftTile = new osg::Geode(*tile, osg::CopyOp::DEEP_COPY_ALL);
-                    // Configure it.
-                    this->tileTheme->setFaceId(6, leftTile);
-                    // Move it to the left.
-                    auto leftTransform = new osg::MatrixTransform;
-                    leftTransform->addChild(leftTile);
-                    scene::setSimplePosition(leftTransform, {-3, 0, 0});
-                    // Add it to the scene.
-                    this->tileScene->addChild(leftTransform);
-                    // Assign selected state material to the left tile.
-                    leftTile->setStateSet(this->selectedMaterial);
-            
-                    // Create one more tile.
-                    auto rightTile = new osg::Geode(*tile, osg::CopyOp::DEEP_COPY_ALL);
-                    // Configure it.
-                    this->tileTheme->setFaceId(3, rightTile);
-                    // Move it to the right.
-                    auto rightTransform = new osg::MatrixTransform;
-                    rightTransform->addChild(rightTile);
-                    scene::setSimplePosition(rightTransform, {3, 0, 0});
-                    // Add it to the scene.
-                    this->tileScene->addChild(rightTransform);
-                }
-                void setupMaterials()
-                {
-                    // Create resources.
-                    resource::Resource shaderFrag(
-                        "shaders",
-                        "ppl-theme.frag",
-                        ppl_theme_frag,
-                        ppl_theme_frag_len
-                    );
-                    resource::Resource shaderVert(
-                        "shaders",
-                        "ppl-theme.vert",
-                        ppl_theme_vert,
-                        ppl_theme_vert_len
-                    );
-                    resource::Resource texRes(
-                        "textures",
-                        "tile-theme.png",
-                        tile_theme_png,
-                        tile_theme_png_len
-                    );
-            
-                    // Create shader program.
-                    auto prog =
-                        render::createShaderProgram(
-                            resource::string(shaderVert),
-                            resource::string(shaderFrag)
-                        );
-                    // Create texture.
-                    auto texture = resource::createTexture(texRes);
-            
-                    // Create normal state material.
-                    this->normalMaterial = new osg::StateSet;
-                    this->normalMaterial->setAttribute(prog);
-                    this->normalMaterial->setTextureAttributeAndModes(0, texture);
-                    this->normalMaterial->addUniform(new osg::Uniform("image", 0));
-                    this->normalMaterial->addUniform(new osg::Uniform("isSelected", false));
-            
-                    // Create selected state material.
-                    this->selectedMaterial = new osg::StateSet;
-                    this->selectedMaterial->setAttribute(prog);
-                    this->selectedMaterial->setTextureAttributeAndModes(0, texture);
-                    this->selectedMaterial->addUniform(new osg::Uniform("image", 0));
-                    this->selectedMaterial->addUniform(new osg::Uniform("isSelected", true));
-                }
-            // Example+TileThemeTest End
+                },
+                this->sceneSetupCallbackName
+            );
+        }
+    // Example+Scene End
+    // Example+TileTheme Start
+    private:
+        render::TileTheme *tileTheme;
+        const osg::Vec2 textureSize = {1024, 2048};
+        const osg::Vec2 tileFaceSize = {160, 240};
+        const render::TileTheme::Indices faceIndices = {15, 23, 16, 17};
+    
+        void setupTileTheme()
+        {
+            this->tileTheme =
+                new render::TileTheme(
+                    this->textureSize,
+                    this->tileFaceSize,
+                    this->faceIndices
+                );
+        }
+        void tearTileThemeDown()
+        {
+            delete this->tileTheme;
+        }
+    // Example+TileTheme End
 // Example Start
 };
 // Example End

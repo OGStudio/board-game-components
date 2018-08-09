@@ -25,6 +25,10 @@ freely, subject to the following restrictions:
 #ifndef MAHJONG_COMPONENTS_SCENE_H
 #define MAHJONG_COMPONENTS_SCENE_H
 
+// setSimplePosition Start
+#include <osg/MatrixTransform>
+
+// setSimplePosition End
 
 namespace mc
 {
