@@ -70,6 +70,10 @@ private:
     {
         MC_MAIN_EXAMPLE_LOG("Loading layout from '%s'", url.c_str());
         auto success = [&](std::string response) {
+            this->parseLayoutResponse(response);
+
+            /*
+            // Direct stream approach.
             std::istringstream in(response);
             layout::Layout layout;
             if (layout::parseLayout(in, layout))
@@ -83,6 +87,7 @@ private:
             {
                 MC_MAIN_EXAMPLE_LOG("ERROR Could not parse loaded layout");
             }
+            */
         };
         auto failure = [&](std::string reason) {
             MC_MAIN_EXAMPLE_LOG(
@@ -92,6 +97,43 @@ private:
         };
         this->app->httpClient->get(url, success, failure);
     }
+    void parseLayoutResponse(const std::string &response)
+    {
+        const char *dat0 = response.data();
+        auto dat1 = const_cast<char *>(dat0);
+        if (!dat1)
+        {
+            MC_MAIN_EXAMPLE_LOG("ERROR Could not convert const char to char");
+            return;
+        }
+        auto dat = reinterpret_cast<unsigned char *>(dat1);
+        if (!dat)
+        {
+            MC_MAIN_EXAMPLE_LOG("ERROR Could not convert char to unsigned char");
+            return;
+        }
+        resource::Resource layoutRes(
+            "layout-remote",
+            "todo_urlhere",
+            dat,
+            response.length()
+        );
+        layout::Layout layout;
+        resource::ResourceStreamBuffer buf(layoutRes);
+        std::istream in(&buf);
+        if (layout::parseLayout(in, layout))
+        {
+            this->createTiles(layout);
+            // Reset scene.
+            this->app->setScene(this->scene);
+            MC_MAIN_EXAMPLE_LOG("Successfully loaded layout");
+        }
+        else
+        {
+            MC_MAIN_EXAMPLE_LOG("ERROR Could not parse loaded layout");
+        }
+    }
+
     void loadRemoteTheme(const std::string &url)
     {
         MC_MAIN_EXAMPLE_LOG("Loading theme from '%s'", url.c_str());
