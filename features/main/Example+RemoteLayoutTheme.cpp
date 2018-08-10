@@ -66,28 +66,25 @@ private:
             }
         }
     }
+
+    void createTiles(const layout::Layout &layout)
+    {
+        for (auto pos : layout.positions)
+        {
+            float z = pos.x();
+            float y = pos.y() * 1.5 /* Factor depends on the model */;
+            float x = pos.z();
+            auto tile = new osg::Geode(*this->tile, osg::CopyOp::DEEP_COPY_ALL);
+            auto node = new osg::MatrixTransform;
+            node->addChild(tile);
+            this->tileScene->addChild(node);
+            scene::setSimplePosition(node, {x, y, z});
+        }
+    }
     void loadRemoteLayout(const std::string &url)
     {
-        MC_MAIN_EXAMPLE_LOG("Loading layout from '%s'", url.c_str());
         auto success = [&](std::string response) {
-            this->parseLayoutResponse(response);
-
-            /*
-            // Direct stream approach.
-            std::istringstream in(response);
-            layout::Layout layout;
-            if (layout::parseLayout(in, layout))
-            {
-                this->createTiles(layout);
-                // Reset scene.
-                this->app->setScene(this->scene);
-                MC_MAIN_EXAMPLE_LOG("Successfully loaded layout");
-            }
-            else
-            {
-                MC_MAIN_EXAMPLE_LOG("ERROR Could not parse loaded layout");
-            }
-            */
+            this->parseLayoutResponse(response, url);
         };
         auto failure = [&](std::string reason) {
             MC_MAIN_EXAMPLE_LOG(
@@ -95,32 +92,15 @@ private:
                 reason.c_str()
             );
         };
+        MC_MAIN_EXAMPLE_LOG("Loading layout from '%s'", url.c_str());
         this->app->httpClient->get(url, success, failure);
     }
-    void parseLayoutResponse(const std::string &response)
-    {
-        const char *dat0 = response.data();
-        auto dat1 = const_cast<char *>(dat0);
-        if (!dat1)
-        {
-            MC_MAIN_EXAMPLE_LOG("ERROR Could not convert const char to char");
-            return;
-        }
-        auto dat = reinterpret_cast<unsigned char *>(dat1);
-        if (!dat)
-        {
-            MC_MAIN_EXAMPLE_LOG("ERROR Could not convert char to unsigned char");
-            return;
-        }
-        resource::Resource layoutRes(
-            "layout-remote",
-            "todo_urlhere",
-            dat,
-            response.length()
-        );
+    void parseLayoutResponse(
+        const std::string &response,
+        const std::string &url
+    ) {
         layout::Layout layout;
-        resource::ResourceStreamBuffer buf(layoutRes);
-        std::istream in(&buf);
+        std::istringstream in(response);
         if (layout::parseLayout(in, layout))
         {
             this->createTiles(layout);
@@ -136,14 +116,10 @@ private:
 
     void loadRemoteTheme(const std::string &url)
     {
-        MC_MAIN_EXAMPLE_LOG("Loading theme from '%s'", url.c_str());
-        auto success = [&](std::string response) {
-            // Set texture to materials.
-            std::istringstream in(response);
-            auto texture = resource::createTexture(in);
-            this->normalMaterial->setTextureAttributeAndModes(0, texture);
-            this->selectedMaterial->setTextureAttributeAndModes(0, texture);
-            MC_MAIN_EXAMPLE_LOG("Successfully loaded theme");
+        auto success = [=](std::string response) {
+            // NOTE We use `=` in lambda capture to capture url copy
+            // NOTE Otherwise we have crash when parsing.
+            this->parseThemeResponse(response, url);
         };
         auto failure = [&](std::string reason) {
             MC_MAIN_EXAMPLE_LOG(
@@ -151,21 +127,23 @@ private:
                 reason.c_str()
             );
         };
+        MC_MAIN_EXAMPLE_LOG("Loading theme from '%s'", url.c_str());
         this->app->httpClient->get(url, success, failure);
     }
-    void createTiles(const layout::Layout &layout)
+    void parseThemeResponse(const std::string &response, const std::string &url)
     {
-        for (auto pos : layout.positions)
-        {
-            float z = pos.x();
-            float y = pos.y() * 1.5;
-            float x = pos.z();
-            auto tile = new osg::Geode(*this->tile, osg::CopyOp::DEEP_COPY_ALL);
-            auto node = new osg::MatrixTransform;
-            node->addChild(tile);
-            this->tileScene->addChild(node);
-            scene::setSimplePosition(node, {x, y, z});
-        }
+        resource::Resource
+            themeRes(
+                "theme-remote",
+                url,
+                resource::stringToResourceContents(response),
+                response.length()
+            );
+        // Set texture to materials.
+        auto texture = resource::createTexture(themeRes);
+        this->normalMaterial->setTextureAttributeAndModes(0, texture);
+        this->selectedMaterial->setTextureAttributeAndModes(0, texture);
+        MC_MAIN_EXAMPLE_LOG("Successfully loaded theme");
     }
     void setupMaterials()
     {

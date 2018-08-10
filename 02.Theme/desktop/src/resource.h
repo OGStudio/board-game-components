@@ -180,6 +180,7 @@ std::string string(const Resource &resource)
     return std::string(contents, resource.len);
 }
 // string End
+
 // setTextureImage Start
 //! Set image for texture.
 

@@ -27,9 +27,7 @@ freely, subject to the following restrictions:
 
 // FEATURE node/Include
 // FEATURE setTextureImage/Include
-// FEATURE setTextureImage-istream/Include
 // FEATURE createTexture/Include
-// FEATURE createTexture-istream/Include
 
 // FEATURE OSGCPE_RESOURCE_LOG/Impl
 
@@ -44,10 +42,10 @@ namespace resource
 // FEATURE extension/Impl
 // FEATURE node/Impl
 // FEATURE string/Impl
+// FEATURE stringToResourceContents/Impl
+
 // FEATURE setTextureImage/Impl
-// FEATURE setTextureImage-istream/Impl
 // FEATURE createTexture/Impl
-// FEATURE createTexture-istream/Impl
 
 } // namespace resource
 } // namespace mc

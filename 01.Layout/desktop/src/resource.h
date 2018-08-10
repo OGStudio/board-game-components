@@ -91,6 +91,7 @@ std::string string(const Resource &resource)
 }
 // string End
 
+
 } // namespace resource
 } // namespace mc
 

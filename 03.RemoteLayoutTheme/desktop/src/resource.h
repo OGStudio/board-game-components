@@ -29,15 +29,15 @@ freely, subject to the following restrictions:
 #include <osgDB/Registry>
 
 // node End
-// setTextureImage-istream Start
+// setTextureImage Start
 #include <osg/Texture2D>
 #include <osgDB/Registry>
 
-// setTextureImage-istream End
-// createTexture-istream Start
+// setTextureImage End
+// createTexture Start
 #include <osg/Texture2D>
 
-// createTexture-istream End
+// createTexture End
 
 // OSGCPE_RESOURCE_LOG Start
 #include "log.h"
@@ -180,21 +180,62 @@ std::string string(const Resource &resource)
     return std::string(contents, resource.len);
 }
 // string End
-// setTextureImage-istream Start
-//! Set image for texture from std::istream.
+// stringToResourceContents Start
+unsigned char * stringToResourceContents(const std::string &str)
+{
+    auto dat = const_cast<char *>(str.data());
+    if (!dat)
+    {
+        OSGCPE_RESOURCE_LOG(
+            "ERROR Could not convert string to resource contents "
+            "at 'const char * -> char *' stage"
+        );
+        return 0;
+    }
+    auto contents = reinterpret_cast<unsigned char *>(dat);
+    if (!contents)
+    {
+        OSGCPE_RESOURCE_LOG(
+            "ERROR Could not convert string to resource contents "
+            "at 'char * -> usigned char *' stage"
+        );
+        return 0;
+    }
+
+    return contents;
+}
+// stringToResourceContents End
+
+// setTextureImage Start
+//! Set image for texture.
 
 // \param texture Texture to set image for.
-// \param in Input stream to take image from.
-// \param ext Extension to find suitable plugin.
+// \param resource Resource to take image from.
+// \param ext (optional) If extension is present it won't be autodetected from the resource's name
 void setTextureImage(
     osg::Texture2D *texture,
-    std::istream &in,
-    const std::string ext
+    const Resource &resource,
+    const std::string ext = ""
 ) {
+    // Get extension from resource's name if extension is not specified.
+    std::string ex = ext.empty() ?  extension(resource) : ext;
+    // Do nothing if extension is absent.
+    if (ex.empty())
+    {
+        OSGCPE_RESOURCE_LOG(
+            "ERROR Could not read image of '%s/%s' resource "
+            "because extension is absent",
+            resource.group.c_str(),
+            resource.name.c_str()
+        );
+        return;
+    }
     auto reader =
-        osgDB::Registry::instance()->getReaderWriterForExtension(ext);
+        osgDB::Registry::instance()->getReaderWriterForExtension(ex);
     if (reader)
     {
+        ResourceStreamBuffer buf(resource);
+        std::istream in(&buf);
         auto result = reader->readImage(in, 0);
         if (result.success())
         {
@@ -205,37 +246,37 @@ void setTextureImage(
         else
         {
             OSGCPE_RESOURCE_LOG(
-                "ERROR Could not read image of 'TODO' resource from buffer."//,
-                //resource.group.c_str(),
-                //resource.name.c_str()
+                "ERROR Could not read image of '%s/%s' resource from buffer.",
+                resource.group.c_str(),
+                resource.name.c_str()
             );
         }
     }
     else
     {
         OSGCPE_RESOURCE_LOG(
-            "ERROR Could not read image of 'TODO' resource because "
+            "ERROR Could not read image of '%s/%s' resource because "
             "image reader for extension '%s' is absent.",
-            //resource.group.c_str(),
-            //resource.name.c_str(),
-            ext.c_str()
+            resource.group.c_str(),
+            resource.name.c_str(),
+            ex.c_str()
         );
     }
 }
-// setTextureImage-istream End
-// createTexture-istream Start
+// setTextureImage End
+// createTexture Start
 //! Create texture from a resource.
-osg::Texture2D *createTexture(std::istream &in)
+osg::Texture2D *createTexture(const Resource &resource)
 {
     osg::ref_ptr<osg::Texture2D> tex = new osg::Texture2D;
-    setTextureImage(tex, in, "png");
+    setTextureImage(tex, resource);
     tex->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
     tex->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
     tex->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
     tex->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
     return tex.release();
 }
-// createTexture-istream End
+// createTexture End
 
 } // namespace resource
 } // namespace mc
