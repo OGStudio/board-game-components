@@ -381,16 +381,29 @@ struct Example
     
         void createTiles(const layout::Layout &layout)
         {
+            int facesCount = 42;
+            int faceId = 0;
             for (auto pos : layout.positions)
             {
+                // Clone tile.
+                auto tile = new osg::Geode(*this->tile, osg::CopyOp::DEEP_COPY_ALL);
+                // Set its position.
                 float z = pos.x();
                 float y = pos.y() * 1.5 /* Factor depends on the model */;
                 float x = pos.z();
-                auto tile = new osg::Geode(*this->tile, osg::CopyOp::DEEP_COPY_ALL);
                 auto node = new osg::MatrixTransform;
                 node->addChild(tile);
-                this->tileScene->addChild(node);
                 scene::setSimplePosition(node, {x, y, z});
+                // Add tile to the scene.
+                this->tileScene->addChild(node);
+                // Set tile face id.
+                this->tileTheme->setFaceId(faceId, tile);
+                // Cycle face id.
+                if (++faceId >= facesCount)
+                {
+                    faceId = 0;
+                }
+    
             }
         }
         void loadRemoteLayout(const std::string &url)
