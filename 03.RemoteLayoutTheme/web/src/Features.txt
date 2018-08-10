@@ -3,6 +3,8 @@ Application
 Application+frame+Reporting
 Application+handleEvent-web
 Application+setupWindow-embedded
+Application+HTTPClient
+Application+HTTPClientProcessor
 Application+Logging
 Application+Rendering
 
@@ -12,7 +14,6 @@ Example+03
 Example+RemoteLayoutTheme
 Example+Scene
 Example+TileTheme
-Example+TileThemeTest
 Example+StaticPluginOSG
 Example+StaticPluginPNG
 Example+VBO
@@ -23,6 +24,14 @@ main+Arguments-web
 
 # core
 Reporter
+
+# layout
+MC_LAYOUT_LOG
+Layout
+KMahjonggLayout
+kmahjonggLayoutFieldsToPositions
+linesToKMahjonggLayout
+parseLayout
 
 # log
 log-default
@@ -35,6 +44,7 @@ urlQueryToParameters
 printfString
 splitString
 stringStartsWith
+trimmedString
 
 # resource
 OSGCPE_RESOURCE_LOG
@@ -43,6 +53,7 @@ extension
 node
 setTextureImage
 string
+stringToResourceContents
 Resource
 ResourceStreamBuffer
 
@@ -57,3 +68,10 @@ VBOSetupVisitor
 degreesToQuaternion
 setSimplePosition
 setSimpleRotation
+
+# network
+HTTPClient
+HTTPClientProcessor
+HTTPRequest
+HTTPRequestProcessorFetch
+fetch

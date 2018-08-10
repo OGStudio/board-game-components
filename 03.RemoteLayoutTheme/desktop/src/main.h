@@ -429,6 +429,8 @@ struct Example
         void loadRemoteTheme(const std::string &url)
         {
             auto success = [=](std::string response) {
+                // NOTE We use `=` in lambda capture to capture url copy
+                // NOTE Otherwise we have crash when parsing.
                 this->parseThemeResponse(response, url);
             };
             auto failure = [&](std::string reason) {
@@ -446,8 +448,6 @@ struct Example
                 themeRes(
                     "theme-remote",
                     url,
-                    //url.c_str(),
-                    //"url.png",
                     resource::stringToResourceContents(response),
                     response.length()
                 );
