@@ -8,7 +8,8 @@ Application+Rendering
 
 MC_MAIN_EXAMPLE_LOG
 Example
-Example+03
+Example+04
+Example+MatchTilesTest
 Example+Scene
 Example+TileTheme
 Example+StaticPluginOSG
@@ -20,13 +21,20 @@ main-desktop
 # core
 Reporter
 
+# mahjong
+Solitaire
+Tile
+TilePosition
+intToTilePosition
+tilePositionToInt
+
 # layout
-MC_LAYOUT_LOG
-Layout
-KMahjonggLayout
-kmahjonggLayoutFieldsToPositions
-linesToKMahjonggLayout
-parseLayout
+#MC_LAYOUT_LOG
+#Layout
+#KMahjonggLayout
+#kmahjonggLayoutFieldsToPositions
+#linesToKMahjonggLayout
+#parseLayout
 
 # log
 log-default

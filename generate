@@ -36,6 +36,7 @@ FEATURE_DIRS=(
     "/format"
     "/layout"
     "/log"
+    "/mahjong"
     "/main"
     "/network"
     "/render"

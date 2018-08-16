@@ -33,6 +33,7 @@ freely, subject to the following restrictions:
 // FEATURE Application+Rendering/Include
 
 // FEATURE Example+Layout/Include
+// FEATURE Example+MatchTilesTest/Include
 // FEATURE Example+RemoteLayoutTheme/Include
 // FEATURE Example+Scene/Include
 // FEATURE Example+TileTheme/Include
@@ -77,22 +78,26 @@ namespace main
 // FEATURE Example+01/Title
 // FEATURE Example+02/Title
 // FEATURE Example+03/Title
+// FEATURE Example+04/Title
 
 // FEATURE Example/Setup
         // FEATURE Example+Scene/Setup
         // FEATURE Example+TileTheme/Setup
         // FEATURE Example+TileThemeTest/Setup
+        // FEATURE Example+MatchTilesTest/Setup
         // FEATURE Example+Layout/Setup
         // FEATURE Example+RemoteLayoutTheme/Setup
         // FEATURE Example+VBO/Setup
 // FEATURE Example/TearDown
         // FEATURE Example+TileTheme/TearDown
+        // FEATURE Example+MatchTilesTest/TearDown
 // FEATURE Example/Impl
     // FEATURE Example+Layout/Impl
     // FEATURE Example+RemoteLayoutTheme/Impl
     // FEATURE Example+Scene/Impl
     // FEATURE Example+TileTheme/Impl
     // FEATURE Example+TileThemeTest/Impl
+    // FEATURE Example+MatchTilesTest/Impl
     // FEATURE Example+VBO/Impl
 // FEATURE Example/End
 

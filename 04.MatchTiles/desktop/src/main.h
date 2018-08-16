@@ -42,6 +42,10 @@ freely, subject to the following restrictions:
 
 // Application+Rendering End
 
+// Example+MatchTilesTest Start
+#include "mahjong.h"
+
+// Example+MatchTilesTest End
 // Example+Scene Start
 #include <osg/MatrixTransform>
 
@@ -216,9 +220,9 @@ class Application
 };
 // Application End
 
-// Example+03 Start
-const auto EXAMPLE_TITLE = "Mc03";
-// Example+03 End
+// Example+04 Start
+const auto EXAMPLE_TITLE = "Mc04";
+// Example+04 End
 
 // Example Start
 struct Example
@@ -240,6 +244,10 @@ struct Example
         this->setupTileTheme();
         
         // Example+TileTheme End
+        // Example+MatchTilesTest Start
+        this->setupMatchTilesTest();
+        
+        // Example+MatchTilesTest End
 // Example Start
     }
     ~Example()
@@ -250,6 +258,10 @@ struct Example
         this->tearTileThemeDown();
         
         // Example+TileTheme End
+        // Example+MatchTilesTest Start
+        this->tearMatchTilesTestDown();
+        
+        // Example+MatchTilesTest End
 // Example Start
         delete this->app;
     }
@@ -299,6 +311,18 @@ struct Example
             delete this->tileTheme;
         }
     // Example+TileTheme End
+    // Example+MatchTilesTest Start
+    private:
+        mahjong::Solitaire *game;
+        void setupMatchTilesTest()
+        {
+            this->game = new mahjong::Solitaire();
+        }
+        void tearMatchTilesTestDown()
+        {
+            delete this->game;
+        }
+    // Example+MatchTilesTest End
 // Example Start
 };
 // Example End
