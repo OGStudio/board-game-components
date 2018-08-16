@@ -84,14 +84,17 @@ freely, subject to the following restrictions:
 // MC_MAIN_EXAMPLE_LOG End
 
 // Example+StaticPluginOSG Start
+#include <osgDB/Registry>
+
 // Reference (statically) plugins to read `osgt` file.
 USE_OSGPLUGIN(osg2)
 USE_SERIALIZER_WRAPPER_LIBRARY(osg)
 // Example+StaticPluginOSG End
 // Example+StaticPluginPNG Start
+#include <osgDB/Registry>
+
 // Reference (statically) plugins to read `png` file.
 // Apple platforms use ImageIO. All others use libpng.
-
 #ifdef __APPLE__
     USE_OSGPLUGIN(imageio)
 #else
@@ -169,15 +172,15 @@ class Application
                 e.type == SDL_FINGERDOWN ||
                 e.type == SDL_FINGERUP
             ) {
-                fingerEventsDetected = true;
+                this->fingerEventsDetected = true;
             }
             // Handle mouse events unless finger events are detected.
-            if (!fingerEventsDetected)
+            if (!this->fingerEventsDetected)
             {
-                return handleMouseEvent(e, queue);
+                return this->handleMouseEvent(e, queue);
             }
             // Handle finger events.
-            return handleFingerEvent(e, queue);
+            return this->handleFingerEvent(e, queue);
         }
     
     private:

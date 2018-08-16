@@ -19,6 +19,7 @@ COMPONENTS="
 01.Layout
 02.Theme
 03.RemoteLayoutTheme
+04.MatchTiles
 "
 
 # Platform -> Path to Features.txt

@@ -1,0 +1,63 @@
+# main
+Application
+Application+frame+Reporting
+Application+run
+Application+setupWindow-desktop
+Application+Logging
+Application+Rendering
+
+MC_MAIN_EXAMPLE_LOG
+Example
+Example+03
+Example+Scene
+Example+TileTheme
+Example+StaticPluginOSG
+Example+StaticPluginPNG
+
+MC_MAIN_LOG
+main-desktop
+
+# core
+Reporter
+
+# layout
+MC_LAYOUT_LOG
+Layout
+KMahjonggLayout
+kmahjonggLayoutFieldsToPositions
+linesToKMahjonggLayout
+parseLayout
+
+# log
+log-default
+logLevelToString
+logprintf
+Logger
+
+# format
+printfString
+#splitString
+stringStartsWith
+#trimmedString
+
+# resource
+OSGCPE_RESOURCE_LOG
+createTexture
+extension
+node
+setTextureImage
+string
+Resource
+ResourceStreamBuffer
+
+# render
+MC_RENDER_TILE_THEME_LOG
+createGraphicsContext-desktop
+createShaderProgram
+setupCamera
+TileTheme
+
+# scene
+degreesToQuaternion
+setSimplePosition
+setSimpleRotation
