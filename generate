@@ -34,7 +34,6 @@ FEATURES_TXT_DIR="src"
 FEATURE_DIRS=(
     "/core"
     "/format"
-    "/layout"
     "/log"
     "/mahjong"
     "/main"

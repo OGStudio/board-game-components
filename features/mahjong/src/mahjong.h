@@ -25,6 +25,8 @@ freely, subject to the following restrictions:
 #ifndef MAHJONG_COMPONENTS_MAHJONG_H
 #define MAHJONG_COMPONENTS_MAHJONG_H
 
+// FEATURE MC_MAHJONG_LOG/Impl
+
 namespace mc
 {
 namespace mahjong
@@ -33,8 +35,16 @@ namespace mahjong
 // FEATURE TilePosition/Impl
 // FEATURE Tile/Impl
 
+// FEATURE Layout/Impl
+// FEATURE KMahjonggLayout/Impl
+
 // FEATURE intToTilePosition/Impl
 // FEATURE tilePositionToInt/Impl
+
+// FEATURE kmahjonggLayoutFieldsToPositions/Impl
+// FEATURE linesToKMahjonggLayout/Impl
+// FEATURE parseLayout/Impl
+// FEATURE layoutToString/Impl
 
 // FEATURE Solitaire/Impl
 

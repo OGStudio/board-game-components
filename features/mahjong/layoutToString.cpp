@@ -1,7 +1,7 @@
-FEATURE layout.h/Include
+FEATURE mahjong.h/Include
 #include "format.h"
 
-FEATURE layout.h/Impl
+FEATURE mahjong.h/Impl
 std::string layoutToString(const Layout &layout)
 {
     std::string header =
@@ -15,7 +15,7 @@ std::string layoutToString(const Layout &layout)
     for (auto pos : layout.positions)
     {
         positions +=
-            format::printfString("p(%d, %d, %d)\n", pos.x(), pos.y(), pos.z());
+            format::printfString("p(%d, %d, %d)\n", pos.field, pos.row, pos.column);
     }
 
     return

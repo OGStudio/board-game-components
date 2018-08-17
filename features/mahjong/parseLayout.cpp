@@ -1,4 +1,4 @@
-FEATURE layout.h/Impl
+FEATURE mahjong.h/Impl
 bool parseLayout(std::istream &in, Layout &layout)
 {
     // Collect lines.

@@ -22,39 +22,21 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef MAHJONG_COMPONENTS_LAYOUT_H
-#define MAHJONG_COMPONENTS_LAYOUT_H
+#ifndef MAHJONG_COMPONENTS_MAHJONG_H
+#define MAHJONG_COMPONENTS_MAHJONG_H
 
-// Layout Start
-#include <osg/Vec3>
-
-// Layout End
-
-// MC_LAYOUT_LOG Start
-#include "log.h"
-#include "format.h"
-#define MC_LAYOUT_LOG_PREFIX "layout %s"
-#define MC_LAYOUT_LOG(...) \
-    log::logprintf( \
-        MC_LAYOUT_LOG_PREFIX, \
-        format::printfString(__VA_ARGS__).c_str() \
-    )
-// MC_LAYOUT_LOG End
 
 namespace mc
 {
-namespace layout
+namespace mahjong
 {
+
 
 // Layout Start
 //! Layout representation.
 struct Layout
 {
-    // Each osg::Vec3 item contains:
-    // * x: field id
-    // * y: row
-    // * z: column
-    typedef std::vector<osg::Vec3i> Positions;
+    typedef std::vector<TilePosition> Positions;
 
     int width;
     int height;
@@ -69,6 +51,7 @@ struct KMahjonggLayout : Layout
     std::string version;
 };
 // KMahjonggLayout End
+
 
 // kmahjonggLayoutFieldsToPositions Start
 typedef std::vector<std::string> Field;
@@ -189,7 +172,7 @@ bool linesToKMahjonggLayout(
     {
         if (fields.size() != layoutDraft.depth)
         {
-            MC_LAYOUT_LOG(
+            MC_MAHJONG_LOG(
                 "ERROR Specified layout depth (%d) is not equal to actual one (%d)",
                 layoutDraft.depth,
                 fields.size()
@@ -240,8 +223,9 @@ bool parseLayout(std::istream &in, Layout &layout)
 }
 // parseLayout End
 
-} // namespace layout
+
+} // namespace mahjong
 } // namespace mc
 
-#endif // MAHJONG_COMPONENTS_LAYOUT_H
+#endif // MAHJONG_COMPONENTS_MAHJONG_H
 

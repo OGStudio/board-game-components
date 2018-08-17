@@ -1,4 +1,4 @@
-FEATURE layout.h/Impl
+FEATURE mahjong.h/Impl
 typedef std::vector<std::string> Field;
 typedef std::vector<Field> Fields;
 
