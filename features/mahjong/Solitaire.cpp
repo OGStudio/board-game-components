@@ -64,7 +64,8 @@ class Solitaire
 
         void removeTiles(int id1, int id2)
         {
-
+            this->removeTile(id1);
+            this->removeTile(id2);
         }
 
     private:
@@ -72,6 +73,25 @@ class Solitaire
         std::map<int, Tile> idTiles;
         // Position -> Tile.
         std::map<int, Tile> positionTiles;
+
+        void removeTile(int id)
+        {
+            // Make sure tile exists.
+            auto it = this->idTiles.find(id);
+            if (it == this->idTiles.end())
+            {
+                return;
+            }
+            auto tile = it->second;
+
+            // Erase tile from idTiles.
+            this->idTiles.erase(it);
+
+            // Erase tile from positionTiles.
+            auto position = tilePositionToInt(tile.position);
+            auto positionIt = this->positionTiles.find(position);
+            this->positionTiles.erase(positionIt);
+        }
 
         Tile *tile(int id)
         {
