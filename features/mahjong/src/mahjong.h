@@ -32,10 +32,11 @@ namespace mahjong
 
 // FEATURE TilePosition/Impl
 // FEATURE Tile/Impl
-// FEATURE Solitaire/Impl
 
 // FEATURE intToTilePosition/Impl
 // FEATURE tilePositionToInt/Impl
+
+// FEATURE Solitaire/Impl
 
 } // namespace mahjong
 } // namespace mc

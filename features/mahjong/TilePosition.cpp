@@ -2,18 +2,18 @@ FEATURE mahjong.h/Impl
 struct TilePosition
 {
     TilePosition() :
-        fieldId(0),
+        field(0),
         row(0),
         column(0)
     { }
 
-    TilePosition(int fieldId, int row, int column) :
-        fieldId(fieldId),
+    TilePosition(int field, int row, int column) :
+        field(field),
         row(row),
         column(column)
     { }
 
-    int fieldId;
+    int field;
     int row;
     int column;
 };
