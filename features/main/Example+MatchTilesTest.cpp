@@ -41,15 +41,12 @@ private:
         this->setupTileScene();
         this->setupTiles();
         this->setupTileSelection();
-        this->setupTileSelectionDepiction();
-        this->setupTileMatching();
-
-        //this->game = new mahjong::Solitaire();
+        this->setupGame();
     }
     void tearMatchTilesTestDown()
     {
         this->tearTileSelectionDown();
-        //delete this->game;
+        this->tearGameDown();
     }
 
     void setupLayout()
@@ -151,6 +148,8 @@ private:
             int matchId = id++ / 2;
 
             // Create logical tile.
+            // NOTE this->tiles is only necessary once for Solitaire.
+            // TODO Find a way to remove it from here.
             mahjong::Tile tile;
             tile.position = pos;
             tile.matchId = matchId;
@@ -228,15 +227,49 @@ private:
             this->selectedTile.report();
         }
     }
-    void setupTileSelectionDepiction()
+    void setupGame()
     {
+        this->game = new mahjong::Solitaire();
+        this->game->setTiles(this->tiles);
+        // Erase local logical tiles' representation.
+        this->tiles.clear();
+
         this->selectedTile.addCallback(
             [&] {
-                auto node = this->selectedTileNode;
-                auto tile = this->tileNodes[node];
-                this->setNodeSelected(node, true);
+                auto nodeNow = this->selectedTileNode;
+                auto tileNow = this->tileNodes[nodeNow];
+
+                // Make sure tile is selectable.
+                if (!this->game->isTileSelectable(tileNow))
+                {
+                    return;
+                }
+
+                // Depict selection.
+                this->setNodeSelected(nodeNow, true);
+
+                auto nodeWas = this->previouslySelectedTileNode;
+
+                // Keep previously selected tile node.
+                this->previouslySelectedTileNode = nodeNow;
+
+                // Make sure different nodes were selected.
+                if (!nodeWas || (nodeNow == nodeWas))
+                {
+                    return;
+                }
+
+                // Remove selection of previously selected node.
+                this->setNodeSelected(nodeWas, false);
+
+                // Match tiles.
+                this->matchTileNodes(nodeWas, nodeNow);
             }
         );
+    }
+    void tearGameDown()
+    {
+        delete this->game;
     }
     void setNodeSelected(osg::Node *node, bool state)
     {
@@ -246,48 +279,39 @@ private:
             0;
         node->setStateSet(material);
     }
-    void setupTileMatching()
-    {
-        this->selectedTile.addCallback(
-            [&] {
-                auto nodeNow = this->selectedTileNode;
-                auto nodeWas = this->previouslySelectedTileNode;
-
-                // Keep previously selected tile node.
-                this->previouslySelectedTileNode = nodeNow;
-
-                // Make sure different node is selected each time.
-                if (nodeNow == nodeWas)
-                {
-                    return;
-                }
-
-                // Make sure there was a previoulsy selected node.
-                if (!nodeWas)
-                {
-                    return;
-                }
-
-                this->matchTileNodes(nodeWas, nodeNow);
-            }
-        );
-    }
     void matchTileNodes(osg::Node *nodeWas, osg::Node *nodeNow)
     {
         auto tileWas = this->tileNodes[nodeWas];
         auto tileNow = this->tileNodes[nodeNow];
-        MC_MAIN_EXAMPLE_LOG(
-            "match ids of the selected tiles: '%d' and '%d'",
-            tileWas.matchId,
-            tileNow.matchId
-        );
-        if (tileNow.matchId == tileWas.matchId)
+        bool match = this->game->tilesMatch(tileWas, tileNow);
+        // Remove matching tiles.
+        if (match)
         {
-            MC_MAIN_EXAMPLE_LOG("Tiles match. TODO REMOVE");
+            MC_MAIN_EXAMPLE_LOG("Tiles match. Remove");
+            // Remove tiles from Solitaire (logical) representation.
+            this->game->removeTiles(tileWas, tileNow);
+            // Remove nodes from tileNodes.
+            {
+                auto it = this->tileNodes.find(this->selectedTileNode);
+                this->tileNodes.erase(it);
+            }
+            {
+                auto it = this->tileNodes.find(this->previouslySelectedTileNode);
+                this->tileNodes.erase(it);
+            }
+            // Deselect both tile nodes.
+            this->setNodeSelected(this->selectedTileNode, false);
+            this->setNodeSelected(this->previouslySelectedTileNode, false);
+            // Remove nodes from tileScene.
+            this->tileScene->removeChild(this->selectedTileNode);
+            this->tileScene->removeChild(this->previouslySelectedTileNode);
+            // Remove selection.
+            this->selectedTileNode = 0;
+            this->previouslySelectedTileNode = 0;
         }
+        // Do nothing.
         else
         {
-            MC_MAIN_EXAMPLE_LOG("Tiles don't match. Deselect previously selected one");
-            this->setNodeSelected(nodeWas, false);
+            MC_MAIN_EXAMPLE_LOG("Tiles don't match. Do nothing");
         }
     }
