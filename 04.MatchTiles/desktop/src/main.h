@@ -570,11 +570,20 @@ struct Example
         {
             this->selectedTile.addCallback(
                 [&] {
-                    auto tile = this->tileNodes[this->selectedTileNode];
+                    auto node = this->selectedTileNode;
+                    auto tile = this->tileNodes[node];
                     MC_MAIN_EXAMPLE_LOG("selected tile matchId: '%d'", tile.matchId);
+                    this->setNodeSelected(node, true);
                 }
             );
-    
+        }
+        void setNodeSelected(osg::Node *node, bool state)
+        {
+            osg::StateSet *material = 
+                state ? 
+                this->selectedMaterial :
+                0;
+            node->setStateSet(material);
         }
     // Example+MatchTilesTest End
 // Example Start
