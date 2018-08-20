@@ -65,6 +65,7 @@ namespace main
             // FEATURE Application+Rendering/TearDown
             // FEATURE Application+Logging/TearDown
 // FEATURE Application/Impl
+    // FEATURE Application+camera/Impl
     // FEATURE Application+frame+Reporting/Impl
     // FEATURE Application+handleEvent-web/Impl
     // FEATURE Application+handleMousePress-android/Impl

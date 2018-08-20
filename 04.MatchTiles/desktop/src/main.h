@@ -157,6 +157,13 @@ class Application
         }
 
 // Application End
+    // Application+camera Start
+    public:
+        osg::Camera *camera()
+        {
+            return this->viewer->getCamera();
+        }
+    // Application+camera End
     // Application+frame+Reporting Start
     public:
         core::Reporter frameReporter;
@@ -358,6 +365,11 @@ struct Example
         osg::ref_ptr<osg::MatrixTransform> tileScene;
         mahjong::Layout layout;
         std::vector<mahjong::Tile> tiles;
+        std::map<osg::Node *, mahjong::Tile> tileNodes;
+        const std::string selectionCallbackName = "Selection";
+        const unsigned int selectionNodeMask = 0x00000004;
+        core::Reporter selectedTile;
+        osg::Node *selectedTileNode = 0;
         mahjong::Solitaire *game;
     
         void setupMatchTilesTest()
@@ -367,11 +379,14 @@ struct Example
             this->setupModel();
             this->setupTileScene();
             this->setupTiles();
+            this->setupTileSelection();
+            this->setupTileSelectionDepiction();
     
             //this->game = new mahjong::Solitaire();
         }
         void tearMatchTilesTestDown()
         {
+            this->tearTileSelectionDown();
             //delete this->game;
         }
     
@@ -494,6 +509,9 @@ struct Example
                 float x = pos.column;
                 // Set visual tile position.
                 scene::setSimplePosition(tileNode, {x, y, z});
+    
+                // Keep correspondence of visual tiles to logical ones.
+                this->tileNodes[tileNode] = tile;
             }
         }
         void setupTileScene()
@@ -505,6 +523,58 @@ struct Example
             scene::setSimpleRotation(this->tileScene, {60, 0, 0});
             // Apply theme.
             this->scene->setStateSet(this->normalMaterial);
+        }
+        void setupTileSelection()
+        {
+            // Mark tile nodes as selectable.
+            auto tilesCount = this->tileScene->getNumChildren();
+            for (int id = 0; id < tilesCount; ++id)
+            {
+                auto node = this->tileScene->getChild(id);
+                node->setNodeMask(node->getNodeMask() & ~this->selectionNodeMask);
+            }
+    
+            // Listen to mouse clicks.
+            this->app->mouse->pressedButtonsChanged.addCallback(
+                [&] {
+                    bool clicked = !this->app->mouse->pressedButtons.empty();
+                    if (clicked)
+                    {
+                        this->tryToSelectTile();
+                    }
+                },
+                this->selectionCallbackName
+            );
+        }
+        void tearTileSelectionDown()
+        {
+            this->app->mouse->pressedButtonsChanged.removeCallback(
+                this->selectionCallbackName
+            );
+        }
+        void tryToSelectTile()
+        {
+            this->selectedTileNode =
+                scene::nodeAtPosition(
+                    this->app->mouse->position,
+                    this->app->camera(),
+                    this->selectionNodeMask
+                );
+    
+            if (this->selectedTileNode)
+            {
+                this->selectedTile.report();
+            }
+        }
+        void setupTileSelectionDepiction()
+        {
+            this->selectedTile.addCallback(
+                [&] {
+                    auto tile = this->tileNodes[this->selectedTileNode];
+                    MC_MAIN_EXAMPLE_LOG("selected tile matchId: '%d'", tile.matchId);
+                }
+            );
+    
         }
     // Example+MatchTilesTest End
 // Example Start

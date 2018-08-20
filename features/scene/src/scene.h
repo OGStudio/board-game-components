@@ -36,11 +36,14 @@ namespace scene
 
 // FEATURE createShape/Impl
 // FEATURE createSphere/Impl
+
 // FEATURE degreesToQuaternion/Impl
 // FEATURE setSimplePosition/Impl
 // FEATURE simplePosition/Impl
 // FEATURE setSimpleRotation/Impl
 // FEATURE simpleRotation/Impl
+
+// FEATURE nodeAtPosition/Impl
 
 } // namespace scene
 } // namespace mc

@@ -60,6 +60,7 @@ osg::MatrixTransform *createSphere(float radius)
     return createShape(sphere);
 }
 // createSphere End
+
 // degreesToQuaternion Start
 //! Convert from degrees to quaternion.
 osg::Quat degreesToQuaternion(const osg::Vec3f &degrees)
@@ -98,6 +99,7 @@ void setSimpleRotation(osg::MatrixTransform *node, const osg::Vec3f &rotation)
     );
 }
 // setSimpleRotation End
+
 
 } // namespace scene
 } // namespace mc

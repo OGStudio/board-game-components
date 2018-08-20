@@ -1,5 +1,6 @@
 # main
 Application
+Application+camera
 Application+frame+Reporting
 Application+run
 Application+setupWindow-desktop
@@ -68,6 +69,8 @@ TileTheme
 degreesToQuaternion
 setSimplePosition
 setSimpleRotation
+
+nodeAtPosition
 
 # input
 #OSGCPE_INPUT_MOUSE_LOG

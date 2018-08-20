@@ -35,6 +35,7 @@ namespace mc
 namespace scene
 {
 
+
 // degreesToQuaternion Start
 //! Convert from degrees to quaternion.
 osg::Quat degreesToQuaternion(const osg::Vec3f &degrees)
@@ -73,6 +74,7 @@ void setSimpleRotation(osg::MatrixTransform *node, const osg::Vec3f &rotation)
     );
 }
 // setSimpleRotation End
+
 
 } // namespace scene
 } // namespace mc
