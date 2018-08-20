@@ -30,6 +30,7 @@ private:
     const unsigned int selectionNodeMask = 0x00000004;
     core::Reporter selectedTile;
     osg::Node *selectedTileNode = 0;
+    osg::Node *previouslySelectedTileNode = 0;
     mahjong::Solitaire *game;
 
     void setupMatchTilesTest()
@@ -41,6 +42,7 @@ private:
         this->setupTiles();
         this->setupTileSelection();
         this->setupTileSelectionDepiction();
+        this->setupTileMatching();
 
         //this->game = new mahjong::Solitaire();
     }
@@ -200,7 +202,7 @@ private:
                 bool clicked = !this->app->mouse->pressedButtons.empty();
                 if (clicked)
                 {
-                    this->tryToSelectTile();
+                    this->selectTile();
                 }
             },
             this->selectionCallbackName
@@ -212,7 +214,7 @@ private:
             this->selectionCallbackName
         );
     }
-    void tryToSelectTile()
+    void selectTile()
     {
         this->selectedTileNode =
             scene::nodeAtPosition(
@@ -232,7 +234,6 @@ private:
             [&] {
                 auto node = this->selectedTileNode;
                 auto tile = this->tileNodes[node];
-                MC_MAIN_EXAMPLE_LOG("selected tile matchId: '%d'", tile.matchId);
                 this->setNodeSelected(node, true);
             }
         );
@@ -244,4 +245,49 @@ private:
             this->selectedMaterial :
             0;
         node->setStateSet(material);
+    }
+    void setupTileMatching()
+    {
+        this->selectedTile.addCallback(
+            [&] {
+                auto nodeNow = this->selectedTileNode;
+                auto nodeWas = this->previouslySelectedTileNode;
+
+                // Keep previously selected tile node.
+                this->previouslySelectedTileNode = nodeNow;
+
+                // Make sure different node is selected each time.
+                if (nodeNow == nodeWas)
+                {
+                    return;
+                }
+
+                // Make sure there was a previoulsy selected node.
+                if (!nodeWas)
+                {
+                    return;
+                }
+
+                this->matchTileNodes(nodeWas, nodeNow);
+            }
+        );
+    }
+    void matchTileNodes(osg::Node *nodeWas, osg::Node *nodeNow)
+    {
+        auto tileWas = this->tileNodes[nodeWas];
+        auto tileNow = this->tileNodes[nodeNow];
+        MC_MAIN_EXAMPLE_LOG(
+            "match ids of the selected tiles: '%d' and '%d'",
+            tileWas.matchId,
+            tileNow.matchId
+        );
+        if (tileNow.matchId == tileWas.matchId)
+        {
+            MC_MAIN_EXAMPLE_LOG("Tiles match. TODO REMOVE");
+        }
+        else
+        {
+            MC_MAIN_EXAMPLE_LOG("Tiles don't match. Deselect previously selected one");
+            this->setNodeSelected(nodeWas, false);
+        }
     }
