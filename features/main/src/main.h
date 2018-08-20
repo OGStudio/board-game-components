@@ -1,7 +1,7 @@
 
 /*
-This file is part of Mahjong components:
-  https://github.com/OGStudio/mahjong-components
+This file is part of OGS Mahjong components:
+  https://github.com/OGStudio/ogs-mahjong-components
 
 Copyright (C) 2018 Opensource Game Studio
 
@@ -22,14 +22,15 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef MAHJONG_COMPONENTS_MAIN_H
-#define MAHJONG_COMPONENTS_MAIN_H
+#ifndef OGS_MAHJONG_COMPONENTS_MAIN_H
+#define OGS_MAHJONG_COMPONENTS_MAIN_H
 
 // FEATURE Application+frame+Reporting/Include
 // FEATURE Application+handleEvent-web/Include
 
 // FEATURE Application+HTTPClient/Include
 // FEATURE Application+Logging/Include
+// FEATURE Application+Mouse/Include
 // FEATURE Application+Rendering/Include
 
 // FEATURE Example+Layout/Include
@@ -54,16 +55,19 @@ namespace main
 // FEATURE Application/Setup
             // FEATURE Application+Logging/Setup
             // FEATURE Application+Rendering/Setup
+            // FEATURE Application+Mouse/Setup
             // FEATURE Application+HTTPClient/Setup
             // FEATURE Application+HTTPClientProcessor/Setup
 // FEATURE Application/TearDown
             // FEATURE Application+HTTPClientProcessor/TearDown
             // FEATURE Application+HTTPClient/TearDown
+            // FEATURE Application+Mouse/TearDown
             // FEATURE Application+Rendering/TearDown
             // FEATURE Application+Logging/TearDown
 // FEATURE Application/Impl
     // FEATURE Application+frame+Reporting/Impl
     // FEATURE Application+handleEvent-web/Impl
+    // FEATURE Application+handleMousePress-android/Impl
     // FEATURE Application+run/Impl
     // FEATURE Application+setupWindow-desktop/Impl
     // FEATURE Application+setupWindow-embedded/Impl
@@ -72,6 +76,7 @@ namespace main
     // FEATURE Application+HTTPClient/Impl
     // FEATURE Application+HTTPClientProcessor/Impl
     // FEATURE Application+Logging/Impl
+    // FEATURE Application+Mouse/Impl
     // FEATURE Application+Rendering/Impl
 // FEATURE Application/End
 
@@ -104,5 +109,5 @@ namespace main
 } // namespace main
 } // namespace mc
 
-#endif // MAHJONG_COMPONENTS_MAIN_H
+#endif // OGS_MAHJONG_COMPONENTS_MAIN_H
 

@@ -22,28 +22,23 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef OGS_MAHJONG_COMPONENTS_FORMAT_H
-#define OGS_MAHJONG_COMPONENTS_FORMAT_H
+#ifndef OGS_MAHJONG_COMPONENTS_INPUT_H
+#define OGS_MAHJONG_COMPONENTS_INPUT_H
 
-// FEATURE printfString/Include
-// FEATURE commandLineArgumentsToParameters/Include
-// FEATURE urlQueryToParameters/Include
+// FEATURE Mouse/Include
+
+// FEATURE MC_INPUT_MOUSE_LOG/Impl
 
 namespace mc
 {
-namespace format
+namespace input
 {
 
-// FEATURE printfString/Impl
-// FEATURE splitString/Impl
-// FEATURE stringStartsWith/Impl
-// FEATURE trimmedString/Impl
+// FEATURE MouseButtons/Impl
+// FEATURE Mouse/Impl
 
-// FEATURE commandLineArgumentsToParameters/Impl
-// FEATURE urlQueryToParameters/Impl
-
-} // namespace format
+} // namespace input
 } // namespace mc
 
-#endif // OGS_MAHJONG_COMPONENTS_FORMAT_H
+#endif // OGS_MAHJONG_COMPONENTS_INPUT_H
 

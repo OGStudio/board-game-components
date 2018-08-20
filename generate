@@ -34,6 +34,7 @@ FEATURES_TXT_DIR="src"
 FEATURE_DIRS=(
     "/core"
     "/format"
+    "/input"
     "/log"
     "/mahjong"
     "/main"
@@ -43,7 +44,6 @@ FEATURE_DIRS=(
     "/scene"
 )
 #    "/debug"
-#    "/input"
 
 FEATURES_TXT_DIR_ANDROID_CPP="app/src/main/cpp"
 FEATURES_TXT_DIR_ANDROID_JAVA="app/src/main/java"

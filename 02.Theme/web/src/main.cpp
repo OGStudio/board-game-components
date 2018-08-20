@@ -1,7 +1,7 @@
 
 /*
-This file is part of Mahjong components:
-  https://github.com/OGStudio/mahjong-components
+This file is part of OGS Mahjong components:
+  https://github.com/OGStudio/ogs-mahjong-components
 
 Copyright (C) 2018 Opensource Game Studio
 

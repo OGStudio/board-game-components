@@ -4,6 +4,7 @@ Application+frame+Reporting
 Application+run
 Application+setupWindow-desktop
 Application+Logging
+Application+Mouse
 Application+Rendering
 
 MC_MAIN_EXAMPLE_LOG
@@ -67,3 +68,8 @@ TileTheme
 degreesToQuaternion
 setSimplePosition
 setSimpleRotation
+
+# input
+#OSGCPE_INPUT_MOUSE_LOG
+Mouse
+MouseButtons

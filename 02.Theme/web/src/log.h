@@ -1,7 +1,7 @@
 
 /*
-This file is part of Mahjong components:
-  https://github.com/OGStudio/mahjong-components
+This file is part of OGS Mahjong components:
+  https://github.com/OGStudio/ogs-mahjong-components
 
 Copyright (C) 2018 Opensource Game Studio
 
@@ -22,8 +22,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef MAHJONG_COMPONENTS_LOG_H
-#define MAHJONG_COMPONENTS_LOG_H
+#ifndef OGS_MAHJONG_COMPONENTS_LOG_H
+#define OGS_MAHJONG_COMPONENTS_LOG_H
 
 // log-default Start
 #include <iostream>
@@ -117,5 +117,5 @@ class Logger : public osg::NotifyHandler
 } // namespace log
 } // namespace mc
 
-#endif // MAHJONG_COMPONENTS_LOG_H
+#endif // OGS_MAHJONG_COMPONENTS_LOG_H
 

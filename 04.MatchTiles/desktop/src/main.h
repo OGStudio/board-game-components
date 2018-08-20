@@ -1,7 +1,7 @@
 
 /*
-This file is part of Mahjong components:
-  https://github.com/OGStudio/mahjong-components
+This file is part of OGS Mahjong components:
+  https://github.com/OGStudio/ogs-mahjong-components
 
 Copyright (C) 2018 Opensource Game Studio
 
@@ -22,8 +22,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef MAHJONG_COMPONENTS_MAIN_H
-#define MAHJONG_COMPONENTS_MAIN_H
+#ifndef OGS_MAHJONG_COMPONENTS_MAIN_H
+#define OGS_MAHJONG_COMPONENTS_MAIN_H
 
 // Application+frame+Reporting Start
 #include "core.h"
@@ -34,6 +34,10 @@ freely, subject to the following restrictions:
 #include "log.h"
 
 // Application+Logging End
+// Application+Mouse Start
+#include "input.h"
+
+// Application+Mouse End
 // Application+Rendering Start
 #include "render.h"
 
@@ -127,12 +131,20 @@ class Application
             this->setupRendering();
             
             // Application+Rendering End
+            // Application+Mouse Start
+            this->setupMouse();
+            
+            // Application+Mouse End
 // Application Start
         }
         ~Application()
         {
 
 // Application End
+            // Application+Mouse Start
+            this->tearMouseDown();
+            
+            // Application+Mouse End
             // Application+Rendering Start
             this->tearRenderingDown();
             
@@ -202,6 +214,23 @@ class Application
             osg::setNotifyHandler(0);
         }
     // Application+Logging End
+    // Application+Mouse Start
+    public:
+        osg::ref_ptr<input::Mouse> mouse;
+    private:
+        void setupMouse()
+        {
+            // Create mouse events' handler.
+            this->mouse = new input::Mouse;
+            // Register it.
+            this->viewer->addEventHandler(this->mouse);
+        }
+        void tearMouseDown()
+        {
+            // This also removes Mouse instance.
+            this->viewer->removeEventHandler(this->mouse);
+        }
+    // Application+Mouse End
     // Application+Rendering Start
     public:
         void setScene(osg::Node *scene)
@@ -485,5 +514,5 @@ struct Example
 } // namespace main
 } // namespace mc
 
-#endif // MAHJONG_COMPONENTS_MAIN_H
+#endif // OGS_MAHJONG_COMPONENTS_MAIN_H
 
