@@ -51,7 +51,8 @@ freely, subject to the following restrictions:
 #include "scene.h"
 
 #include "resource.h"
-#include "cat.layout.h"
+//#include "cat.layout.h"
+#include "short.layout.h"
 #include "ppl-theme.frag.h"
 #include "ppl-theme.vert.h"
 #include "tile-low.osgt.h"
@@ -359,44 +360,58 @@ struct Example
     // Example+TileTheme End
     // Example+MatchTilesTest Start
     private:
+        mahjong::Solitaire *game;
         osg::ref_ptr<osg::Geode> tileModel;
         osg::ref_ptr<osg::StateSet> normalMaterial;
         osg::ref_ptr<osg::StateSet> selectedMaterial;
         osg::ref_ptr<osg::MatrixTransform> tileScene;
         mahjong::Layout layout;
-        std::vector<mahjong::Tile> tiles;
         std::map<osg::Node *, mahjong::Tile> tileNodes;
         const std::string selectionCallbackName = "Selection";
         const unsigned int selectionNodeMask = 0x00000004;
         core::Reporter selectedTile;
         osg::Node *selectedTileNode = 0;
         osg::Node *previouslySelectedTileNode = 0;
-        mahjong::Solitaire *game;
+        core::Reporter tilesMatch;
+        std::vector<osg::Node *> nodesToRemove;
+        core::Reporter removedTiles;
     
         void setupMatchTilesTest()
         {
+            this->game = new mahjong::Solitaire();
             this->setupLayout();
             this->setupMaterials();
             this->setupModel();
             this->setupTileScene();
             this->setupTiles();
             this->setupTileSelection();
-            this->setupGame();
+            this->setupTileMatching();
+            this->setupTileRemoval();
+            this->setupGameStateDetection();
         }
         void tearMatchTilesTestDown()
         {
             this->tearTileSelectionDown();
-            this->tearGameDown();
+            delete this->game;
         }
     
         void setupLayout()
         {
+            /*
             resource::Resource res(
                 "layouts",
                 "cat.layout",
                 cat_layout,
                 cat_layout_len
             );
+            */
+            resource::Resource res(
+                "layouts",
+                "short.layout",
+                short_layout,
+                short_layout_len
+            );
+    
             resource::ResourceStreamBuffer buf(res);
             std::istream in(&buf);
             if (!mahjong::parseLayout(in, this->layout))
@@ -476,6 +491,7 @@ struct Example
         }
         void setupTiles()
         {
+            std::vector<mahjong::Tile> tiles;
             const int matchIdsCount = 42;
             int id = 0;
             for (auto pos : this->layout.positions)
@@ -488,12 +504,10 @@ struct Example
                 int matchId = id++ / 2;
     
                 // Create logical tile.
-                // NOTE this->tiles is only necessary once for Solitaire.
-                // TODO Find a way to remove it from here.
                 mahjong::Tile tile;
                 tile.position = pos;
                 tile.matchId = matchId;
-                this->tiles.push_back(tile);
+                tiles.push_back(tile);
     
                 // Create visual tile.
                 auto tileModel = new osg::Geode(*this->tileModel, osg::CopyOp::DEEP_COPY_ALL);
@@ -506,7 +520,7 @@ struct Example
     
                 // Map logical tile position to visual one.
                 float z = pos.field;
-                float y = pos.row * 1.5 /* Factor depends on the model */;
+                float y = pos.row * -1.5 /* Factor depends on the model */;
                 float x = pos.column;
                 // Set visual tile position.
                 scene::setSimplePosition(tileNode, {x, y, z});
@@ -514,6 +528,9 @@ struct Example
                 // Keep correspondence of visual tiles to logical ones.
                 this->tileNodes[tileNode] = tile;
             }
+    
+            // Provide logical tiles to the game.
+            this->game->setTiles(tiles);
         }
         void setupTileScene()
         {
@@ -567,13 +584,8 @@ struct Example
                 this->selectedTile.report();
             }
         }
-        void setupGame()
+        void setupTileMatching()
         {
-            this->game = new mahjong::Solitaire();
-            this->game->setTiles(this->tiles);
-            // Erase local logical tiles' representation.
-            this->tiles.clear();
-    
             this->selectedTile.addCallback(
                 [&] {
                     auto nodeNow = this->selectedTileNode;
@@ -603,13 +615,17 @@ struct Example
                     this->setNodeSelected(nodeWas, false);
     
                     // Match tiles.
-                    this->matchTileNodes(nodeWas, nodeNow);
+                    auto tileWas = this->tileNodes[nodeWas];
+                    bool match = this->game->tilesMatch(tileWas, tileNow);
+                    // Report matching.
+                    if (match)
+                    {
+                        this->nodesToRemove.push_back(nodeWas);
+                        this->nodesToRemove.push_back(nodeNow);
+                        this->tilesMatch.report();
+                    }
                 }
             );
-        }
-        void tearGameDown()
-        {
-            delete this->game;
         }
         void setNodeSelected(osg::Node *node, bool state)
         {
@@ -619,41 +635,60 @@ struct Example
                 0;
             node->setStateSet(material);
         }
-        void matchTileNodes(osg::Node *nodeWas, osg::Node *nodeNow)
+        void setupTileRemoval()
         {
+            this->tilesMatch.addCallback(
+                [&] {
+                    this->removeTiles();
+                }
+            );
+        }
+        void removeTiles()
+        {
+            // Find out nodes and tiles to remove.
+            auto nodeWas = this->nodesToRemove[0];
+            auto nodeNow = this->nodesToRemove[1];
+            this->nodesToRemove.clear();
             auto tileWas = this->tileNodes[nodeWas];
             auto tileNow = this->tileNodes[nodeNow];
-            bool match = this->game->tilesMatch(tileWas, tileNow);
-            // Remove matching tiles.
-            if (match)
+    
+            // Remove tiles from Solitaire (logical) representation.
+            this->game->removeTiles(tileWas, tileNow);
+            // Remove nodes from tileNodes.
             {
-                MC_MAIN_EXAMPLE_LOG("Tiles match. Remove");
-                // Remove tiles from Solitaire (logical) representation.
-                this->game->removeTiles(tileWas, tileNow);
-                // Remove nodes from tileNodes.
-                {
-                    auto it = this->tileNodes.find(nodeWas);
-                    this->tileNodes.erase(it);
-                }
-                {
-                    auto it = this->tileNodes.find(nodeNow);
-                    this->tileNodes.erase(it);
-                }
-                // Deselect both tile nodes.
-                this->setNodeSelected(nodeWas, false);
-                this->setNodeSelected(nodeNow, false);
-                // Remove nodes from tileScene.
-                this->tileScene->removeChild(nodeWas);
-                this->tileScene->removeChild(nodeNow);
-                // Remove selection.
-                this->selectedTileNode = 0;
-                this->previouslySelectedTileNode = 0;
+                auto it = this->tileNodes.find(nodeWas);
+                this->tileNodes.erase(it);
             }
-            // Do nothing.
-            else
             {
-                MC_MAIN_EXAMPLE_LOG("Tiles don't match. Do nothing");
+                auto it = this->tileNodes.find(nodeNow);
+                this->tileNodes.erase(it);
             }
+            // Deselect both tile nodes.
+            this->setNodeSelected(nodeWas, false);
+            this->setNodeSelected(nodeNow, false);
+            // Remove nodes from tileScene.
+            this->tileScene->removeChild(nodeWas);
+            this->tileScene->removeChild(nodeNow);
+            // Remove selection.
+            this->selectedTileNode = 0;
+            this->previouslySelectedTileNode = 0;
+            
+            // Report.
+            this->removedTiles.report();
+        }
+        void setupGameStateDetection()
+        {
+            this->removedTiles.addCallback(
+                [&] {
+                    this->detectGameState();
+                }
+            );
+        }
+        void detectGameState()
+        {
+            // TODO Find out number of moves left
+            // TODO Find out number of tiles left
+            // TODO Detect victory and loss
         }
     // Example+MatchTilesTest End
 // Example Start
