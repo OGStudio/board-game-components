@@ -45,7 +45,6 @@ Logger
 
 # format
 printfString
-#splitString
 stringStartsWith
 trimmedString
 
@@ -74,6 +73,5 @@ setSimpleRotation
 nodeAtPosition
 
 # input
-#OSGCPE_INPUT_MOUSE_LOG
 Mouse
 MouseButtons

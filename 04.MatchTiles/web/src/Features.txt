@@ -1,0 +1,78 @@
+# main
+Application
+Application+camera
+Application+frame+Reporting
+Application+handleEvent-web
+Application+setupWindow-embedded
+Application+Logging
+Application+Mouse
+Application+Rendering
+
+MC_MAIN_EXAMPLE_LOG
+Example
+Example+04
+Example+MatchTilesTest
+Example+Scene
+Example+TileTheme
+Example+StaticPluginOSG
+Example+StaticPluginPNG
+Example+VBO
+
+MC_MAIN_LOG
+main-web
+
+# core
+Reporter
+
+# mahjong
+MC_MAHJONG_LOG
+KMahjonggLayout
+Layout
+Solitaire
+Tile
+TilePosition
+TilePosition+Equality
+intToTilePosition
+kmahjonggLayoutFieldsToPositions
+linesToKMahjonggLayout
+parseLayout
+tilePositionToInt
+
+# log
+log-default
+logLevelToString
+logprintf
+Logger
+
+# format
+printfString
+stringStartsWith
+trimmedString
+
+# resource
+OSGCPE_RESOURCE_LOG
+createTexture
+extension
+node
+setTextureImage
+string
+Resource
+ResourceStreamBuffer
+
+# render
+MC_RENDER_TILE_THEME_LOG
+createShaderProgram
+setupCamera
+TileTheme
+VBOSetupVisitor
+
+# scene
+degreesToQuaternion
+setSimplePosition
+setSimpleRotation
+
+nodeAtPosition
+
+# input
+Mouse
+MouseButtons
