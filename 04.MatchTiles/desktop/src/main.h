@@ -632,19 +632,19 @@ struct Example
                 this->game->removeTiles(tileWas, tileNow);
                 // Remove nodes from tileNodes.
                 {
-                    auto it = this->tileNodes.find(this->selectedTileNode);
+                    auto it = this->tileNodes.find(nodeWas);
                     this->tileNodes.erase(it);
                 }
                 {
-                    auto it = this->tileNodes.find(this->previouslySelectedTileNode);
+                    auto it = this->tileNodes.find(nodeNow);
                     this->tileNodes.erase(it);
                 }
                 // Deselect both tile nodes.
-                this->setNodeSelected(this->selectedTileNode, false);
-                this->setNodeSelected(this->previouslySelectedTileNode, false);
+                this->setNodeSelected(nodeWas, false);
+                this->setNodeSelected(nodeNow, false);
                 // Remove nodes from tileScene.
-                this->tileScene->removeChild(this->selectedTileNode);
-                this->tileScene->removeChild(this->previouslySelectedTileNode);
+                this->tileScene->removeChild(nodeWas);
+                this->tileScene->removeChild(nodeNow);
                 // Remove selection.
                 this->selectedTileNode = 0;
                 this->previouslySelectedTileNode = 0;
