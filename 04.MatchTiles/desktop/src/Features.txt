@@ -30,6 +30,7 @@ Layout
 Solitaire
 Tile
 TilePosition
+TilePosition+Equality
 intToTilePosition
 kmahjonggLayoutFieldsToPositions
 linesToKMahjonggLayout

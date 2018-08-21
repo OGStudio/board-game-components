@@ -61,6 +61,16 @@ struct TilePosition
     int column;
 };
 // TilePosition End
+// TilePosition+Equality Start
+bool operator==(const TilePosition &pos1, const TilePosition &pos2)
+{
+    return
+        (pos1.field == pos2.field) &&
+        (pos1.row == pos2.row) &&
+        (pos1.column == pos2.column)
+        ;
+}
+// TilePosition+Equality End
 // Tile Start
 struct Tile
 {
@@ -285,14 +295,35 @@ class Solitaire
     public:
         Solitaire() { }
 
-        void setTiles(const std::vector<Tile> &tiles)
+        typedef std::vector<Tile> Tiles;
+
+        bool hasTiles()
         {
-            for (auto tile : tiles)
+            return !this->positionTiles.empty();
+        }
+
+        bool hasTurns()
+        {
+            auto tiles = this->selectableTiles();
+            for (auto tile1 : tiles)
             {
-                // Keep tiles in `position->tile` map for lookup by position.
-                int position = tilePositionToInt(tile.position);
-                this->positionTiles[position] = tile;
+                for (auto tile2 : tiles)
+                {
+                    // Ignore the same item.
+                    if (tile1.position == tile2.position)
+                    {
+                        continue;
+                    }
+
+                    // We have turns if there is at least one matching pair
+                    // of selectable tiles.
+                    if (tile1.matchId == tile2.matchId)
+                    {
+                        return true;
+                    }
+                }
             }
+            return false;
         }
 
         bool isTileSelectable(const Tile &tile)
@@ -318,15 +349,25 @@ class Solitaire
             return true;
         }
 
-        bool tilesMatch(const Tile &tile1, const Tile &tile2)
-        {
-            return (tile1.matchId == tile2.matchId);
-        }
-
         void removeTiles(const Tile &tile1, const Tile &tile2)
         {
             this->removeTile(tile1);
             this->removeTile(tile2);
+        }
+
+        void setTiles(const Tiles &tiles)
+        {
+            for (auto tile : tiles)
+            {
+                // Keep tiles in `position->tile` map for lookup by position.
+                int position = tilePositionToInt(tile.position);
+                this->positionTiles[position] = tile;
+            }
+        }
+
+        bool tilesMatch(const Tile &tile1, const Tile &tile2)
+        {
+            return (tile1.matchId == tile2.matchId);
         }
 
     private:
@@ -339,6 +380,20 @@ class Solitaire
             auto position = tilePositionToInt(tile.position);
             auto it = this->positionTiles.find(position);
             this->positionTiles.erase(it);
+        }
+
+        Tiles selectableTiles()
+        {
+            Tiles tiles;
+            for (auto it : this->positionTiles)
+            {
+                auto tile = it.second;
+                if (this->isTileSelectable(tile))
+                {
+                    tiles.push_back(tile);
+                }
+            }
+            return tiles;
         }
 
         bool tileHasNeighbours(
@@ -367,6 +422,7 @@ class Solitaire
             // Found no neighbours.
             return false;
         }
+
 };
 // Solitaire End
 

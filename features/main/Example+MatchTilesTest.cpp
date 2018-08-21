@@ -3,8 +3,11 @@ FEATURE main.h/Include
 #include "scene.h"
 
 #include "resource.h"
+
 //#include "cat.layout.h"
-#include "short.layout.h"
+#include "short-victory.layout.h"
+#include "short-loss.layout.h"
+
 #include "ppl-theme.frag.h"
 #include "ppl-theme.vert.h"
 #include "tile-low.osgt.h"
@@ -67,10 +70,18 @@ private:
         */
         resource::Resource res(
             "layouts",
-            "short.layout",
-            short_layout,
-            short_layout_len
+            "short-victory.layout",
+            short_victory_layout,
+            short_victory_layout_len
         );
+        /*
+        resource::Resource res(
+            "layouts",
+            "short-loss.layout",
+            short_loss_layout,
+            short_loss_layout_len
+        );
+        */
 
         resource::ResourceStreamBuffer buf(res);
         std::istream in(&buf);
@@ -346,7 +357,15 @@ private:
     }
     void detectGameState()
     {
-        // TODO Find out number of moves left
-        // TODO Find out number of tiles left
-        // TODO Detect victory and loss
+        if (!this->game->hasTurns())
+        {
+            if (this->game->hasTiles())
+            {
+                MC_MAIN_EXAMPLE_LOG("Game over: LOSS");
+            }
+            else
+            {
+                MC_MAIN_EXAMPLE_LOG("Game over: VICTORY");
+            }
+        }
     }

@@ -33,6 +33,7 @@ namespace mahjong
 {
 
 // FEATURE TilePosition/Impl
+// FEATURE TilePosition+Equality/Impl
 // FEATURE Tile/Impl
 
 // FEATURE Layout/Impl
