@@ -35,6 +35,10 @@ freely, subject to the following restrictions:
         format::printfString(__VA_ARGS__).c_str() \
     )
 // MC_MAHJONG_LOG End
+// orderedLayoutPositions Start
+#include <random>
+
+// orderedLayoutPositions End
 
 namespace mc
 {
@@ -264,6 +268,28 @@ bool linesToKMahjonggLayout(
     return true;
 }
 // linesToKMahjonggLayout End
+// orderedLayoutPositions Start
+Layout::Positions orderedLayoutPositions(
+    Layout::Positions positions,
+    unsigned int seed
+) {
+    // Initialize random number generator.
+    std::mt19937 random(seed);
+
+    Layout::Positions orderedPositions;
+
+    // Pick positions according to random number generator.
+    while (auto positionsLeft = positions.size())
+    {
+        auto id = random() % positionsLeft;
+        auto position = positions[id];
+        positions.erase(positions.begin() + id);
+        orderedPositions.push_back(position);
+    }
+
+    return orderedPositions;
+}
+// orderedLayoutPositions End
 // parseLayout Start
 bool parseLayout(std::istream &in, Layout &layout)
 {

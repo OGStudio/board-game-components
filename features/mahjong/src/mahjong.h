@@ -26,6 +26,7 @@ freely, subject to the following restrictions:
 #define OGS_MAHJONG_COMPONENTS_MAHJONG_H
 
 // FEATURE MC_MAHJONG_LOG/Impl
+// FEATURE orderedLayoutPositions/Include
 
 namespace mc
 {
@@ -44,6 +45,7 @@ namespace mahjong
 
 // FEATURE kmahjonggLayoutFieldsToPositions/Impl
 // FEATURE linesToKMahjonggLayout/Impl
+// FEATURE orderedLayoutPositions/Impl
 // FEATURE parseLayout/Impl
 // FEATURE layoutToString/Impl
 

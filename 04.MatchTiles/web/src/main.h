@@ -56,7 +56,7 @@ freely, subject to the following restrictions:
 
 #include "resource.h"
 
-//#include "cat.layout.h"
+#include "cat.layout.h"
 #include "short-victory.layout.h"
 #include "short-loss.layout.h"
 
@@ -479,20 +479,20 @@ struct Example
     
         void setupLayout()
         {
-            /*
             resource::Resource res(
                 "layouts",
                 "cat.layout",
                 cat_layout,
                 cat_layout_len
             );
-            */
+            /*
             resource::Resource res(
                 "layouts",
                 "short-victory.layout",
                 short_victory_layout,
                 short_victory_layout_len
             );
+            */
             /*
             resource::Resource res(
                 "layouts",
@@ -584,7 +584,13 @@ struct Example
             std::vector<mahjong::Tile> tiles;
             const int matchIdsCount = 42;
             int id = 0;
-            for (auto pos : this->layout.positions)
+    
+            // Reorder layout positions with seed.
+            unsigned int seed = 1337;
+            auto layoutPositions =
+                mahjong::orderedLayoutPositions(this->layout.positions, seed);
+    
+            for (auto pos : layoutPositions)
             {
                 // Construct matchId so that two consequent tiles get the same matchId.
                 if (id >= matchIdsCount * 2)
