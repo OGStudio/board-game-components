@@ -35,6 +35,7 @@ TilePosition+Equality
 intToTilePosition
 kmahjonggLayoutFieldsToPositions
 linesToKMahjonggLayout
+orderedLayoutPositions
 parseLayout
 tilePositionToInt
 
