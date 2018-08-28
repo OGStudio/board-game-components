@@ -47,4 +47,15 @@ private:
         scene::setSimplePosition(rightTransform, {3, 0, 0});
         // Add it to the scene.
         this->tileScene->addChild(rightTransform);
+
+        // Set texture to materials.
+        resource::Resource texRes(
+            "textures",
+            "tile-theme.png",
+            tile_theme_png,
+            tile_theme_png_len
+        );
+        auto texture = resource::createTexture(texRes);
+        this->themeMaterial->setTextureAttributeAndModes(0, texture);
+        this->themeMaterialSelected->setTextureAttributeAndModes(0, texture);
     }

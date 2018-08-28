@@ -79,12 +79,6 @@ private:
             ppl_theme_vert,
             ppl_theme_vert_len
         );
-        resource::Resource texRes(
-            "textures",
-            "tile-theme.png",
-            tile_theme_png,
-            tile_theme_png_len
-        );
 
         // Create shader program.
         auto prog =
@@ -92,13 +86,10 @@ private:
                 resource::string(shaderVert),
                 resource::string(shaderFrag)
             );
-        // Create texture.
-        auto texture = resource::createTexture(texRes);
 
         // Create normal state material.
         auto normal = new osg::StateSet;
         normal->setAttribute(prog);
-        normal->setTextureAttributeAndModes(0, texture);
         normal->addUniform(new osg::Uniform("image", 0));
         normal->addUniform(new osg::Uniform("isSelected", false));
         this->themeMaterial = normal;
@@ -106,7 +97,6 @@ private:
         // Create selected state material.
         auto selected = new osg::StateSet;
         selected->setAttribute(prog);
-        selected->setTextureAttributeAndModes(0, texture);
         selected->addUniform(new osg::Uniform("image", 0));
         selected->addUniform(new osg::Uniform("isSelected", true));
         this->themeMaterialSelected = selected;

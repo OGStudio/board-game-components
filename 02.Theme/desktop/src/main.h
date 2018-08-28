@@ -349,12 +349,6 @@ struct Example
                 ppl_theme_vert,
                 ppl_theme_vert_len
             );
-            resource::Resource texRes(
-                "textures",
-                "tile-theme.png",
-                tile_theme_png,
-                tile_theme_png_len
-            );
     
             // Create shader program.
             auto prog =
@@ -362,13 +356,10 @@ struct Example
                     resource::string(shaderVert),
                     resource::string(shaderFrag)
                 );
-            // Create texture.
-            auto texture = resource::createTexture(texRes);
     
             // Create normal state material.
             auto normal = new osg::StateSet;
             normal->setAttribute(prog);
-            normal->setTextureAttributeAndModes(0, texture);
             normal->addUniform(new osg::Uniform("image", 0));
             normal->addUniform(new osg::Uniform("isSelected", false));
             this->themeMaterial = normal;
@@ -376,7 +367,6 @@ struct Example
             // Create selected state material.
             auto selected = new osg::StateSet;
             selected->setAttribute(prog);
-            selected->setTextureAttributeAndModes(0, texture);
             selected->addUniform(new osg::Uniform("image", 0));
             selected->addUniform(new osg::Uniform("isSelected", true));
             this->themeMaterialSelected = selected;
@@ -424,6 +414,17 @@ struct Example
             scene::setSimplePosition(rightTransform, {3, 0, 0});
             // Add it to the scene.
             this->tileScene->addChild(rightTransform);
+    
+            // Set texture to materials.
+            resource::Resource texRes(
+                "textures",
+                "tile-theme.png",
+                tile_theme_png,
+                tile_theme_png_len
+            );
+            auto texture = resource::createTexture(texRes);
+            this->themeMaterial->setTextureAttributeAndModes(0, texture);
+            this->themeMaterialSelected->setTextureAttributeAndModes(0, texture);
         }
     // Example+ThemeTest End
 // Example Start

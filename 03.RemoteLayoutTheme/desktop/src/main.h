@@ -47,13 +47,8 @@ freely, subject to the following restrictions:
 // Application+Rendering End
 
 // Example+RemoteLayoutTheme Start
-#include "ppl-theme.frag.h"
-#include "ppl-theme.vert.h"
-#include "tile-low.osgt.h"
-#include "layout.h"
-#include "resource.h"
+#include "mahjong.h"
 #include "scene.h"
-
 #include <osg/MatrixTransform>
 
 // Example+RemoteLayoutTheme End
@@ -61,7 +56,28 @@ freely, subject to the following restrictions:
 #include <osg/MatrixTransform>
 
 // Example+Scene End
+// Example+Theme Start
+#include "render.h"
+#include "resource.h"
 
+#include "ppl-theme.frag.h"
+#include "ppl-theme.vert.h"
+#include "tile-low.osgt.h"
+#include "tile-theme.png.h"
+
+// Example+Theme End
+
+// OMC_MAIN_EXAMPLE_LOG Start
+#include "log.h"
+#include "format.h"
+#define OMC_MAIN_EXAMPLE_LOG_PREFIX "main::Example(%p) %s"
+#define OMC_MAIN_EXAMPLE_LOG(...) \
+    log::logprintf( \
+        OMC_MAIN_EXAMPLE_LOG_PREFIX, \
+        this, \
+        format::printfString(__VA_ARGS__).c_str() \
+    )
+// OMC_MAIN_EXAMPLE_LOG End
 
 // Example+StaticPluginOSG Start
 #include <osgDB/Registry>
@@ -278,6 +294,10 @@ struct Example
         this->setupScene();
         
         // Example+Scene End
+        // Example+Theme Start
+        this->setupTheme();
+        
+        // Example+Theme End
         // Example+RemoteLayoutTheme Start
         this->setupRemoteLayoutTheme(parameters);
         
@@ -288,6 +308,10 @@ struct Example
     {
 
 // Example End
+        // Example+Theme Start
+        this->tearThemeDown();
+        
+        // Example+Theme End
 // Example Start
         delete this->app;
     }
@@ -296,42 +320,17 @@ struct Example
     // Example+RemoteLayoutTheme Start
     private:
         osg::ref_ptr<osg::MatrixTransform> tileScene;
-        osg::ref_ptr<osg::StateSet> normalMaterial;
-        osg::ref_ptr<osg::StateSet> selectedMaterial;
-        osg::ref_ptr<osg::Geode> tile;
     
         void setupRemoteLayoutTheme(const Parameters &parameters)
         {
             // Create tile scene to host tiles.
             this->tileScene = new osg::MatrixTransform;
             this->scene->addChild(this->tileScene);
-    
-            this->setupMaterials();
             // Apply normal state material to the whole scene.
-            this->tileScene->setStateSet(this->normalMaterial);
+            this->tileScene->setStateSet(this->themeMaterial);
     
             // Rotate the tile scene to have a better view.
             scene::setSimpleRotation(this->tileScene, {60, 0, 0});
-    
-            // Load model with geode only.
-            resource::Resource res(
-                "models",
-                "tile-low.osgt",
-                tile_low_osgt,
-                tile_low_osgt_len
-            );
-            auto node = resource::node(res);
-            this->tile = reinterpret_cast<osg::Geode *>(node.get());
-            // Make sure tile is valid.
-            if (!this->tile)
-            {
-                OMC_MAIN_EXAMPLE_LOG(
-                    "ERROR Could not load model '%s/%s'",
-                    res.group.c_str(),
-                    res.name.c_str()
-                );
-                return;
-            }
     
             // Load remote layout and/or theme.
             for (auto parameter : parameters)
@@ -349,25 +348,25 @@ struct Example
             }
         }
     
-        void createTiles(const layout::Layout &layout)
+        void createTiles(const mahjong::Layout &layout)
         {
             int facesCount = 42;
             int faceId = 0;
             for (auto pos : layout.positions)
             {
                 // Clone tile.
-                auto tile = new osg::Geode(*this->tile, osg::CopyOp::DEEP_COPY_ALL);
+                auto tile = new osg::Geode(*this->tileModel, osg::CopyOp::DEEP_COPY_ALL);
                 // Set its position.
-                float z = pos.x();
-                float y = pos.y() * 1.5 /* Factor depends on the model */;
-                float x = pos.z();
+                float x = pos.column;
+                float y = pos.row * 1.5 /* Factor depends on the model */;
+                float z = pos.field;
                 auto node = new osg::MatrixTransform;
                 node->addChild(tile);
                 scene::setSimplePosition(node, {x, y, z});
                 // Add tile to the scene.
                 this->tileScene->addChild(node);
                 // Set tile face id.
-                this->tileTheme->setFaceId(faceId, tile);
+                this->theme->setFaceId(faceId, tile);
                 // Cycle face id.
                 if (++faceId >= facesCount)
                 {
@@ -394,9 +393,9 @@ struct Example
             const std::string &response,
             const std::string &url
         ) {
-            layout::Layout layout;
+            mahjong::Layout layout;
             std::istringstream in(response);
-            if (layout::parseLayout(in, layout))
+            if (mahjong::parseLayout(in, layout))
             {
                 this->createTiles(layout);
                 // Reset scene.
@@ -436,44 +435,9 @@ struct Example
                 );
             // Set texture to materials.
             auto texture = resource::createTexture(themeRes);
-            this->normalMaterial->setTextureAttributeAndModes(0, texture);
-            this->selectedMaterial->setTextureAttributeAndModes(0, texture);
+            this->themeMaterial->setTextureAttributeAndModes(0, texture);
+            this->themeMaterialSelected->setTextureAttributeAndModes(0, texture);
             OMC_MAIN_EXAMPLE_LOG("Successfully loaded theme");
-        }
-        void setupMaterials()
-        {
-            // Create built-in resources.
-            resource::Resource shaderFrag(
-                "shaders",
-                "ppl-theme.frag",
-                ppl_theme_frag,
-                ppl_theme_frag_len
-            );
-            resource::Resource shaderVert(
-                "shaders",
-                "ppl-theme.vert",
-                ppl_theme_vert,
-                ppl_theme_vert_len
-            );
-    
-            // Create shader program.
-            auto prog =
-                render::createShaderProgram(
-                    resource::string(shaderVert),
-                    resource::string(shaderFrag)
-                );
-    
-            // Create normal state material.
-            this->normalMaterial = new osg::StateSet;
-            this->normalMaterial->setAttribute(prog);
-            this->normalMaterial->addUniform(new osg::Uniform("image", 0));
-            this->normalMaterial->addUniform(new osg::Uniform("isSelected", false));
-    
-            // Create selected state material.
-            this->selectedMaterial = new osg::StateSet;
-            this->selectedMaterial->setAttribute(prog);
-            this->selectedMaterial->addUniform(new osg::Uniform("image", 0));
-            this->selectedMaterial->addUniform(new osg::Uniform("isSelected", true));
         }
     // Example+RemoteLayoutTheme End
     // Example+Scene Start
@@ -499,6 +463,95 @@ struct Example
             );
         }
     // Example+Scene End
+    // Example+Theme Start
+    private:
+        render::TileTheme *theme;
+        // Theme texture configuration.
+        const osg::Vec2 textureSize = {1024, 2048};
+        const osg::Vec2 tileFaceSize = {160, 240};
+        // Theme model.
+        const render::TileTheme::Indices faceIndices = {15, 23, 16, 17};
+        osg::ref_ptr<osg::Geode> tileModel;
+        // Materials for normal and selected states of tiles.
+        osg::ref_ptr<osg::StateSet> themeMaterial;
+        osg::ref_ptr<osg::StateSet> themeMaterialSelected;
+    
+        void setupTheme()
+        {
+            this->theme =
+                new render::TileTheme(
+                    this->textureSize,
+                    this->tileFaceSize,
+                    this->faceIndices
+                );
+            this->setupTileModel();
+            this->setupMaterials();
+        }
+        void tearThemeDown()
+        {
+            delete this->theme;
+        }
+        void setupTileModel()
+        {
+            resource::Resource tileResource(
+                "models",
+                "tile-low.osgt",
+                tile_low_osgt,
+                tile_low_osgt_len
+            );
+            auto node = resource::node(tileResource);
+            auto model = reinterpret_cast<osg::Geode *>(node.get());
+            // Make sure model is valid.
+            if (!model)
+            {
+                OMC_MAIN_EXAMPLE_LOG(
+                    "ERROR Could not setup tile model '%s/%s'",
+                    tileResource.group.c_str(),
+                    tileResource.name.c_str()
+                );
+                return;
+            }
+            
+            this->tileModel = model;
+        }
+        void setupMaterials()
+        {
+            // Create resources.
+            resource::Resource shaderFrag(
+                "shaders",
+                "ppl-theme.frag",
+                ppl_theme_frag,
+                ppl_theme_frag_len
+            );
+            resource::Resource shaderVert(
+                "shaders",
+                "ppl-theme.vert",
+                ppl_theme_vert,
+                ppl_theme_vert_len
+            );
+    
+            // Create shader program.
+            auto prog =
+                render::createShaderProgram(
+                    resource::string(shaderVert),
+                    resource::string(shaderFrag)
+                );
+    
+            // Create normal state material.
+            auto normal = new osg::StateSet;
+            normal->setAttribute(prog);
+            normal->addUniform(new osg::Uniform("image", 0));
+            normal->addUniform(new osg::Uniform("isSelected", false));
+            this->themeMaterial = normal;
+    
+            // Create selected state material.
+            auto selected = new osg::StateSet;
+            selected->setAttribute(prog);
+            selected->addUniform(new osg::Uniform("image", 0));
+            selected->addUniform(new osg::Uniform("isSelected", true));
+            this->themeMaterialSelected = selected;
+        }
+    // Example+Theme End
 // Example Start
 };
 // Example End

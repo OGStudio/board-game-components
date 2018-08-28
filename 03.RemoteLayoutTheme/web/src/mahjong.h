@@ -25,12 +25,42 @@ freely, subject to the following restrictions:
 #ifndef OGS_MAHJONG_COMPONENTS_MAHJONG_H
 #define OGS_MAHJONG_COMPONENTS_MAHJONG_H
 
+// OMC_MAHJONG_LOG Start
+#include "log.h"
+#include "format.h"
+#define OMC_MAHJONG_LOG_PREFIX "mahjong %s"
+#define OMC_MAHJONG_LOG(...) \
+    log::logprintf( \
+        OMC_MAHJONG_LOG_PREFIX, \
+        format::printfString(__VA_ARGS__).c_str() \
+    )
+// OMC_MAHJONG_LOG End
 
 namespace omc
 {
 namespace mahjong
 {
 
+// TilePosition Start
+struct TilePosition
+{
+    TilePosition() :
+        field(0),
+        row(0),
+        column(0)
+    { }
+
+    TilePosition(int field, int row, int column) :
+        field(field),
+        row(row),
+        column(column)
+    { }
+
+    int field;
+    int row;
+    int column;
+};
+// TilePosition End
 
 // Layout Start
 //! Layout representation.
