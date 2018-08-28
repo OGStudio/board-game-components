@@ -16,6 +16,7 @@ Example+Scene
 Example+Theme
 Example+StaticPluginOSG
 Example+StaticPluginPNG
+Example+createTiles
 
 main-desktop
 main+Arguments-desktop

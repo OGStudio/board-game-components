@@ -35,11 +35,12 @@ freely, subject to the following restrictions:
 
 // FEATURE Example+LayoutTest/Include
 // FEATURE Example+MatchTilesTest/Include
-// FEATURE Example+RemoteLayoutTheme/Include
 // FEATURE Example+Scene/Include
 // FEATURE Example+Theme/Include
 // FEATURE Example+ThemeTest/Include
 // FEATURE Example+VBO/Include
+
+// FEATURE Example+createTiles/Include
 
 // FEATURE OMC_MAIN_EXAMPLE_LOG/Impl
 
@@ -104,6 +105,8 @@ namespace main
     // FEATURE Example+ThemeTest/Impl
     // FEATURE Example+MatchTilesTest/Impl
     // FEATURE Example+VBO/Impl
+ 
+    // FEATURE Example+createTiles/Impl
 // FEATURE Example/End
 
 } // namespace main

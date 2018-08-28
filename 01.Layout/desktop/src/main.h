@@ -61,6 +61,7 @@ freely, subject to the following restrictions:
 
 // Example+Scene End
 
+
 // OMC_MAIN_EXAMPLE_LOG Start
 #include "log.h"
 #include "format.h"
@@ -330,6 +331,7 @@ struct Example
             );
         }
     // Example+Scene End
+ 
 // Example Start
 };
 // Example End

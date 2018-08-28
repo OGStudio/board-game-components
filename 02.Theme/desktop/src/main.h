@@ -62,6 +62,7 @@ freely, subject to the following restrictions:
 
 // Example+ThemeTest End
 
+
 // OMC_MAIN_EXAMPLE_LOG Start
 #include "log.h"
 #include "format.h"
@@ -427,6 +428,7 @@ struct Example
             this->themeMaterialSelected->setTextureAttributeAndModes(0, texture);
         }
     // Example+ThemeTest End
+ 
 // Example Start
 };
 // Example End

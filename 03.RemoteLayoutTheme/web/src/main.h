@@ -50,12 +50,6 @@ freely, subject to the following restrictions:
 
 // Application+Rendering End
 
-// Example+RemoteLayoutTheme Start
-#include "mahjong.h"
-#include "scene.h"
-#include <osg/MatrixTransform>
-
-// Example+RemoteLayoutTheme End
 // Example+Scene Start
 #include <osg/MatrixTransform>
 
@@ -74,6 +68,13 @@ freely, subject to the following restrictions:
 #include "render.h"
 
 // Example+VBO End
+
+// Example+createTiles Start
+#include "mahjong.h"
+#include "scene.h"
+#include <osg/MatrixTransform>
+
+// Example+createTiles End
 
 // OMC_MAIN_EXAMPLE_LOG Start
 #include "log.h"
@@ -398,19 +399,8 @@ struct Example
 // Example End
     // Example+RemoteLayoutTheme Start
     private:
-        osg::ref_ptr<osg::MatrixTransform> tileScene;
-    
         void setupRemoteLayoutTheme(const Parameters &parameters)
         {
-            // Create tile scene to host tiles.
-            this->tileScene = new osg::MatrixTransform;
-            this->scene->addChild(this->tileScene);
-            // Apply normal state material to the whole scene.
-            this->tileScene->setStateSet(this->themeMaterial);
-    
-            // Rotate the tile scene to have a better view.
-            scene::setSimpleRotation(this->tileScene, {60, 0, 0});
-    
             // Load remote layout and/or theme.
             for (auto parameter : parameters)
             {
@@ -427,33 +417,6 @@ struct Example
             }
         }
     
-        void createTiles(const mahjong::Layout &layout)
-        {
-            int facesCount = 42;
-            int faceId = 0;
-            for (auto pos : layout.positions)
-            {
-                // Clone tile.
-                auto tile = new osg::Geode(*this->tileModel, osg::CopyOp::DEEP_COPY_ALL);
-                // Set its position.
-                float x = pos.column;
-                float y = pos.row * 1.5 /* Factor depends on the model */;
-                float z = pos.field;
-                auto node = new osg::MatrixTransform;
-                node->addChild(tile);
-                scene::setSimplePosition(node, {x, y, z});
-                // Add tile to the scene.
-                this->tileScene->addChild(node);
-                // Set tile face id.
-                this->theme->setFaceId(faceId, tile);
-                // Cycle face id.
-                if (++faceId >= facesCount)
-                {
-                    faceId = 0;
-                }
-    
-            }
-        }
         void loadRemoteLayout(const std::string &url)
         {
             auto success = [&](std::string response) {
@@ -476,8 +439,14 @@ struct Example
             std::istringstream in(response);
             if (mahjong::parseLayout(in, layout))
             {
-                this->createTiles(layout);
-                // Reset scene.
+                auto tileScene = this->createTiles(layout);
+                // Apply normal state material to the whole scene.
+                tileScene->setStateSet(this->themeMaterial);
+                // Rotate the tile scene to have a better view.
+                scene::setSimpleRotation(tileScene, {60, 0, 0});
+                // Add tile scene to the scene.
+                this->scene->addChild(tileScene);
+                // Reset the scene.
                 this->app->setScene(this->scene);
                 OMC_MAIN_EXAMPLE_LOG("Successfully loaded layout");
             }
@@ -648,6 +617,46 @@ struct Example
             this->scene->accept(vbo);
         }
     // Example+VBO End
+ 
+    // Example+createTiles Start
+    osg::MatrixTransform* createTiles(const mahjong::Layout &layout)
+    {
+        // Create scene to host tile nodes.
+        osg::ref_ptr<osg::MatrixTransform> tileScene = new osg::MatrixTransform;
+    
+        // TODO Update this function to take 4 tiles from each group.
+        const int FACES_COUNT = 42;
+        const float MODEL_HEIGHT_FACTOR = 1.5;
+        int faceId = 0;
+    
+        // Generate tile nodes.
+        for (auto pos : layout.positions)
+        {
+            // Clone tile.
+            auto tile = new osg::Geode(*this->tileModel, osg::CopyOp::DEEP_COPY_ALL);
+            // Create node for it.
+            auto node = new osg::MatrixTransform;
+            node->addChild(tile);
+            // Set node's position.
+            float x = pos.column;
+            float y = pos.row * MODEL_HEIGHT_FACTOR;
+            float z = pos.field;
+            scene::setSimplePosition(node, {x, y, z});
+            // Set tile face id.
+            this->theme->setFaceId(faceId, tile);
+            // Cycle face id.
+            if (++faceId >= FACES_COUNT)
+            {
+                faceId = 0;
+            }
+    
+            // Add tile node to the scene.
+            tileScene->addChild(node);
+        }
+    
+        return tileScene.release();
+    }
+    // Example+createTiles End
 // Example Start
 };
 // Example End

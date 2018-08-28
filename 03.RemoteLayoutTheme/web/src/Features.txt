@@ -17,6 +17,7 @@ Example+Theme
 Example+StaticPluginOSG
 Example+StaticPluginPNG
 Example+VBO
+Example+createTiles
 
 main-web
 main+Arguments-web

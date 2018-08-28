@@ -1,26 +1,10 @@
-FEATURE main.h/Include
-#include "mahjong.h"
-#include "scene.h"
-#include <osg/MatrixTransform>
-
 FEATURE main.h/Setup
 this->setupRemoteLayoutTheme(parameters);
 
 FEATURE main.h/Impl
 private:
-    osg::ref_ptr<osg::MatrixTransform> tileScene;
-
     void setupRemoteLayoutTheme(const Parameters &parameters)
     {
-        // Create tile scene to host tiles.
-        this->tileScene = new osg::MatrixTransform;
-        this->scene->addChild(this->tileScene);
-        // Apply normal state material to the whole scene.
-        this->tileScene->setStateSet(this->themeMaterial);
-
-        // Rotate the tile scene to have a better view.
-        scene::setSimpleRotation(this->tileScene, {60, 0, 0});
-
         // Load remote layout and/or theme.
         for (auto parameter : parameters)
         {
@@ -37,33 +21,6 @@ private:
         }
     }
 
-    void createTiles(const mahjong::Layout &layout)
-    {
-        int facesCount = 42;
-        int faceId = 0;
-        for (auto pos : layout.positions)
-        {
-            // Clone tile.
-            auto tile = new osg::Geode(*this->tileModel, osg::CopyOp::DEEP_COPY_ALL);
-            // Set its position.
-            float x = pos.column;
-            float y = pos.row * 1.5 /* Factor depends on the model */;
-            float z = pos.field;
-            auto node = new osg::MatrixTransform;
-            node->addChild(tile);
-            scene::setSimplePosition(node, {x, y, z});
-            // Add tile to the scene.
-            this->tileScene->addChild(node);
-            // Set tile face id.
-            this->theme->setFaceId(faceId, tile);
-            // Cycle face id.
-            if (++faceId >= facesCount)
-            {
-                faceId = 0;
-            }
-
-        }
-    }
     void loadRemoteLayout(const std::string &url)
     {
         auto success = [&](std::string response) {
@@ -86,8 +43,14 @@ private:
         std::istringstream in(response);
         if (mahjong::parseLayout(in, layout))
         {
-            this->createTiles(layout);
-            // Reset scene.
+            auto tileScene = this->createTiles(layout);
+            // Apply normal state material to the whole scene.
+            tileScene->setStateSet(this->themeMaterial);
+            // Rotate the tile scene to have a better view.
+            scene::setSimpleRotation(tileScene, {60, 0, 0});
+            // Add tile scene to the scene.
+            this->scene->addChild(tileScene);
+            // Reset the scene.
             this->app->setScene(this->scene);
             OMC_MAIN_EXAMPLE_LOG("Successfully loaded layout");
         }

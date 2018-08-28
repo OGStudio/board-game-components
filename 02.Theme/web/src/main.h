@@ -70,6 +70,7 @@ freely, subject to the following restrictions:
 
 // Example+VBO End
 
+
 // OMC_MAIN_EXAMPLE_LOG Start
 #include "log.h"
 #include "format.h"
@@ -523,6 +524,7 @@ struct Example
             this->scene->accept(vbo);
         }
     // Example+VBO End
+ 
 // Example Start
 };
 // Example End

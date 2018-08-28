@@ -78,6 +78,7 @@ freely, subject to the following restrictions:
 // Example+VBO End
 
 
+
 // Example+StaticPluginOSG Start
 #include <osgDB/Registry>
 
@@ -758,6 +759,7 @@ struct Example
             this->scene->accept(vbo);
         }
     // Example+VBO End
+ 
 // Example Start
 };
 // Example End

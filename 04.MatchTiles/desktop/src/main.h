@@ -70,6 +70,7 @@ freely, subject to the following restrictions:
 // Example+Scene End
 
 
+
 // Example+StaticPluginOSG Start
 #include <osgDB/Registry>
 
@@ -662,6 +663,7 @@ struct Example
             }
         }
     // Example+MatchTilesTest End
+ 
 // Example Start
 };
 // Example End
