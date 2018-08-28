@@ -34,7 +34,7 @@ freely, subject to the following restrictions:
 
 // commandLineArgumentsToParameters End
 
-namespace mc
+namespace omc
 {
 namespace format
 {
@@ -152,7 +152,7 @@ Parameters commandLineArgumentsToParameters(
 // commandLineArgumentsToParameters End
 
 } // namespace format
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_FORMAT_H
 

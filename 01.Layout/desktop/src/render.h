@@ -35,7 +35,7 @@ freely, subject to the following restrictions:
 // setupCamera End
 
 
-namespace mc
+namespace omc
 {
 namespace render
 {
@@ -107,7 +107,7 @@ void setupCamera(
 
 
 } // namespace render
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_RENDER_H
 

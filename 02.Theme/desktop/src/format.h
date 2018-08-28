@@ -30,7 +30,7 @@ freely, subject to the following restrictions:
 
 // printfString End
 
-namespace mc
+namespace omc
 {
 namespace format
 {
@@ -51,7 +51,7 @@ std::string printfString(const char *fmt, ...)
 
 
 } // namespace format
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_FORMAT_H
 

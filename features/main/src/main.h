@@ -41,13 +41,12 @@ freely, subject to the following restrictions:
 // FEATURE Example+ThemeTest/Include
 // FEATURE Example+VBO/Include
 
-// FEATURE MC_MAIN_LOG/Impl
-// FEATURE MC_MAIN_EXAMPLE_LOG/Impl
+// FEATURE OMC_MAIN_EXAMPLE_LOG/Impl
 
 // FEATURE Example+StaticPluginOSG/Impl
 // FEATURE Example+StaticPluginPNG/Impl
 
-namespace mc
+namespace omc
 {
 namespace main
 {
@@ -108,7 +107,7 @@ namespace main
 // FEATURE Example/End
 
 } // namespace main
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_MAIN_H
 

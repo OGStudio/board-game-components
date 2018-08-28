@@ -32,7 +32,7 @@ freely, subject to the following restrictions:
 // FEATURE HTTPRequestProcessorFetch/Include
 // FEATURE HTTPRequestProcessorMongoose/Include
 
-namespace mc
+namespace omc
 {
 namespace network
 {
@@ -47,7 +47,7 @@ namespace network
 // FEATURE HTTPClientProcessor/Impl
 
 } // namespace network
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_NETWORK_H
 

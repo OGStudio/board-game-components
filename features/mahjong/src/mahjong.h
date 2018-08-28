@@ -25,10 +25,10 @@ freely, subject to the following restrictions:
 #ifndef OGS_MAHJONG_COMPONENTS_MAHJONG_H
 #define OGS_MAHJONG_COMPONENTS_MAHJONG_H
 
-// FEATURE MC_MAHJONG_LOG/Impl
+// FEATURE OMC_MAHJONG_LOG/Impl
 // FEATURE orderedLayoutPositions/Include
 
-namespace mc
+namespace omc
 {
 namespace mahjong
 {
@@ -52,7 +52,7 @@ namespace mahjong
 // FEATURE Solitaire/Impl
 
 } // namespace mahjong
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_MAHJONG_H
 

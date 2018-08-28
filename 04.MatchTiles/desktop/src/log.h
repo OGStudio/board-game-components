@@ -38,7 +38,7 @@ freely, subject to the following restrictions:
 
 // logprintf End
 
-namespace mc
+namespace omc
 {
 namespace log
 {
@@ -115,7 +115,7 @@ class Logger : public osg::NotifyHandler
 // Logger End
 
 } // namespace log
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_LOG_H
 

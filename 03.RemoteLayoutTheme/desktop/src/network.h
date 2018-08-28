@@ -43,7 +43,7 @@ freely, subject to the following restrictions:
 
 // HTTPRequestProcessorMongoose End
 
-namespace mc
+namespace omc
 {
 namespace network
 {
@@ -341,7 +341,7 @@ class HTTPClientProcessor
 // HTTPClientProcessor End
 
 } // namespace network
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_NETWORK_H
 

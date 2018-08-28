@@ -26,13 +26,14 @@ freely, subject to the following restrictions:
 #define OGS_MAHJONG_COMPONENTS_CORE_H
 
 // Reporter Start
+#include <algorithm>
 #include <functional>
 #include <string>
 #include <vector>
 
 // Reporter End
 
-namespace mc
+namespace omc
 {
 namespace core
 {
@@ -50,17 +51,30 @@ class Reporter
 
         void addCallback(Callback callback, const std::string &name = "")
         {
+            // Work around callback reactivation happenning
+            // before `report()` call.
+            if (this->reactivateInactiveCallback(name))
+            {
+                //OSGCPE_CORE_REPORTER_LOG("reactivated callback named '%s'", name.c_str());
+                return;
+            }
+
             this->callbacks.push_back({callback, name});
+            //OSGCPE_CORE_REPORTER_LOG("added callback named '%s'", name.c_str());
+        }
+
+        void addOneTimeCallback(Callback callback)
+        {
+            this->oneTimeCallbacks.push_back(callback);
         }
 
         void removeCallback(const std::string &name)
         {
             // This call only deactivates a callback for
             // later removal that happens during next report() call.
-            auto callback = this->callbacks.begin();
-            for (; callback != this->callbacks.end(); ++callback)
+            for (auto callback : this->callbacks)
             {
-                if (callback->name == name)
+                if (callback.name == name)
                 {
                     this->inactiveCallbackNames.push_back(name);
                 }
@@ -71,10 +85,21 @@ class Reporter
         {
             this->removeInactiveCallbacks();
 
-            auto callback = this->callbacks.begin();
-            for (; callback != this->callbacks.end(); ++callback)
+            // Call normal callbacks.
+            for (auto callback : this->callbacks)
             {
-                callback->callback();
+                callback.callback();
+            }
+
+            // Iterate over duplicated one-time callbacks.
+            auto oneTimeCallbacks = this->oneTimeCallbacks; 
+            // Remove one-time callbacks.
+            this->oneTimeCallbacks.clear();
+            
+            // Call one-time callbacks.
+            for (auto callback : oneTimeCallbacks)
+            {
+                callback();
             }
         }
 
@@ -87,8 +112,21 @@ class Reporter
 
         std::vector<NamedCallback> callbacks;
         std::vector<std::string> inactiveCallbackNames;
+        std::vector<Callback> oneTimeCallbacks;
 
     private:
+        bool reactivateInactiveCallback(const std::string &name)
+        {
+            auto inactives = &this->inactiveCallbackNames;
+            auto it = std::find(inactives->begin(), inactives->end(), name);
+            if (it != inactives->end())
+            {
+                inactives->erase(it);
+                return true;
+            }
+            return false;
+        }
+
         void removeInactiveCallbacks()
         {
             // Loop through the names of inactive callbacks.
@@ -110,12 +148,11 @@ class Reporter
             // Clear the list of inactive callbacks.
             this->inactiveCallbackNames.clear();
         }
-
 };
 // Reporter End
 
 } // namespace core
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_CORE_H
 

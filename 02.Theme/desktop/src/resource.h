@@ -51,7 +51,7 @@ freely, subject to the following restrictions:
 
 // OSGCPE_RESOURCE_LOG End
 
-namespace mc
+namespace omc
 {
 namespace resource
 {
@@ -254,7 +254,7 @@ osg::Texture2D *createTexture(const Resource &resource)
 // createTexture End
 
 } // namespace resource
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_RESOURCE_H
 

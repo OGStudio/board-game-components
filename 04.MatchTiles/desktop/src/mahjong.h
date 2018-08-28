@@ -25,22 +25,12 @@ freely, subject to the following restrictions:
 #ifndef OGS_MAHJONG_COMPONENTS_MAHJONG_H
 #define OGS_MAHJONG_COMPONENTS_MAHJONG_H
 
-// MC_MAHJONG_LOG Start
-#include "log.h"
-#include "format.h"
-#define MC_MAHJONG_LOG_PREFIX "mahjong %s"
-#define MC_MAHJONG_LOG(...) \
-    log::logprintf( \
-        MC_MAHJONG_LOG_PREFIX, \
-        format::printfString(__VA_ARGS__).c_str() \
-    )
-// MC_MAHJONG_LOG End
 // orderedLayoutPositions Start
 #include <random>
 
 // orderedLayoutPositions End
 
-namespace mc
+namespace omc
 {
 namespace mahjong
 {
@@ -242,7 +232,7 @@ bool linesToKMahjonggLayout(
     {
         if (fields.size() != layoutDraft.depth)
         {
-            MC_MAHJONG_LOG(
+            OMC_MAHJONG_LOG(
                 "ERROR Specified layout depth (%d) is not equal to actual one (%d)",
                 layoutDraft.depth,
                 fields.size()
@@ -453,7 +443,7 @@ class Solitaire
 // Solitaire End
 
 } // namespace mahjong
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_MAHJONG_H
 

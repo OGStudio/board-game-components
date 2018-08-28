@@ -6,7 +6,7 @@ Application+setupWindow-desktop
 Application+Logging
 Application+Rendering
 
-MC_MAIN_EXAMPLE_LOG
+OMC_MAIN_EXAMPLE_LOG
 Example
 Example+01
 Example+LayoutTest
@@ -18,9 +18,10 @@ main-desktop
 Reporter
 
 # mahjong
-MC_LAYOUT_LOG
+OMC_MAHJONG_LOG
 Layout
 KMahjonggLayout
+TilePosition
 kmahjonggLayoutFieldsToPositions
 linesToKMahjonggLayout
 parseLayout

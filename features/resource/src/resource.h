@@ -31,7 +31,7 @@ freely, subject to the following restrictions:
 
 // FEATURE OSGCPE_RESOURCE_LOG/Impl
 
-namespace mc
+namespace omc
 {
 namespace resource
 {
@@ -48,7 +48,7 @@ namespace resource
 // FEATURE createTexture/Impl
 
 } // namespace resource
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_RESOURCE_H
 

@@ -26,7 +26,7 @@ freely, subject to the following restrictions:
 #define OGS_MAHJONG_COMPONENTS_MAHJONG_H
 
 
-namespace mc
+namespace omc
 {
 namespace mahjong
 {
@@ -172,7 +172,7 @@ bool linesToKMahjonggLayout(
     {
         if (fields.size() != layoutDraft.depth)
         {
-            MC_MAHJONG_LOG(
+            OMC_MAHJONG_LOG(
                 "ERROR Specified layout depth (%d) is not equal to actual one (%d)",
                 layoutDraft.depth,
                 fields.size()
@@ -225,7 +225,7 @@ bool parseLayout(std::istream &in, Layout &layout)
 
 
 } // namespace mahjong
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_MAHJONG_H
 

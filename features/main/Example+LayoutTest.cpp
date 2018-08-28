@@ -1,6 +1,6 @@
 FEATURE main.h/Include
-#include "layout.h"
 #include "log.h"
+#include "mahjong.h"
 #include "scene.h"
 
 #include "resource.h"
@@ -26,23 +26,23 @@ private:
             cat_layout,
             cat_layout_len
         );
-        layout::Layout layout;
+        mahjong::Layout layout;
         if (!this->loadLayout(cat, layout))
         {
-            MC_MAIN_EXAMPLE_LOG("Could not load layout");
+            OMC_MAIN_EXAMPLE_LOG("Could not load layout");
             return;
         }
         osg::Vec3 color(0.7, 0.5, 0.3);
         this->setupLayoutScene(color);
         this->createSpheres(layout);
     }
-    void createSpheres(const layout::Layout &layout)
+    void createSpheres(const mahjong::Layout &layout)
     {
         for (auto pos : layout.positions)
         {
-            float z = pos.x();
-            float y = pos.y();
-            float x = pos.z();
+            float x = pos.column;
+            float y = pos.row;
+            float z = pos.field;
             auto node = scene::createSphere(1);
             this->layoutScene->addChild(node);
             scene::setSimplePosition(node, {x, y, z});
@@ -50,11 +50,11 @@ private:
     }
     bool loadLayout(
         const resource::Resource &layoutResource,
-        layout::Layout &layout
+        mahjong::Layout &layout
     ) {
         resource::ResourceStreamBuffer buf(layoutResource);
         std::istream in(&buf);
-        return layout::parseLayout(in, layout);
+        return mahjong::parseLayout(in, layout);
     }
     void setupLayoutScene(const osg::Vec3 &color)
     {

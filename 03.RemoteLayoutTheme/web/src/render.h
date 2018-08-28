@@ -45,19 +45,8 @@ freely, subject to the following restrictions:
 
 // VBOSetupVisitor End
 
-// MC_RENDER_TILE_THEME_LOG Start
-#include "log.h"
-#include "format.h"
-#define MC_RENDER_TILE_THEME_LOG_PREFIX "render::TileTheme(%p) %s"
-#define MC_RENDER_TILE_THEME_LOG(...) \
-    log::logprintf( \
-        MC_RENDER_TILE_THEME_LOG_PREFIX, \
-        this, \
-        format::printfString(__VA_ARGS__).c_str() \
-    )
-// MC_RENDER_TILE_THEME_LOG End
 
-namespace mc
+namespace omc
 {
 namespace render
 {
@@ -256,7 +245,7 @@ class VBOSetupVisitor : public osg::NodeVisitor
 // VBOSetupVisitor End
 
 } // namespace render
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_RENDER_H
 

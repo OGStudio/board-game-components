@@ -41,7 +41,7 @@ freely, subject to the following restrictions:
 // VBOSetupVisitor End
 
 
-namespace mc
+namespace omc
 {
 namespace render
 {
@@ -109,7 +109,7 @@ class VBOSetupVisitor : public osg::NodeVisitor
 // VBOSetupVisitor End
 
 } // namespace render
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_RENDER_H
 

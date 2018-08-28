@@ -34,7 +34,7 @@ freely, subject to the following restrictions:
 
 // urlQueryToParameters End
 
-namespace mc
+namespace omc
 {
 namespace format
 {
@@ -154,7 +154,7 @@ Parameters urlQueryToParameters(
 // urlQueryToParameters End
 
 } // namespace format
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_FORMAT_H
 

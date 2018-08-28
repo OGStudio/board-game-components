@@ -36,7 +36,7 @@ freely, subject to the following restrictions:
 
 // setSimplePosition End
 
-namespace mc
+namespace omc
 {
 namespace scene
 {
@@ -102,7 +102,7 @@ void setSimpleRotation(osg::MatrixTransform *node, const osg::Vec3f &rotation)
 
 
 } // namespace scene
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_SCENE_H
 

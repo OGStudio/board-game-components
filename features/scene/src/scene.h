@@ -29,7 +29,7 @@ freely, subject to the following restrictions:
 // FEATURE simplePosition/Include
 // FEATURE setSimplePosition/Include
 
-namespace mc
+namespace omc
 {
 namespace scene
 {
@@ -46,7 +46,7 @@ namespace scene
 // FEATURE nodeAtPosition/Impl
 
 } // namespace scene
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_SCENE_H
 

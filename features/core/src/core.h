@@ -27,7 +27,7 @@ freely, subject to the following restrictions:
 
 // FEATURE Reporter/Include
 
-namespace mc
+namespace omc
 {
 namespace core
 {
@@ -35,7 +35,7 @@ namespace core
 // FEATURE Reporter/Impl
 
 } // namespace core
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_CORE_H
 

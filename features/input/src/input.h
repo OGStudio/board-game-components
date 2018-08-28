@@ -27,9 +27,9 @@ freely, subject to the following restrictions:
 
 // FEATURE Mouse/Include
 
-// FEATURE MC_INPUT_MOUSE_LOG/Impl
+// FEATURE OMC_INPUT_MOUSE_LOG/Impl
 
-namespace mc
+namespace omc
 {
 namespace input
 {
@@ -38,7 +38,7 @@ namespace input
 // FEATURE Mouse/Impl
 
 } // namespace input
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_INPUT_H
 

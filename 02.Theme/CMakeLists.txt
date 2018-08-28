@@ -7,8 +7,8 @@
 # * COMPONENT_BINARY_NAME
 # * OMC_LINK_LIBS
 
-PROJECT(OMC01_LAYOUT)
-SET(COMPONENT_BINARY_NAME "omc01-layout")
+PROJECT(OMC02_THEME)
+SET(COMPONENT_BINARY_NAME "omc02-theme")
 SET(OSGCPE_DIR ${OMC_DIR}/../openscenegraph-cross-platform-examples)
 
 # Use C++11.

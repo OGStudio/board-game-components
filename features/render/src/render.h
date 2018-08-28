@@ -32,9 +32,9 @@ freely, subject to the following restrictions:
 // FEATURE TileTheme/Include
 // FEATURE VBOSetupVisitor/Include
 
-// FEATURE MC_RENDER_TILE_THEME_LOG/Impl
+// FEATURE OMC_RENDER_TILE_THEME_LOG/Impl
 
-namespace mc
+namespace omc
 {
 namespace render
 {
@@ -50,7 +50,7 @@ namespace render
 // FEATURE VBOSetupVisitor/Impl
 
 } // namespace render
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_RENDER_H
 

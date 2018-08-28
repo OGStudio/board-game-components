@@ -65,36 +65,11 @@ freely, subject to the following restrictions:
 #include <osg/MatrixTransform>
 
 // Example+Scene End
-// Example+TileTheme Start
-#include "render.h"
-
-// Example+TileTheme End
 // Example+VBO Start
 #include "render.h"
 
 // Example+VBO End
 
-// MC_MAIN_LOG Start
-#include "log.h"
-#include "format.h"
-#define MC_MAIN_LOG_PREFIX "main %s"
-#define MC_MAIN_LOG(...) \
-    log::logprintf( \
-        MC_MAIN_LOG_PREFIX, \
-        format::printfString(__VA_ARGS__).c_str() \
-    )
-// MC_MAIN_LOG End
-// MC_MAIN_EXAMPLE_LOG Start
-#include "log.h"
-#include "format.h"
-#define MC_MAIN_EXAMPLE_LOG_PREFIX "main::Example(%p) %s"
-#define MC_MAIN_EXAMPLE_LOG(...) \
-    log::logprintf( \
-        MC_MAIN_EXAMPLE_LOG_PREFIX, \
-        this, \
-        format::printfString(__VA_ARGS__).c_str() \
-    )
-// MC_MAIN_EXAMPLE_LOG End
 
 // Example+StaticPluginOSG Start
 #include <osgDB/Registry>
@@ -115,7 +90,7 @@ USE_SERIALIZER_WRAPPER_LIBRARY(osg)
 #endif
 // Example+StaticPluginPNG End
 
-namespace mc
+namespace omc
 {
 namespace main
 {
@@ -359,7 +334,7 @@ class Application
 // Application End
 
 // Example+03 Start
-const auto EXAMPLE_TITLE = "Mc03";
+const auto EXAMPLE_TITLE = "OMC-03: Remote layout and theme";
 // Example+03 End
 
 // Example Start
@@ -378,10 +353,6 @@ struct Example
         this->setupScene();
         
         // Example+Scene End
-        // Example+TileTheme Start
-        this->setupTileTheme();
-        
-        // Example+TileTheme End
         // Example+RemoteLayoutTheme Start
         this->setupRemoteLayoutTheme(parameters);
         
@@ -396,10 +367,6 @@ struct Example
     {
 
 // Example End
-        // Example+TileTheme Start
-        this->tearTileThemeDown();
-        
-        // Example+TileTheme End
 // Example Start
         delete this->app;
     }
@@ -611,27 +578,6 @@ struct Example
             );
         }
     // Example+Scene End
-    // Example+TileTheme Start
-    private:
-        render::TileTheme *tileTheme;
-        const osg::Vec2 textureSize = {1024, 2048};
-        const osg::Vec2 tileFaceSize = {160, 240};
-        const render::TileTheme::Indices faceIndices = {15, 23, 16, 17};
-    
-        void setupTileTheme()
-        {
-            this->tileTheme =
-                new render::TileTheme(
-                    this->textureSize,
-                    this->tileFaceSize,
-                    this->faceIndices
-                );
-        }
-        void tearTileThemeDown()
-        {
-            delete this->tileTheme;
-        }
-    // Example+TileTheme End
     // Example+VBO Start
     private:
         void setupSceneVBO()
@@ -654,7 +600,7 @@ struct Example
 // Example End
 
 } // namespace main
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_MAIN_H
 

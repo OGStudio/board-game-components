@@ -27,7 +27,7 @@ freely, subject to the following restrictions:
 
 // main-desktop End
 
-using namespace mc;
+using namespace omc;
 
 
 int main(int argc, char *argv[])

@@ -42,9 +42,9 @@ freely, subject to the following restrictions:
 
 // Application+Rendering End
 
-// Example+Layout Start
-#include "layout.h"
+// Example+LayoutTest Start
 #include "log.h"
+#include "mahjong.h"
 #include "scene.h"
 
 #include "resource.h"
@@ -55,26 +55,26 @@ freely, subject to the following restrictions:
 #include "ppl-color.vert.h"
 #include "ppl-color.frag.h"
 
-// Example+Layout End
+// Example+LayoutTest End
 // Example+Scene Start
 #include <osg/MatrixTransform>
 
 // Example+Scene End
 
-// MC_MAIN_EXAMPLE_LOG Start
+// OMC_MAIN_EXAMPLE_LOG Start
 #include "log.h"
 #include "format.h"
-#define MC_MAIN_EXAMPLE_LOG_PREFIX "main::Example(%p) %s"
-#define MC_MAIN_EXAMPLE_LOG(...) \
+#define OMC_MAIN_EXAMPLE_LOG_PREFIX "main::Example(%p) %s"
+#define OMC_MAIN_EXAMPLE_LOG(...) \
     log::logprintf( \
-        MC_MAIN_EXAMPLE_LOG_PREFIX, \
+        OMC_MAIN_EXAMPLE_LOG_PREFIX, \
         this, \
         format::printfString(__VA_ARGS__).c_str() \
     )
-// MC_MAIN_EXAMPLE_LOG End
+// OMC_MAIN_EXAMPLE_LOG End
 
 
-namespace mc
+namespace omc
 {
 namespace main
 {
@@ -199,7 +199,7 @@ class Application
 // Application End
 
 // Example+01 Start
-const auto EXAMPLE_TITLE = "Mc01";
+const auto EXAMPLE_TITLE = "OMC-01: Layout";
 // Example+01 End
 
 // Example Start
@@ -218,10 +218,10 @@ struct Example
         this->setupScene();
         
         // Example+Scene End
-        // Example+Layout Start
+        // Example+LayoutTest Start
         this->testLayout();
         
-        // Example+Layout End
+        // Example+LayoutTest End
 // Example Start
     }
     ~Example()
@@ -233,7 +233,7 @@ struct Example
     }
 
 // Example End
-    // Example+Layout Start
+    // Example+LayoutTest Start
     private:
         osg::ref_ptr<osg::MatrixTransform> layoutScene;
         void testLayout()
@@ -245,23 +245,23 @@ struct Example
                 cat_layout,
                 cat_layout_len
             );
-            layout::Layout layout;
+            mahjong::Layout layout;
             if (!this->loadLayout(cat, layout))
             {
-                MC_MAIN_EXAMPLE_LOG("Could not load layout");
+                OMC_MAIN_EXAMPLE_LOG("Could not load layout");
                 return;
             }
             osg::Vec3 color(0.7, 0.5, 0.3);
             this->setupLayoutScene(color);
             this->createSpheres(layout);
         }
-        void createSpheres(const layout::Layout &layout)
+        void createSpheres(const mahjong::Layout &layout)
         {
             for (auto pos : layout.positions)
             {
-                float z = pos.x();
-                float y = pos.y();
-                float x = pos.z();
+                float x = pos.column;
+                float y = pos.row;
+                float z = pos.field;
                 auto node = scene::createSphere(1);
                 this->layoutScene->addChild(node);
                 scene::setSimplePosition(node, {x, y, z});
@@ -269,11 +269,11 @@ struct Example
         }
         bool loadLayout(
             const resource::Resource &layoutResource,
-            layout::Layout &layout
+            mahjong::Layout &layout
         ) {
             resource::ResourceStreamBuffer buf(layoutResource);
             std::istream in(&buf);
-            return layout::parseLayout(in, layout);
+            return mahjong::parseLayout(in, layout);
         }
         void setupLayoutScene(const osg::Vec3 &color)
         {
@@ -306,7 +306,7 @@ struct Example
             // Set color.
             material->addUniform(new osg::Uniform("color", color));
         }
-    // Example+Layout End
+    // Example+LayoutTest End
     // Example+Scene Start
     private:
         osg::ref_ptr<osg::MatrixTransform> scene;
@@ -335,7 +335,7 @@ struct Example
 // Example End
 
 } // namespace main
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_MAIN_H
 

@@ -88,7 +88,7 @@ bool linesToKMahjonggLayout(
     {
         if (fields.size() != layoutDraft.depth)
         {
-            MC_MAHJONG_LOG(
+            OMC_MAHJONG_LOG(
                 "ERROR Specified layout depth (%d) is not equal to actual one (%d)",
                 layoutDraft.depth,
                 fields.size()

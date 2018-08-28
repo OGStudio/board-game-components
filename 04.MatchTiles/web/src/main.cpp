@@ -29,7 +29,7 @@ freely, subject to the following restrictions:
 
 // main-web End
 
-using namespace mc;
+using namespace omc;
 
 // main-web Start
 // We use Example global variable in loop() function.

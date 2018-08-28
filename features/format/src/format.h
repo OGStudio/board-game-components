@@ -29,7 +29,7 @@ freely, subject to the following restrictions:
 // FEATURE commandLineArgumentsToParameters/Include
 // FEATURE urlQueryToParameters/Include
 
-namespace mc
+namespace omc
 {
 namespace format
 {
@@ -43,7 +43,7 @@ namespace format
 // FEATURE urlQueryToParameters/Impl
 
 } // namespace format
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_FORMAT_H
 

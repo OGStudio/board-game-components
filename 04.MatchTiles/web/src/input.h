@@ -33,7 +33,7 @@ freely, subject to the following restrictions:
 // Mouse End
 
 
-namespace mc
+namespace omc
 {
 namespace input
 {
@@ -164,7 +164,7 @@ class Mouse : public osgGA::GUIEventHandler
 // Mouse End
 
 } // namespace input
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_INPUT_H
 

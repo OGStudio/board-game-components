@@ -25,7 +25,7 @@ freely, subject to the following restrictions:
 // FEATURE main-desktop/Include
 // FEATURE main-web/Include
 
-using namespace mc;
+using namespace omc;
 
 // FEATURE main-web/Loop
 

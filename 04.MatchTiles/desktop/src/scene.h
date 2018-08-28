@@ -30,7 +30,7 @@ freely, subject to the following restrictions:
 
 // setSimplePosition End
 
-namespace mc
+namespace omc
 {
 namespace scene
 {
@@ -116,7 +116,7 @@ osg::Node *nodeAtPosition(
 // nodeAtPosition End
 
 } // namespace scene
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_SCENE_H
 

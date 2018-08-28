@@ -30,7 +30,7 @@ freely, subject to the following restrictions:
 // FEATURE logLevelToString/Include
 // FEATURE logprintf/Include
 
-namespace mc
+namespace omc
 {
 namespace log
 {
@@ -43,7 +43,7 @@ namespace log
 // FEATURE Logger/Impl
 
 } // namespace log
-} // namespace mc
+} // namespace omc
 
 #endif // OGS_MAHJONG_COMPONENTS_LOG_H
 
