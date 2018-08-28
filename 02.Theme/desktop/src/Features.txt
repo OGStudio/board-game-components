@@ -6,12 +6,12 @@ Application+setupWindow-desktop
 Application+Logging
 Application+Rendering
 
-MC_MAIN_EXAMPLE_LOG
+OMC_MAIN_EXAMPLE_LOG
 Example
 Example+02
 Example+Scene
-Example+TileTheme
-Example+TileThemeTest
+Example+Theme
+Example+ThemeTest
 Example+StaticPluginOSG
 Example+StaticPluginPNG
 
@@ -40,7 +40,7 @@ Resource
 ResourceStreamBuffer
 
 # render
-MC_RENDER_TILE_THEME_LOG
+OMC_RENDER_TILE_THEME_LOG
 createGraphicsContext-desktop
 createShaderProgram
 setupCamera

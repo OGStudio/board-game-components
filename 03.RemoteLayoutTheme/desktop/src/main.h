@@ -325,7 +325,7 @@ struct Example
             // Make sure tile is valid.
             if (!this->tile)
             {
-                MC_MAIN_EXAMPLE_LOG(
+                OMC_MAIN_EXAMPLE_LOG(
                     "ERROR Could not load model '%s/%s'",
                     res.group.c_str(),
                     res.name.c_str()
@@ -382,12 +382,12 @@ struct Example
                 this->parseLayoutResponse(response, url);
             };
             auto failure = [&](std::string reason) {
-                MC_MAIN_EXAMPLE_LOG(
+                OMC_MAIN_EXAMPLE_LOG(
                     "ERROR Could not load layout: %s",
                     reason.c_str()
                 );
             };
-            MC_MAIN_EXAMPLE_LOG("Loading layout from '%s'", url.c_str());
+            OMC_MAIN_EXAMPLE_LOG("Loading layout from '%s'", url.c_str());
             this->app->httpClient->get(url, success, failure);
         }
         void parseLayoutResponse(
@@ -401,11 +401,11 @@ struct Example
                 this->createTiles(layout);
                 // Reset scene.
                 this->app->setScene(this->scene);
-                MC_MAIN_EXAMPLE_LOG("Successfully loaded layout");
+                OMC_MAIN_EXAMPLE_LOG("Successfully loaded layout");
             }
             else
             {
-                MC_MAIN_EXAMPLE_LOG("ERROR Could not parse loaded layout");
+                OMC_MAIN_EXAMPLE_LOG("ERROR Could not parse loaded layout");
             }
         }
     
@@ -417,12 +417,12 @@ struct Example
                 this->parseThemeResponse(response, url);
             };
             auto failure = [&](std::string reason) {
-                MC_MAIN_EXAMPLE_LOG(
+                OMC_MAIN_EXAMPLE_LOG(
                     "ERROR Could not load theme: %s",
                     reason.c_str()
                 );
             };
-            MC_MAIN_EXAMPLE_LOG("Loading theme from '%s'", url.c_str());
+            OMC_MAIN_EXAMPLE_LOG("Loading theme from '%s'", url.c_str());
             this->app->httpClient->get(url, success, failure);
         }
         void parseThemeResponse(const std::string &response, const std::string &url)
@@ -438,7 +438,7 @@ struct Example
             auto texture = resource::createTexture(themeRes);
             this->normalMaterial->setTextureAttributeAndModes(0, texture);
             this->selectedMaterial->setTextureAttributeAndModes(0, texture);
-            MC_MAIN_EXAMPLE_LOG("Successfully loaded theme");
+            OMC_MAIN_EXAMPLE_LOG("Successfully loaded theme");
         }
         void setupMaterials()
         {

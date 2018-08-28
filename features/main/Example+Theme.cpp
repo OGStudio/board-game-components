@@ -54,7 +54,7 @@ private:
         // Make sure model is valid.
         if (!model)
         {
-            MC_MAIN_EXAMPLE_LOG(
+            OMC_MAIN_EXAMPLE_LOG(
                 "ERROR Could not setup tile model '%s/%s'",
                 tileResource.group.c_str(),
                 tileResource.name.c_str()

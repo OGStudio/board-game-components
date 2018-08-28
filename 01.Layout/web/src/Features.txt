@@ -6,10 +6,10 @@ Application+setupWindow-embedded
 Application+Logging
 Application+Rendering
 
-MC_MAIN_EXAMPLE_LOG
+OMC_MAIN_EXAMPLE_LOG
 Example
 Example+01
-Example+Layout
+Example+LayoutTest
 Example+Scene
 Example+VBO
 
@@ -18,10 +18,11 @@ main-web
 # core
 Reporter
 
-# layout
-MC_LAYOUT_LOG
+# mahjong
+OMC_MAHJONG_LOG
 Layout
 KMahjonggLayout
+TilePosition
 kmahjonggLayoutFieldsToPositions
 linesToKMahjonggLayout
 parseLayout

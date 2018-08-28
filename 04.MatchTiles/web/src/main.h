@@ -452,7 +452,7 @@ struct Example
             std::istream in(&buf);
             if (!mahjong::parseLayout(in, this->layout))
             {
-                MC_MAIN_EXAMPLE_LOG(
+                OMC_MAIN_EXAMPLE_LOG(
                     "ERROR Could not load layout '%s/%s'",
                     res.group.c_str(),
                     res.name.c_str()
@@ -518,7 +518,7 @@ struct Example
             // Make sure tile is valid.
             if (!this->tileModel.valid())
             {
-                MC_MAIN_EXAMPLE_LOG(
+                OMC_MAIN_EXAMPLE_LOG(
                     "ERROR Could not load model '%s/%s'",
                     model.group.c_str(),
                     model.name.c_str()
@@ -732,11 +732,11 @@ struct Example
             {
                 if (this->game->hasTiles())
                 {
-                    MC_MAIN_EXAMPLE_LOG("Game over: LOSS");
+                    OMC_MAIN_EXAMPLE_LOG("Game over: LOSS");
                 }
                 else
                 {
-                    MC_MAIN_EXAMPLE_LOG("Game over: VICTORY");
+                    OMC_MAIN_EXAMPLE_LOG("Game over: VICTORY");
                 }
             }
         }
