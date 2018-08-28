@@ -9,7 +9,7 @@ Application+Rendering
 MC_MAIN_EXAMPLE_LOG
 Example
 Example+01
-Example+Layout
+Example+LayoutTest
 Example+Scene
 
 main-desktop
@@ -17,7 +17,7 @@ main-desktop
 # core
 Reporter
 
-# layout
+# mahjong
 MC_LAYOUT_LOG
 Layout
 KMahjonggLayout

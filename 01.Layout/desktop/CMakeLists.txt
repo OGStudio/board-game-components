@@ -1,28 +1,17 @@
-PROJECT(MC01_LAYOUT)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-SET(OMC_DIR "${CMAKE_SOURCE_DIR}/../../../osg-mahjong-components")
-SET(OSGCPE_DIR "${OMC_DIR}/../openscenegraph-cross-platform-examples")
+SET(OMC_DIR "${CMAKE_SOURCE_DIR}/../../../ogs-mahjong-components")
 
-# Build OpenSceneGraph statically.
-INCLUDE(${OSGCPE_DIR}/libs/OpenSceneGraph/CMakeLists.txt)
+# Include common CMakeLists.txt.
+INCLUDE(${CMAKE_SOURCE_DIR}/../CMakeLists.txt)
 
-# Use C++11.
-ADD_DEFINITIONS("-std=c++11")
-
-# Reference source headers.
+# Reference sources.
 INCLUDE_DIRECTORIES(src)
-# Reference resource headers.
-INCLUDE_DIRECTORIES(../../data)
 # Create executable.
-ADD_EXECUTABLE(mc01-layout src/main.cpp)
+ADD_EXECUTABLE(${COMPONENT_BINARY_NAME} src/main.cpp)
+
 # Link executable with libraries.
 TARGET_LINK_LIBRARIES(
-    mc01-layout
-    osgViewer
-    osgUtil
-    osgDB
-    osgGA
-    osg
-    OpenThreads
+    ${COMPONENT_BINARY_NAME}
+    ${OMC_LINK_LIBS}
 )

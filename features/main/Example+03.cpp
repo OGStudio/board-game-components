@@ -1,2 +1,2 @@
 FEATURE main.h/Title
-const auto EXAMPLE_TITLE = "Mc03";
+const auto EXAMPLE_TITLE = "OMC-03: Remote layout and theme";

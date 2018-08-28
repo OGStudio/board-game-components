@@ -1,2 +1,2 @@
 FEATURE main.h/Title
-const auto EXAMPLE_TITLE = "Mc04";
+const auto EXAMPLE_TITLE = "OMC-04: Match tiles";
