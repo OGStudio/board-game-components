@@ -43,7 +43,7 @@ private:
         std::istringstream in(response);
         if (mahjong::parseLayout(in, layout))
         {
-            auto tileScene = this->createTiles(layout);
+            auto tileScene = this->createTiles(layout.positions);
             // Apply normal state material to the whole scene.
             tileScene->setStateSet(this->themeMaterial);
             // Rotate the tile scene to have a better view.

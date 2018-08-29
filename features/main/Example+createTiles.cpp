@@ -4,7 +4,7 @@ FEATURE main.h/Include
 #include <osg/MatrixTransform>
 
 FEATURE main.h/Impl
-osg::MatrixTransform* createTiles(const mahjong::Layout &layout)
+osg::MatrixTransform* createTiles(const mahjong::Layout::Positions &positions)
 {
     // Create scene to host tile nodes.
     osg::ref_ptr<osg::MatrixTransform> tileScene = new osg::MatrixTransform;
@@ -15,7 +15,7 @@ osg::MatrixTransform* createTiles(const mahjong::Layout &layout)
     int faceId = 0;
 
     // Generate tile nodes.
-    for (auto pos : layout.positions)
+    for (auto pos : positions)
     {
         // Clone tile.
         auto tile = new osg::Geode(*this->tileModel, osg::CopyOp::DEEP_COPY_ALL);

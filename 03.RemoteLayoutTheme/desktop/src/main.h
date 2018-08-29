@@ -360,7 +360,7 @@ struct Example
             std::istringstream in(response);
             if (mahjong::parseLayout(in, layout))
             {
-                auto tileScene = this->createTiles(layout);
+                auto tileScene = this->createTiles(layout.positions);
                 // Apply normal state material to the whole scene.
                 tileScene->setStateSet(this->themeMaterial);
                 // Rotate the tile scene to have a better view.
@@ -523,7 +523,7 @@ struct Example
     // Example+Theme End
  
     // Example+createTiles Start
-    osg::MatrixTransform* createTiles(const mahjong::Layout &layout)
+    osg::MatrixTransform* createTiles(const mahjong::Layout::Positions &positions)
     {
         // Create scene to host tile nodes.
         osg::ref_ptr<osg::MatrixTransform> tileScene = new osg::MatrixTransform;
@@ -534,7 +534,7 @@ struct Example
         int faceId = 0;
     
         // Generate tile nodes.
-        for (auto pos : layout.positions)
+        for (auto pos : positions)
         {
             // Clone tile.
             auto tile = new osg::Geode(*this->tileModel, osg::CopyOp::DEEP_COPY_ALL);
