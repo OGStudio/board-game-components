@@ -91,9 +91,9 @@ namespace main
         // FEATURE Example+Scene/Setup
         // FEATURE Example+Theme/Setup
         // FEATURE Example+ThemeTest/Setup
-        // FEATURE Example+MatchTilesTest/Setup
         // FEATURE Example+LayoutTest/Setup
         // FEATURE Example+DefaultLayoutTheme/Setup
+        // FEATURE Example+MatchTilesTest/Setup
         // FEATURE Example+RemoteLayoutTheme/Setup
         // FEATURE Example+VBO/Setup
 // FEATURE Example/TearDown

@@ -1,11 +1,5 @@
 FEATURE main.h/Include
-#include "mahjong.h"
 #include "scene.h"
-
-#include "cat.layout.h"
-#include "short-loss.layout.h"
-#include "short-victory.layout.h"
-#include "tile-theme.png.h"
 
 #include <osg/MatrixTransform>
 
@@ -19,7 +13,6 @@ FEATURE main.h/Impl
 private:
     mahjong::Solitaire *game;
     osg::ref_ptr<osg::MatrixTransform> tileScene;
-    mahjong::Layout layout;
     std::map<osg::Node *, mahjong::Tile> tileNodes;
     const std::string selectionCallbackName = "Selection";
     const unsigned int selectionNodeMask = 0x00000004;
@@ -33,127 +26,57 @@ private:
     void setupMatchTilesTest()
     {
         this->game = new mahjong::Solitaire();
-        this->setupLayout();
-        this->setupTileScene();
         this->setupTiles();
         this->setupTileSelection();
         this->setupTileMatching();
         this->setupTileRemoval();
         this->setupGameStateDetection();
-
-        // Set texture to materials.
-        resource::Resource texRes(
-            "textures",
-            "tile-theme.png",
-            tile_theme_png,
-            tile_theme_png_len
-        );
-        auto texture = resource::createTexture(texRes);
-        this->themeMaterial->setTextureAttributeAndModes(0, texture);
-        this->themeMaterialSelected->setTextureAttributeAndModes(0, texture);
-
     }
     void tearMatchTilesTestDown()
     {
         this->tearTileSelectionDown();
         delete this->game;
     }
-
-    void setupLayout()
-    {
-        resource::Resource res(
-            "layouts",
-            "cat.layout",
-            cat_layout,
-            cat_layout_len
-        );
-        /*
-        resource::Resource res(
-            "layouts",
-            "short-victory.layout",
-            short_victory_layout,
-            short_victory_layout_len
-        );
-        */
-        /*
-        resource::Resource res(
-            "layouts",
-            "short-loss.layout",
-            short_loss_layout,
-            short_loss_layout_len
-        );
-        */
-
-        resource::ResourceStreamBuffer buf(res);
-        std::istream in(&buf);
-        if (!mahjong::parseLayout(in, this->layout))
-        {
-            OMC_MAIN_EXAMPLE_LOG(
-                "ERROR Could not load layout '%s/%s'",
-                res.group.c_str(),
-                res.name.c_str()
-            );
-        }
-    }
-
     void setupTiles()
     {
+        // Order layout positions with seed.
+        int seed = time(0);
+        auto positions = mahjong::orderedLayoutPositions(layout.positions, seed);
+
+        auto matchIds = mahjong::matchIds(positions.size());
+
+        // Create tile nodes.
+        auto tileScene = this->createTiles(positions, matchIds);
+        // Set default (non-selected) material.
+        tileScene->setStateSet(this->themeMaterial);
+        // Rotate the scene to have a better view.
+        scene::setSimpleRotation(tileScene, {60, 0, 0});
+        // Set the scene.
+        this->scene->addChild(tileScene);
+        this->app->setScene(this->scene);
+
+        // Create logical tiles.
+        int tilesCount = positions.size();
         std::vector<mahjong::Tile> tiles;
-        const int matchIdsCount = 42;
-        int id = 0;
-
-        // Reorder layout positions with seed.
-        unsigned int seed = 1337;
-        auto layoutPositions =
-            mahjong::orderedLayoutPositions(this->layout.positions, seed);
-
-        for (auto pos : layoutPositions)
+        for (int i = 0; i < tilesCount; ++i)
         {
-            // Construct matchId so that two consequent tiles get the same matchId.
-            if (id >= matchIdsCount * 2)
-            {
-                id = 0;
-            }
-            int matchId = id++ / 2;
+            auto position = positions[i];
+            auto matchId = matchIds[i];
 
-            // Create logical tile.
             mahjong::Tile tile;
-            tile.position = pos;
+            tile.position = position;
             tile.matchId = matchId;
             tiles.push_back(tile);
 
-            // Create visual tile.
-            auto tileModel = new osg::Geode(*this->tileModel, osg::CopyOp::DEEP_COPY_ALL);
-            auto tileNode = new osg::MatrixTransform;
-            tileNode->addChild(tileModel);
-            // Add it to the scene.
-            this->tileScene->addChild(tileNode);
-            // Select texture based on matchId value.
-            this->theme->setFaceId(matchId, tileModel);
-
-            // Map logical tile position to visual one.
-            float z = pos.field;
-            float y = pos.row * -1.5 /* Factor depends on the model */;
-            float x = pos.column;
-            // Set visual tile position.
-            scene::setSimplePosition(tileNode, {x, y, z});
-
             // Keep correspondence of visual tiles to logical ones.
-            this->tileNodes[tileNode] = tile;
+            auto node = tileScene->getChild(i);
+            this->tileNodes[node] = tile;
         }
 
         // Provide logical tiles to the game.
         this->game->setTiles(tiles);
-    }
-    void setupTileScene()
-    {
-        // Create tile scene to host tiles.
-        this->tileScene = new osg::MatrixTransform;
-        this->scene->addChild(this->tileScene);
-        // Rotate it to have a better view.
-        scene::setSimpleRotation(this->tileScene, {60, 0, 0});
-        // Apply theme.
-        this->scene->setStateSet(this->normalMaterial);
+        // Keep reference to tile nodes.
+        this->tileScene = tileScene;
     }
     void setupTileSelection()
     {
@@ -244,7 +167,7 @@ private:
     {
         osg::StateSet *material = 
             state ? 
-            this->selectedMaterial :
+            this->themeMaterialSelected :
             0;
         node->setStateSet(material);
     }

@@ -12,7 +12,7 @@ OMC_MAIN_EXAMPLE_LOG
 Example
 Example+04
 Example+DefaultLayoutTheme
-#Example+MatchTilesTest
+Example+MatchTilesTest
 Example+Scene
 Example+Theme
 Example+StaticPluginOSG
