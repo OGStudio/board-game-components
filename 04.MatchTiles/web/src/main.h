@@ -54,15 +54,9 @@ freely, subject to the following restrictions:
 #include "mahjong.h"
 #include "scene.h"
 
-#include "resource.h"
-
 #include "cat.layout.h"
-#include "short-victory.layout.h"
 #include "short-loss.layout.h"
-
-#include "ppl-theme.frag.h"
-#include "ppl-theme.vert.h"
-#include "tile-low.osgt.h"
+#include "short-victory.layout.h"
 #include "tile-theme.png.h"
 
 #include <osg/MatrixTransform>
@@ -364,35 +358,9 @@ struct Example
     }
 
 // Example End
-    // Example+Scene Start
-    private:
-        osg::ref_ptr<osg::MatrixTransform> scene;
-        const std::string sceneSetupCallbackName = "SceneSetup";
-    
-        void setupScene()
-        {
-            this->scene = new osg::MatrixTransform;
-    
-            // Provide scene to application after the first frame
-            // to let other components configure scene prior that event.
-            this->app->frameReporter.addCallback(
-                [&] {
-                    this->app->setScene(this->scene);
-                    // Unsubscribe from the rest of frame reports.
-                    this->app->frameReporter.removeCallback(
-                        this->sceneSetupCallbackName
-                    );
-                },
-                this->sceneSetupCallbackName
-            );
-        }
-    // Example+Scene End
     // Example+MatchTilesTest Start
     private:
         mahjong::Solitaire *game;
-        osg::ref_ptr<osg::Geode> tileModel;
-        osg::ref_ptr<osg::StateSet> normalMaterial;
-        osg::ref_ptr<osg::StateSet> selectedMaterial;
         osg::ref_ptr<osg::MatrixTransform> tileScene;
         mahjong::Layout layout;
         std::map<osg::Node *, mahjong::Tile> tileNodes;
@@ -409,14 +377,24 @@ struct Example
         {
             this->game = new mahjong::Solitaire();
             this->setupLayout();
-            this->setupMaterials();
-            this->setupModel();
             this->setupTileScene();
             this->setupTiles();
             this->setupTileSelection();
             this->setupTileMatching();
             this->setupTileRemoval();
             this->setupGameStateDetection();
+    
+            // Set texture to materials.
+            resource::Resource texRes(
+                "textures",
+                "tile-theme.png",
+                tile_theme_png,
+                tile_theme_png_len
+            );
+            auto texture = resource::createTexture(texRes);
+            this->themeMaterial->setTextureAttributeAndModes(0, texture);
+            this->themeMaterialSelected->setTextureAttributeAndModes(0, texture);
+    
         }
         void tearMatchTilesTestDown()
         {
@@ -460,72 +438,7 @@ struct Example
                 );
             }
         }
-        void setupMaterials()
-        {
-            resource::Resource shaderFrag(
-                "shaders",
-                "ppl-theme.frag",
-                ppl_theme_frag,
-                ppl_theme_frag_len
-            );
-            resource::Resource shaderVert(
-                "shaders",
-                "ppl-theme.vert",
-                ppl_theme_vert,
-                ppl_theme_vert_len
-            );
     
-            // Create shader program.
-            auto prog =
-                render::createShaderProgram(
-                    resource::string(shaderVert),
-                    resource::string(shaderFrag)
-                );
-    
-            // Create normal state material.
-            this->normalMaterial = new osg::StateSet;
-            this->normalMaterial->setAttribute(prog);
-            this->normalMaterial->addUniform(new osg::Uniform("image", 0));
-            this->normalMaterial->addUniform(new osg::Uniform("isSelected", false));
-    
-            // Create selected state material.
-            this->selectedMaterial = new osg::StateSet;
-            this->selectedMaterial->setAttribute(prog);
-            this->selectedMaterial->addUniform(new osg::Uniform("image", 0));
-            this->selectedMaterial->addUniform(new osg::Uniform("isSelected", true));
-    
-            // Set texture for both materials.
-            resource::Resource theme(
-                "themes",
-                "tile-theme.png",
-                tile_theme_png,
-                tile_theme_png_len
-            );
-            auto texture = resource::createTexture(theme);
-            this->normalMaterial->setTextureAttributeAndModes(0, texture);
-            this->selectedMaterial->setTextureAttributeAndModes(0, texture);
-        }
-        void setupModel()
-        {
-            resource::Resource model(
-                "models",
-                "tile-low.osgt",
-                tile_low_osgt,
-                tile_low_osgt_len
-            );
-            auto node = resource::node(model);
-            this->tileModel = reinterpret_cast<osg::Geode *>(node.get());
-    
-            // Make sure tile is valid.
-            if (!this->tileModel.valid())
-            {
-                OMC_MAIN_EXAMPLE_LOG(
-                    "ERROR Could not load model '%s/%s'",
-                    model.group.c_str(),
-                    model.name.c_str()
-                );
-            }
-        }
         void setupTiles()
         {
             std::vector<mahjong::Tile> tiles;
@@ -559,7 +472,7 @@ struct Example
                 // Add it to the scene.
                 this->tileScene->addChild(tileNode);
                 // Select texture based on matchId value.
-                this->tileTheme->setFaceId(matchId, tileModel);
+                this->theme->setFaceId(matchId, tileModel);
     
                 // Map logical tile position to visual one.
                 float z = pos.field;
@@ -742,6 +655,29 @@ struct Example
             }
         }
     // Example+MatchTilesTest End
+    // Example+Scene Start
+    private:
+        osg::ref_ptr<osg::MatrixTransform> scene;
+        const std::string sceneSetupCallbackName = "SceneSetup";
+    
+        void setupScene()
+        {
+            this->scene = new osg::MatrixTransform;
+    
+            // Provide scene to application after the first frame
+            // to let other components configure scene prior that event.
+            this->app->frameReporter.addCallback(
+                [&] {
+                    this->app->setScene(this->scene);
+                    // Unsubscribe from the rest of frame reports.
+                    this->app->frameReporter.removeCallback(
+                        this->sceneSetupCallbackName
+                    );
+                },
+                this->sceneSetupCallbackName
+            );
+        }
+    // Example+Scene End
     // Example+VBO Start
     private:
         void setupSceneVBO()

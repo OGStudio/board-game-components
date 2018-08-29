@@ -46,30 +46,46 @@ freely, subject to the following restrictions:
 
 // Application+Rendering End
 
-// Example+MatchTilesTest Start
+// Example+DefaultLayoutTheme Start
+#include "X_shaped.layout.h"
+#include "tile-theme.png.h"
+
 #include "mahjong.h"
 #include "scene.h"
 
-#include "resource.h"
-
-#include "cat.layout.h"
-#include "short-victory.layout.h"
-#include "short-loss.layout.h"
-
-#include "ppl-theme.frag.h"
-#include "ppl-theme.vert.h"
-#include "tile-low.osgt.h"
-#include "tile-theme.png.h"
-
-#include <osg/MatrixTransform>
-
-// Example+MatchTilesTest End
+// Example+DefaultLayoutTheme End
 // Example+Scene Start
 #include <osg/MatrixTransform>
 
 // Example+Scene End
+// Example+Theme Start
+#include "render.h"
+#include "resource.h"
 
+#include "ppl-theme.frag.h"
+#include "ppl-theme.vert.h"
+#include "tile-low.osgt.h"
 
+// Example+Theme End
+
+// Example+createTiles Start
+#include "mahjong.h"
+#include "scene.h"
+#include <osg/MatrixTransform>
+
+// Example+createTiles End
+
+// OMC_MAIN_EXAMPLE_LOG Start
+#include "log.h"
+#include "format.h"
+#define OMC_MAIN_EXAMPLE_LOG_PREFIX "main::Example(%p) %s"
+#define OMC_MAIN_EXAMPLE_LOG(...) \
+    log::logprintf( \
+        OMC_MAIN_EXAMPLE_LOG_PREFIX, \
+        this, \
+        format::printfString(__VA_ARGS__).c_str() \
+    )
+// OMC_MAIN_EXAMPLE_LOG End
 
 // Example+StaticPluginOSG Start
 #include <osgDB/Registry>
@@ -266,25 +282,74 @@ struct Example
         this->setupScene();
         
         // Example+Scene End
-        // Example+MatchTilesTest Start
-        this->setupMatchTilesTest();
+        // Example+Theme Start
+        this->setupTheme();
         
-        // Example+MatchTilesTest End
+        // Example+Theme End
+        // Example+DefaultLayoutTheme Start
+        this->setupDefaultLayoutTheme();
+        
+        // Example+DefaultLayoutTheme End
 // Example Start
     }
     ~Example()
     {
 
 // Example End
-        // Example+MatchTilesTest Start
-        this->tearMatchTilesTestDown();
+        // Example+Theme Start
+        this->tearThemeDown();
         
-        // Example+MatchTilesTest End
+        // Example+Theme End
 // Example Start
         delete this->app;
     }
 
 // Example End
+    // Example+DefaultLayoutTheme Start
+    private:
+        void setupDefaultLayoutTheme()
+        {
+            // Load default built-in layout.
+            resource::Resource layoutResource(
+                "layouts",
+                "X_shaped.layout",
+                X_shaped_layout,
+                X_shaped_layout_len
+            );
+            resource::ResourceStreamBuffer buf(layoutResource);
+            std::istream in(&buf);
+            mahjong::Layout layout;
+            if (!mahjong::parseLayout(in, layout))
+            {
+                OMC_MAIN_EXAMPLE_LOG("Could not parse built-in layout");
+                return;
+            }
+            // Reorder layout positions with seed.
+            auto positions = mahjong::orderedLayoutPositions(layout.positions, time(0));
+    
+            // Create tiles.
+            auto matchIds = mahjong::matchIds(positions.size());
+            auto tileScene = this->createTiles(positions, matchIds);
+            // Apply normal state material to the whole scene.
+            tileScene->setStateSet(this->themeMaterial);
+            // Rotate the tile scene to have a better view.
+            scene::setSimpleRotation(tileScene, {60, 0, 0});
+            // Add tile scene to the scene.
+            this->scene->addChild(tileScene);
+            // Reset the scene.
+            this->app->setScene(this->scene);
+            // Set texture to materials.
+            resource::Resource texRes(
+                "textures",
+                "tile-theme.png",
+                tile_theme_png,
+                tile_theme_png_len
+            );
+            auto texture = resource::createTexture(texRes);
+            this->themeMaterial->setTextureAttributeAndModes(0, texture);
+            this->themeMaterialSelected->setTextureAttributeAndModes(0, texture);
+        }
+    // Example+DefaultLayoutTheme End
     // Example+Scene Start
     private:
         osg::ref_ptr<osg::MatrixTransform> scene;
@@ -308,81 +373,60 @@ struct Example
             );
         }
     // Example+Scene End
-    // Example+MatchTilesTest Start
+    // Example+Theme Start
     private:
-        mahjong::Solitaire *game;
+        render::TileTheme *theme;
+        // Theme texture configuration.
+        const osg::Vec2 textureSize = {1024, 2048};
+        const osg::Vec2 tileFaceSize = {160, 240};
+        // Theme model.
+        const render::TileTheme::Indices faceIndices = {15, 23, 16, 17};
         osg::ref_ptr<osg::Geode> tileModel;
-        osg::ref_ptr<osg::StateSet> normalMaterial;
-        osg::ref_ptr<osg::StateSet> selectedMaterial;
-        osg::ref_ptr<osg::MatrixTransform> tileScene;
-        mahjong::Layout layout;
-        std::map<osg::Node *, mahjong::Tile> tileNodes;
-        const std::string selectionCallbackName = "Selection";
-        const unsigned int selectionNodeMask = 0x00000004;
-        core::Reporter selectedTile;
-        osg::Node *selectedTileNode = 0;
-        osg::Node *previouslySelectedTileNode = 0;
-        core::Reporter tilesMatch;
-        std::vector<osg::Node *> nodesToRemove;
-        core::Reporter removedTiles;
+        // Materials for normal and selected states of tiles.
+        osg::ref_ptr<osg::StateSet> themeMaterial;
+        osg::ref_ptr<osg::StateSet> themeMaterialSelected;
     
-        void setupMatchTilesTest()
+        void setupTheme()
         {
-            this->game = new mahjong::Solitaire();
-            this->setupLayout();
+            this->theme =
+                new render::TileTheme(
+                    this->textureSize,
+                    this->tileFaceSize,
+                    this->faceIndices
+                );
+            this->setupTileModel();
             this->setupMaterials();
-            this->setupModel();
-            this->setupTileScene();
-            this->setupTiles();
-            this->setupTileSelection();
-            this->setupTileMatching();
-            this->setupTileRemoval();
-            this->setupGameStateDetection();
         }
-        void tearMatchTilesTestDown()
+        void tearThemeDown()
         {
-            this->tearTileSelectionDown();
-            delete this->game;
+            delete this->theme;
         }
-    
-        void setupLayout()
+        void setupTileModel()
         {
-            resource::Resource res(
-                "layouts",
-                "cat.layout",
-                cat_layout,
-                cat_layout_len
+            resource::Resource tileResource(
+                "models",
+                "tile-low.osgt",
+                tile_low_osgt,
+                tile_low_osgt_len
             );
-            /*
-            resource::Resource res(
-                "layouts",
-                "short-victory.layout",
-                short_victory_layout,
-                short_victory_layout_len
-            );
-            */
-            /*
-            resource::Resource res(
-                "layouts",
-                "short-loss.layout",
-                short_loss_layout,
-                short_loss_layout_len
-            );
-            */
-    
-            resource::ResourceStreamBuffer buf(res);
-            std::istream in(&buf);
-            if (!mahjong::parseLayout(in, this->layout))
+            auto node = resource::node(tileResource);
+            auto model = reinterpret_cast<osg::Geode *>(node.get());
+            // Make sure model is valid.
+            if (!model)
             {
                 OMC_MAIN_EXAMPLE_LOG(
-                    "ERROR Could not load layout '%s/%s'",
-                    res.group.c_str(),
-                    res.name.c_str()
+                    "ERROR Could not setup tile model '%s/%s'",
+                    tileResource.group.c_str(),
+                    tileResource.name.c_str()
                 );
+                return;
             }
+            
+            this->tileModel = model;
         }
         void setupMaterials()
         {
+            // Create resources.
             resource::Resource shaderFrag(
                 "shaders",
                 "ppl-theme.frag",
@@ -404,266 +448,57 @@ struct Example
                 );
     
             // Create normal state material.
-            this->normalMaterial = new osg::StateSet;
-            this->normalMaterial->setAttribute(prog);
-            this->normalMaterial->addUniform(new osg::Uniform("image", 0));
-            this->normalMaterial->addUniform(new osg::Uniform("isSelected", false));
+            auto normal = new osg::StateSet;
+            normal->setAttribute(prog);
+            normal->addUniform(new osg::Uniform("image", 0));
+            normal->addUniform(new osg::Uniform("isSelected", false));
+            this->themeMaterial = normal;
     
             // Create selected state material.
-            this->selectedMaterial = new osg::StateSet;
-            this->selectedMaterial->setAttribute(prog);
-            this->selectedMaterial->addUniform(new osg::Uniform("image", 0));
-            this->selectedMaterial->addUniform(new osg::Uniform("isSelected", true));
-    
-            // Set texture for both materials.
-            resource::Resource theme(
-                "themes",
-                "tile-theme.png",
-                tile_theme_png,
-                tile_theme_png_len
-            );
-            auto texture = resource::createTexture(theme);
-            this->normalMaterial->setTextureAttributeAndModes(0, texture);
-            this->selectedMaterial->setTextureAttributeAndModes(0, texture);
+            auto selected = new osg::StateSet;
+            selected->setAttribute(prog);
+            selected->addUniform(new osg::Uniform("image", 0));
+            selected->addUniform(new osg::Uniform("isSelected", true));
+            this->themeMaterialSelected = selected;
         }
-        void setupModel()
-        {
-            resource::Resource model(
-                "models",
-                "tile-low.osgt",
-                tile_low_osgt,
-                tile_low_osgt_len
-            );
-            auto node = resource::node(model);
-            this->tileModel = reinterpret_cast<osg::Geode *>(node.get());
-    
-            // Make sure tile is valid.
-            if (!this->tileModel.valid())
-            {
-                OMC_MAIN_EXAMPLE_LOG(
-                    "ERROR Could not load model '%s/%s'",
-                    model.group.c_str(),
-                    model.name.c_str()
-                );
-            }
-        }
-        void setupTiles()
-        {
-            std::vector<mahjong::Tile> tiles;
-            const int matchIdsCount = 42;
-            int id = 0;
-    
-            // Reorder layout positions with seed.
-            unsigned int seed = 1337;
-            auto layoutPositions =
-                mahjong::orderedLayoutPositions(this->layout.positions, seed);
-    
-            for (auto pos : layoutPositions)
-            {
-                // Construct matchId so that two consequent tiles get the same matchId.
-                if (id >= matchIdsCount * 2)
-                {
-                    id = 0;
-                }
-                int matchId = id++ / 2;
-    
-                // Create logical tile.
-                mahjong::Tile tile;
-                tile.position = pos;
-                tile.matchId = matchId;
-                tiles.push_back(tile);
-    
-                // Create visual tile.
-                auto tileModel = new osg::Geode(*this->tileModel, osg::CopyOp::DEEP_COPY_ALL);
-                auto tileNode = new osg::MatrixTransform;
-                tileNode->addChild(tileModel);
-                // Add it to the scene.
-                this->tileScene->addChild(tileNode);
-                // Select texture based on matchId value.
-                this->tileTheme->setFaceId(matchId, tileModel);
-    
-                // Map logical tile position to visual one.
-                float z = pos.field;
-                float y = pos.row * -1.5 /* Factor depends on the model */;
-                float x = pos.column;
-                // Set visual tile position.
-                scene::setSimplePosition(tileNode, {x, y, z});
-    
-                // Keep correspondence of visual tiles to logical ones.
-                this->tileNodes[tileNode] = tile;
-            }
-    
-            // Provide logical tiles to the game.
-            this->game->setTiles(tiles);
-        }
-        void setupTileScene()
-        {
-            // Create tile scene to host tiles.
-            this->tileScene = new osg::MatrixTransform;
-            this->scene->addChild(this->tileScene);
-            // Rotate it to have a better view.
-            scene::setSimpleRotation(this->tileScene, {60, 0, 0});
-            // Apply theme.
-            this->scene->setStateSet(this->normalMaterial);
-        }
-        void setupTileSelection()
-        {
-            // Mark tile nodes as selectable.
-            auto tilesCount = this->tileScene->getNumChildren();
-            for (int id = 0; id < tilesCount; ++id)
-            {
-                auto node = this->tileScene->getChild(id);
-                node->setNodeMask(node->getNodeMask() & ~this->selectionNodeMask);
-            }
-    
-            // Listen to mouse clicks.
-            this->app->mouse->pressedButtonsChanged.addCallback(
-                [&] {
-                    bool clicked = !this->app->mouse->pressedButtons.empty();
-                    if (clicked)
-                    {
-                        this->selectTile();
-                    }
-                },
-                this->selectionCallbackName
-            );
-        }
-        void tearTileSelectionDown()
-        {
-            this->app->mouse->pressedButtonsChanged.removeCallback(
-                this->selectionCallbackName
-            );
-        }
-        void selectTile()
-        {
-            this->selectedTileNode =
-                scene::nodeAtPosition(
-                    this->app->mouse->position,
-                    this->app->camera(),
-                    this->selectionNodeMask
-                );
-    
-            if (this->selectedTileNode)
-            {
-                this->selectedTile.report();
-            }
-        }
-        void setupTileMatching()
-        {
-            this->selectedTile.addCallback(
-                [&] {
-                    auto nodeNow = this->selectedTileNode;
-                    auto tileNow = this->tileNodes[nodeNow];
-    
-                    // Make sure tile is selectable.
-                    if (!this->game->isTileSelectable(tileNow))
-                    {
-                        return;
-                    }
-    
-                    // Depict selection.
-                    this->setNodeSelected(nodeNow, true);
-    
-                    auto nodeWas = this->previouslySelectedTileNode;
-    
-                    // Keep previously selected tile node.
-                    this->previouslySelectedTileNode = nodeNow;
-    
-                    // Make sure different nodes were selected.
-                    if (!nodeWas || (nodeNow == nodeWas))
-                    {
-                        return;
-                    }
-    
-                    // Remove selection of previously selected node.
-                    this->setNodeSelected(nodeWas, false);
-    
-                    // Match tiles.
-                    auto tileWas = this->tileNodes[nodeWas];
-                    bool match = this->game->tilesMatch(tileWas, tileNow);
-                    // Report matching.
-                    if (match)
-                    {
-                        this->nodesToRemove.push_back(nodeWas);
-                        this->nodesToRemove.push_back(nodeNow);
-                        this->tilesMatch.report();
-                    }
-                }
-            );
-        }
-        void setNodeSelected(osg::Node *node, bool state)
-        {
-            osg::StateSet *material = 
-                state ? 
-                this->selectedMaterial :
-                0;
-            node->setStateSet(material);
-        }
-        void setupTileRemoval()
-        {
-            this->tilesMatch.addCallback(
-                [&] {
-                    this->removeTiles();
-                }
-            );
-        }
-        void removeTiles()
-        {
-            // Find out nodes and tiles to remove.
-            auto nodeWas = this->nodesToRemove[0];
-            auto nodeNow = this->nodesToRemove[1];
-            this->nodesToRemove.clear();
-            auto tileWas = this->tileNodes[nodeWas];
-            auto tileNow = this->tileNodes[nodeNow];
-    
-            // Remove tiles from Solitaire (logical) representation.
-            this->game->removeTiles(tileWas, tileNow);
-            // Remove nodes from tileNodes.
-            {
-                auto it = this->tileNodes.find(nodeWas);
-                this->tileNodes.erase(it);
-            }
-            {
-                auto it = this->tileNodes.find(nodeNow);
-                this->tileNodes.erase(it);
-            }
-            // Deselect both tile nodes.
-            this->setNodeSelected(nodeWas, false);
-            this->setNodeSelected(nodeNow, false);
-            // Remove nodes from tileScene.
-            this->tileScene->removeChild(nodeWas);
-            this->tileScene->removeChild(nodeNow);
-            // Remove selection.
-            this->selectedTileNode = 0;
-            this->previouslySelectedTileNode = 0;
-            
-            // Report.
-            this->removedTiles.report();
-        }
-        void setupGameStateDetection()
-        {
-            this->removedTiles.addCallback(
-                [&] {
-                    this->detectGameState();
-                }
-            );
-        }
-        void detectGameState()
-        {
-            if (!this->game->hasTurns())
-            {
-                if (this->game->hasTiles())
-                {
-                    OMC_MAIN_EXAMPLE_LOG("Game over: LOSS");
-                }
-                else
-                {
-                    OMC_MAIN_EXAMPLE_LOG("Game over: VICTORY");
-                }
-            }
-        }
-    // Example+MatchTilesTest End
+    // Example+Theme End
  
+    // Example+createTiles Start
+    // Make sure positions' count is equal to matchIds' one.
+    osg::MatrixTransform* createTiles(
+        const mahjong::Layout::Positions &positions,
+        mahjong::MatchIds &matchIds
+    ) {
+        // Create scene to host tile nodes.
+        osg::ref_ptr<osg::MatrixTransform> tileScene = new osg::MatrixTransform;
+        // Correct the height for `tile-low.osgt` model.
+        const float MODEL_HEIGHT_FACTOR = 1.5;
+    
+        int id = 0;
+        // Generate tile nodes.
+        for (auto pos : positions)
+        {
+            // Clone tile.
+            auto tile = new osg::Geode(*this->tileModel, osg::CopyOp::DEEP_COPY_ALL);
+            // Create node for it.
+            auto node = new osg::MatrixTransform;
+            node->addChild(tile);
+            // Set node's position.
+            float x = pos.column;
+            float y = pos.row * MODEL_HEIGHT_FACTOR;
+            float z = pos.field;
+            scene::setSimplePosition(node, {x, y, z});
+            // Set match id.
+            int matchId = matchIds[id++];
+            this->theme->setFaceId(matchId, tile);
+    
+            // Add tile node to the scene.
+            tileScene->addChild(node);
+        }
+    
+        return tileScene.release();
+    }
+    // Example+createTiles End
 // Example Start
 };
 // Example End

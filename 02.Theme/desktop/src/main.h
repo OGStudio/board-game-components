@@ -53,7 +53,6 @@ freely, subject to the following restrictions:
 #include "ppl-theme.frag.h"
 #include "ppl-theme.vert.h"
 #include "tile-low.osgt.h"
-#include "tile-theme.png.h"
 
 // Example+Theme End
 // Example+ThemeTest Start

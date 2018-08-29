@@ -5,7 +5,6 @@ FEATURE main.h/Include
 #include "ppl-theme.frag.h"
 #include "ppl-theme.vert.h"
 #include "tile-low.osgt.h"
-#include "tile-theme.png.h"
 
 FEATURE main.h/Setup
 this->setupTheme();

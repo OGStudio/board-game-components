@@ -31,6 +31,7 @@ KMahjonggLayout
 TilePosition
 kmahjonggLayoutFieldsToPositions
 linesToKMahjonggLayout
+matchIds
 parseLayout
 
 # log

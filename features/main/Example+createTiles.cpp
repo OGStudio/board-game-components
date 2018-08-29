@@ -4,16 +4,17 @@ FEATURE main.h/Include
 #include <osg/MatrixTransform>
 
 FEATURE main.h/Impl
-osg::MatrixTransform* createTiles(const mahjong::Layout::Positions &positions)
-{
+// Make sure positions' count is equal to matchIds' one.
+osg::MatrixTransform* createTiles(
+    const mahjong::Layout::Positions &positions,
+    mahjong::MatchIds &matchIds
+) {
     // Create scene to host tile nodes.
     osg::ref_ptr<osg::MatrixTransform> tileScene = new osg::MatrixTransform;
-
-    // TODO Update this function to take 4 tiles from each group.
-    const int FACES_COUNT = 42;
+    // Correct the height for `tile-low.osgt` model.
     const float MODEL_HEIGHT_FACTOR = 1.5;
-    int faceId = 0;
 
+    int id = 0;
     // Generate tile nodes.
     for (auto pos : positions)
     {
@@ -27,13 +28,9 @@ osg::MatrixTransform* createTiles(const mahjong::Layout::Positions &positions)
         float y = pos.row * MODEL_HEIGHT_FACTOR;
         float z = pos.field;
         scene::setSimplePosition(node, {x, y, z});
-        // Set tile face id.
-        this->theme->setFaceId(faceId, tile);
-        // Cycle face id.
-        if (++faceId >= FACES_COUNT)
-        {
-            faceId = 0;
-        }
+        // Set match id.
+        int matchId = matchIds[id++];
+        this->theme->setFaceId(matchId, tile);
 
         // Add tile node to the scene.
         tileScene->addChild(node);

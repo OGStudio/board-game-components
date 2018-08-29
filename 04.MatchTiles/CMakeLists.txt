@@ -7,8 +7,8 @@
 # * COMPONENT_BINARY_NAME
 # * OMC_LINK_LIBS
 
-PROJECT(MC04_MATCH_TILES)
-SET(COMPONENT_BINARY_NAME "mc04-match-tiles")
+PROJECT(OMC04_MATCH_TILES)
+SET(COMPONENT_BINARY_NAME "omc04-match-tiles")
 SET(OSGCPE_DIR ${OMC_DIR}/../openscenegraph-cross-platform-examples)
 
 # Use C++11.
