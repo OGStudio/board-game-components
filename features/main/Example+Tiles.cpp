@@ -1,6 +1,3 @@
-FEATURE main.h/Setup
-this->setupTiles();
-
 FEATURE main.h/Impl
 private:
     osg::ref_ptr<osg::MatrixTransform> tileScene;

@@ -1,6 +1,3 @@
-FEATURE main.h/Setup
-this->setupMatchedTilesRemoval();
-
 FEATURE main.h/Impl
 private:
     core::Reporter removedTiles;

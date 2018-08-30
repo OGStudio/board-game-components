@@ -289,48 +289,16 @@ struct Example
         this->setupTheme();
         
         // Example+Theme End
-        // Example+DefaultLayoutTheme Start
-        this->setupDefaultLayoutTheme();
+        // Example+MatchTilesTest Start
+        this->setupMatchTilesTest();
         
-        // Example+DefaultLayoutTheme End
-        // Example+Tiles Start
-        this->setupTiles();
-        
-        // Example+Tiles End
-        // Example+NodeSelection Start
-        this->setupNodeSelection();
-        
-        // Example+NodeSelection End
-        // Example+TileSelection Start
-        this->setupTileSelection();
-        
-        // Example+TileSelection End
-        // Example+TileSelectionDepiction Start
-        this->setupTileSelectionDepiction();
-        
-        // Example+TileSelectionDepiction End
-        // Example+TileMatching Start
-        this->setupTileMatching();
-        
-        // Example+TileMatching End
-        // Example+UnmatchedTilesDeselection Start
-        this->setupUnmatchedTilesDeselection();
-        
-        // Example+UnmatchedTilesDeselection End
-        // Example+MatchedTilesRemoval Start
-        this->setupMatchedTilesRemoval();
-        
-        // Example+MatchedTilesRemoval End
+        // Example+MatchTilesTest End
 // Example Start
     }
     ~Example()
     {
 
 // Example End
-        // Example+NodeSelection Start
-        this->tearNodeSelectionDown();
-        
-        // Example+NodeSelection End
         // Example+Theme Start
         this->tearThemeDown();
         
@@ -389,6 +357,27 @@ struct Example
             delete this->game;
         }
     // Example+Game End
+    // Example+GameState Start
+    private:
+        bool isGameVictorious = false;
+        core::Reporter finishedGame;
+        void setupGameState()
+        {
+            this->removedTiles.addCallback(
+                [&] {
+                    this->detectGameState();
+                }
+            );
+        }
+        void detectGameState()
+        {
+            if (!this->game->hasTurns())
+            {
+                this->isGameVictorious = !this->game->hasTiles();
+                this->finishedGame.report();
+            }
+        }
+    // Example+GameState End
     // Example+MatchedTilesRemoval Start
     private:
         core::Reporter removedTiles;
@@ -437,6 +426,39 @@ struct Example
             this->removedTiles.report();
         }
     // Example+MatchedTilesRemoval End
+    // Example+MatchTilesTest Start
+    private:
+        void setupMatchTilesTest()
+        {
+            this->setupDefaultLayoutTheme();
+            this->setupTiles();
+            this->setupNodeSelection();
+            this->setupTileSelection();
+            this->setupTileSelectionDepiction();
+            this->setupTileMatching();
+            this->setupUnmatchedTilesDeselection();
+            this->setupMatchedTilesRemoval();
+            this->setupGameState();
+    
+            // Report game result.
+            this->finishedGame.addCallback(
+                [&] {
+                    if (this->isGameVictorious)
+                    {
+                        OMC_MAIN_EXAMPLE_LOG("Game over: VICTORY");
+                    }
+                    else
+                    {
+                        OMC_MAIN_EXAMPLE_LOG("Game over: LOSS");
+                    }
+                }
+            );
+        }
+        void tearMatchTilesDown()
+        {
+            this->tearNodeSelectionDown();
+        }
+    // Example+MatchTilesTest End
     // Example+NodeSelection Start
     private:
         const std::string nodeSelectionCallbackName = "NodeSelection";

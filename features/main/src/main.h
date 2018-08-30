@@ -93,25 +93,19 @@ namespace main
         // FEATURE Example+Theme/Setup
         // FEATURE Example+ThemeTest/Setup
         // FEATURE Example+LayoutTest/Setup
-        // FEATURE Example+DefaultLayoutTheme/Setup
-        // FEATURE Example+Tiles/Setup
-        // FEATURE Example+NodeSelection/Setup
-        // FEATURE Example+TileSelection/Setup
-        // FEATURE Example+TileSelectionDepiction/Setup
-        // FEATURE Example+TileMatching/Setup
-        // FEATURE Example+UnmatchedTilesDeselection/Setup
-        // FEATURE Example+MatchedTilesRemoval/Setup
+        // FEATURE Example+MatchTilesTest/Setup
         // FEATURE Example+RemoteLayoutTheme/Setup
         // FEATURE Example+VBO/Setup
 // FEATURE Example/TearDown
-        // FEATURE Example+NodeSelection/TearDown
         // FEATURE Example+Theme/TearDown
         // FEATURE Example+Game/TearDown
 // FEATURE Example/Impl
     // FEATURE Example+DefaultLayoutTheme/Impl
     // FEATURE Example+Game/Impl
+    // FEATURE Example+GameState/Impl
     // FEATURE Example+LayoutTest/Impl
     // FEATURE Example+MatchedTilesRemoval/Impl
+    // FEATURE Example+MatchTilesTest/Impl
     // FEATURE Example+NodeSelection/Impl
     // FEATURE Example+RemoteLayoutTheme/Impl
     // FEATURE Example+Scene/Impl

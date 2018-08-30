@@ -4,9 +4,6 @@ FEATURE main.h/Include
 
 #include "mahjong.h"
 
-FEATURE main.h/Setup
-this->setupDefaultLayoutTheme();
-
 FEATURE main.h/Impl
 private:
     mahjong::Layout layout;

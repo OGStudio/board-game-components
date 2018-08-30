@@ -1,6 +1,3 @@
-FEATURE main.h/Setup
-this->setupTileSelection();
-
 FEATURE main.h/Impl
 private:
     struct NodeTile

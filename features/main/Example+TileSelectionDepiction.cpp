@@ -1,6 +1,3 @@
-FEATURE main.h/Setup
-this->setupTileSelectionDepiction();
-
 FEATURE main.h/Impl
 private:
     std::vector<NodeTile> depictedTiles;

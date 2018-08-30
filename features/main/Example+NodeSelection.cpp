@@ -1,9 +1,3 @@
-FEATURE main.h/Setup
-this->setupNodeSelection();
-
-FEATURE main.h/TearDown
-this->tearNodeSelectionDown();
-
 FEATURE main.h/Impl
 private:
     const std::string nodeSelectionCallbackName = "NodeSelection";

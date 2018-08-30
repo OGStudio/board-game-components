@@ -323,6 +323,10 @@ struct Example
         this->setupScene();
         
         // Example+Scene End
+        // Example+MatchTilesTest Start
+        this->setupMatchTilesTest();
+        
+        // Example+MatchTilesTest End
         // Example+VBO Start
         this->setupSceneVBO();
         
@@ -338,6 +342,39 @@ struct Example
     }
 
 // Example End
+    // Example+MatchTilesTest Start
+    private:
+        void setupMatchTilesTest()
+        {
+            this->setupDefaultLayoutTheme();
+            this->setupTiles();
+            this->setupNodeSelection();
+            this->setupTileSelection();
+            this->setupTileSelectionDepiction();
+            this->setupTileMatching();
+            this->setupUnmatchedTilesDeselection();
+            this->setupMatchedTilesRemoval();
+            this->setupGameState();
+    
+            // Report game result.
+            this->finishedGame.addCallback(
+                [&] {
+                    if (this->isGameVictorious)
+                    {
+                        OMC_MAIN_EXAMPLE_LOG("Game over: VICTORY");
+                    }
+                    else
+                    {
+                        OMC_MAIN_EXAMPLE_LOG("Game over: LOSS");
+                    }
+                }
+            );
+        }
+        void tearMatchTilesDown()
+        {
+            this->tearNodeSelectionDown();
+        }
+    // Example+MatchTilesTest End
     // Example+Scene Start
     private:
         osg::ref_ptr<osg::MatrixTransform> scene;

@@ -1,6 +1,3 @@
-FEATURE main.h/Setup
-this->setupUnmatchedTilesDeselection();
-
 FEATURE main.h/Impl
 private:
     void setupUnmatchedTilesDeselection()

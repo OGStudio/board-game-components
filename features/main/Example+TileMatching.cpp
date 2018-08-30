@@ -1,6 +1,3 @@
-FEATURE main.h/Setup
-this->setupTileMatching();
-
 FEATURE main.h/Impl
 private:
     bool tilesMatch = false;
