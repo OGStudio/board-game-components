@@ -14,10 +14,12 @@ Example+04
 Example+Game
 Example+DefaultLayoutTheme
 #Example+MatchTilesTest
+Example+NodeSelection
 Example+Scene
-Example+Selection
 Example+Theme
 Example+Tiles
+Example+TileSelection
+Example+TileSelectionDepiction
 Example+StaticPluginOSG
 Example+StaticPluginPNG
 Example+createTiles
