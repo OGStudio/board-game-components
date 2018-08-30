@@ -100,6 +100,7 @@ namespace main
         // FEATURE Example+TileSelectionDepiction/Setup
         // FEATURE Example+TileMatching/Setup
         // FEATURE Example+UnmatchedTilesDeselection/Setup
+        // FEATURE Example+MatchedTilesRemoval/Setup
         // FEATURE Example+RemoteLayoutTheme/Setup
         // FEATURE Example+VBO/Setup
 // FEATURE Example/TearDown
@@ -110,6 +111,7 @@ namespace main
     // FEATURE Example+DefaultLayoutTheme/Impl
     // FEATURE Example+Game/Impl
     // FEATURE Example+LayoutTest/Impl
+    // FEATURE Example+MatchedTilesRemoval/Impl
     // FEATURE Example+NodeSelection/Impl
     // FEATURE Example+RemoteLayoutTheme/Impl
     // FEATURE Example+Scene/Impl

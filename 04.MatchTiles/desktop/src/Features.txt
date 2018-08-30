@@ -13,7 +13,7 @@ Example
 Example+04
 Example+Game
 Example+DefaultLayoutTheme
-#Example+MatchTilesTest
+Example+MatchedTilesRemoval
 Example+NodeSelection
 Example+Scene
 Example+Theme
