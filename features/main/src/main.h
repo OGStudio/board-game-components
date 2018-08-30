@@ -98,6 +98,8 @@ namespace main
         // FEATURE Example+NodeSelection/Setup
         // FEATURE Example+TileSelection/Setup
         // FEATURE Example+TileSelectionDepiction/Setup
+        // FEATURE Example+TileMatching/Setup
+        // FEATURE Example+UnmatchedTilesDeselection/Setup
         // FEATURE Example+RemoteLayoutTheme/Setup
         // FEATURE Example+VBO/Setup
 // FEATURE Example/TearDown
@@ -114,8 +116,10 @@ namespace main
     // FEATURE Example+Theme/Impl
     // FEATURE Example+ThemeTest/Impl
     // FEATURE Example+Tiles/Impl
+    // FEATURE Example+TileMatching/Impl
     // FEATURE Example+TileSelection/Impl
     // FEATURE Example+TileSelectionDepiction/Impl
+    // FEATURE Example+UnmatchedTilesDeselection/Impl
     // FEATURE Example+VBO/Impl
  
     // FEATURE Example+createTiles/Impl

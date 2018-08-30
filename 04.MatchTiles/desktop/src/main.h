@@ -309,6 +309,14 @@ struct Example
         this->setupTileSelectionDepiction();
         
         // Example+TileSelectionDepiction End
+        // Example+TileMatching Start
+        this->setupTileMatching();
+        
+        // Example+TileMatching End
+        // Example+UnmatchedTilesDeselection Start
+        this->setupUnmatchedTilesDeselection();
+        
+        // Example+UnmatchedTilesDeselection End
 // Example Start
     }
     ~Example()
@@ -588,9 +596,42 @@ struct Example
             this->tileScene = tileScene;
         }
     // Example+Tiles End
+    // Example+TileMatching Start
+    private:
+        bool tilesMatch = false;
+        core::Reporter tilesMatchChanged;
+    
+        void setupTileMatching()
+        {
+            this->selectedTilesChanged.addCallback(
+                [&] {
+                    // Only perform matching once two tiles have been selected.
+                    if (this->selectedTiles.size() == 2)
+                    {
+                        this->matchTiles();
+                    }
+                }
+            );
+        }
+        void matchTiles()
+        {
+            auto nodeTile = this->selectedTiles.begin();
+            auto tile1 = nodeTile->tile;
+            ++nodeTile;
+            auto tile2 = nodeTile->tile;
+    
+            this->tilesMatch = this->game->tilesMatch(tile1, tile2);
+            this->tilesMatchChanged.report();
+        }
+    // Example+TileMatching End
     // Example+TileSelection Start
     private:
-        std::map<osg::Node *, mahjong::Tile> selectedTiles;
+        struct NodeTile
+        {
+            osg::Node *node;
+            mahjong::Tile tile;
+        };
+        std::vector<NodeTile> selectedTiles;
         core::Reporter selectedTilesChanged;
         const std::string tileSelectionCallbackName = "TileSelection";
     
@@ -620,13 +661,23 @@ struct Example
                 return;
             }
     
-            this->selectedTiles[node] = tile;
+            // Make sure the tile has not yet been selected.
+            for (auto nodeTile : this->selectedTiles)
+            {
+                if (nodeTile.node == node)
+                {
+                    return;
+                }
+            }
+    
+            // Select and report.
+            this->selectedTiles.push_back({node, tile});
             this->selectedTilesChanged.report();
         }
     // Example+TileSelection End
     // Example+TileSelectionDepiction Start
     private:
-        std::map<osg::Node *, mahjong::Tile> depictedTiles;
+        std::vector<NodeTile> depictedTiles;
     
         void setupTileSelectionDepiction()
         {
@@ -639,16 +690,16 @@ struct Example
         void depictSelectedTiles()
         {
             // Remove depiction of previously selected tiles.
-            for (auto it : this->depictedTiles)
+            for (auto nodeTile : this->depictedTiles)
             {
-                auto node = it.first;
+                auto node = nodeTile.node;
                 this->depictNodeSelection(node, false);
             }
     
             // Depict currently selected tiles.
-            for (auto it : this->selectedTiles)
+            for (auto nodeTile : this->selectedTiles)
             {
-                auto node = it.first;
+                auto node = nodeTile.node;
                 this->depictNodeSelection(node, true);
             }
     
@@ -664,6 +715,29 @@ struct Example
             node->setStateSet(material);
         }
     // Example+TileSelectionDepiction End
+    // Example+UnmatchedTilesDeselection Start
+    private:
+        void setupUnmatchedTilesDeselection()
+        {
+            this->tilesMatchChanged.addCallback(
+                [&] {
+                    // Make sure there was no match.
+                    if (this->tilesMatch)
+                    {
+                        return;
+                    }
+    
+                    this->deselectUnmatchedTiles();
+                }
+            );
+        }
+        void deselectUnmatchedTiles()
+        {
+            // Deselect the first unmatched tile only.
+            this->selectedTiles.erase(this->selectedTiles.begin());
+            this->selectedTilesChanged.report();
+        }
+    // Example+UnmatchedTilesDeselection End
  
     // Example+createTiles Start
     // Make sure positions' count is equal to matchIds' one.

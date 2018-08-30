@@ -3,7 +3,7 @@ this->setupTileSelectionDepiction();
 
 FEATURE main.h/Impl
 private:
-    std::map<osg::Node *, mahjong::Tile> depictedTiles;
+    std::vector<NodeTile> depictedTiles;
 
     void setupTileSelectionDepiction()
     {
@@ -16,16 +16,16 @@ private:
     void depictSelectedTiles()
     {
         // Remove depiction of previously selected tiles.
-        for (auto it : this->depictedTiles)
+        for (auto nodeTile : this->depictedTiles)
         {
-            auto node = it.first;
+            auto node = nodeTile.node;
             this->depictNodeSelection(node, false);
         }
 
         // Depict currently selected tiles.
-        for (auto it : this->selectedTiles)
+        for (auto nodeTile : this->selectedTiles)
         {
-            auto node = it.first;
+            auto node = nodeTile.node;
             this->depictNodeSelection(node, true);
         }
 

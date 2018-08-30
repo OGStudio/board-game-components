@@ -18,10 +18,12 @@ Example+NodeSelection
 Example+Scene
 Example+Theme
 Example+Tiles
+Example+TileMatching
 Example+TileSelection
 Example+TileSelectionDepiction
 Example+StaticPluginOSG
 Example+StaticPluginPNG
+Example+UnmatchedTilesDeselection
 Example+createTiles
 
 main-desktop

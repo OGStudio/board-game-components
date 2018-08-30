@@ -3,7 +3,12 @@ this->setupTileSelection();
 
 FEATURE main.h/Impl
 private:
-    std::map<osg::Node *, mahjong::Tile> selectedTiles;
+    struct NodeTile
+    {
+        osg::Node *node;
+        mahjong::Tile tile;
+    };
+    std::vector<NodeTile> selectedTiles;
     core::Reporter selectedTilesChanged;
     const std::string tileSelectionCallbackName = "TileSelection";
 
@@ -33,6 +38,16 @@ private:
             return;
         }
 
-        this->selectedTiles[node] = tile;
+        // Make sure the tile has not yet been selected.
+        for (auto nodeTile : this->selectedTiles)
+        {
+            if (nodeTile.node == node)
+            {
+                return;
+            }
+        }
+
+        // Select and report.
+        this->selectedTiles.push_back({node, tile});
         this->selectedTilesChanged.report();
     }
