@@ -18,8 +18,8 @@ FEATURES_FILENAME=Features.txt
 COMPONENTS="
 01.Layout
 02.Theme
-03.RemoteLayoutTheme
-04.MatchTiles
+03.MatchTiles
+04.RemoteLayoutTheme
 "
 
 # Platform -> Path to Features.txt

@@ -10,7 +10,7 @@ Application+Rendering
 
 OMC_MAIN_EXAMPLE_LOG
 Example
-Example+04
+Example+03
 Example+Game
 Example+GameState
 Example+DefaultLayoutTheme

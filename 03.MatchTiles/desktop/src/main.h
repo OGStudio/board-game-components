@@ -261,9 +261,9 @@ class Application
 };
 // Application End
 
-// Example+04 Start
-const auto EXAMPLE_TITLE = "OMC-04: Match tiles";
-// Example+04 End
+// Example+03 Start
+const auto EXAMPLE_TITLE = "OMC-03: Match tiles";
+// Example+03 End
 
 // Example Start
 struct Example

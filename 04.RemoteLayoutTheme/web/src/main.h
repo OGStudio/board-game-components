@@ -350,7 +350,7 @@ class Application
 // Application End
 
 // Example+03 Start
-const auto EXAMPLE_TITLE = "OMC-03: Remote layout and theme";
+const auto EXAMPLE_TITLE = "OMC-03: Match tiles";
 // Example+03 End
 
 // Example Start

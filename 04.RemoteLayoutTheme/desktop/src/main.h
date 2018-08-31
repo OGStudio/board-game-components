@@ -274,9 +274,9 @@ class Application
 };
 // Application End
 
-// Example+03 Start
-const auto EXAMPLE_TITLE = "OMC-03: Remote layout and theme";
-// Example+03 End
+// Example+04 Start
+const auto EXAMPLE_TITLE = "OMC-04: Remote layout and theme";
+// Example+04 End
 
 // Example Start
 struct Example
