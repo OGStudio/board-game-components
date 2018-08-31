@@ -1,9 +1,14 @@
+# ios
+AppDelegate
+AppDelegate+RenderVC
+RenderVC
+RenderVC+FrameReporting
+
 # main
 Application
 Application+camera
 Application+frame+Reporting
-Application+handleEvent-web
-Application+setupWindow-embedded
+Application+setupWindow-ios
 Application+Logging
 Application+Mouse
 Application+Rendering
@@ -29,7 +34,9 @@ Example+VBO
 Example+UnmatchedTilesDeselection
 Example+createTiles
 
-main-web
+library-ios
+library+init-ios
+library+frame-ios
 
 # core
 Reporter
@@ -75,6 +82,7 @@ string
 OMC_RENDER_TILE_THEME_LOG
 TileTheme
 VBOSetupVisitor
+createGraphicsContext-ios
 createShaderProgram
 setupCamera
 

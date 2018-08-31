@@ -50,10 +50,10 @@ parseLayout
 tilePositionToInt
 
 # log
+Logger
 log-default
 logLevelToString
 logprintf
-Logger
 
 # format
 printfString
@@ -62,20 +62,20 @@ trimmedString
 
 # resource
 OSGCPE_RESOURCE_LOG
+Resource
+ResourceStreamBuffer
 createTexture
 extension
 node
 setTextureImage
 string
-Resource
-ResourceStreamBuffer
 
 # render
 OMC_RENDER_TILE_THEME_LOG
+TileTheme
 createGraphicsContext-desktop
 createShaderProgram
 setupCamera
-TileTheme
 
 # scene
 degreesToQuaternion

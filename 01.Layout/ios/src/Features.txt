@@ -27,18 +27,18 @@ Reporter
 
 # mahjong
 OMC_MAHJONG_LOG
-Layout
 KMahjonggLayout
+Layout
 TilePosition
 kmahjonggLayoutFieldsToPositions
 linesToKMahjonggLayout
 parseLayout
 
 # log
+Logger
 log-default
 logLevelToString
 logprintf
-Logger
 
 # format
 printfString
@@ -51,10 +51,10 @@ ResourceStreamBuffer
 string
 
 # render
+VBOSetupVisitor
 createGraphicsContext-ios
 createShaderProgram
 setupCamera
-VBOSetupVisitor
 
 # scene
 createShape
