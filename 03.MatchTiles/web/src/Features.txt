@@ -8,24 +8,34 @@ Application+Logging
 Application+Mouse
 Application+Rendering
 
-MC_MAIN_EXAMPLE_LOG
+OMC_MAIN_EXAMPLE_LOG
 Example
-Example+04
+Example+03
+Example+Game
+Example+GameState
+Example+DefaultLayoutTheme
+Example+MatchedTilesRemoval
 Example+MatchTilesTest
+Example+NodeSelection
 Example+Scene
-Example+TileTheme
+Example+Theme
+Example+Tiles
+Example+TileMatching
+Example+TileSelection
+Example+TileSelectionDepiction
 Example+StaticPluginOSG
 Example+StaticPluginPNG
 Example+VBO
+Example+UnmatchedTilesDeselection
+Example+createTiles
 
-MC_MAIN_LOG
 main-web
 
 # core
 Reporter
 
 # mahjong
-MC_MAHJONG_LOG
+OMC_MAHJONG_LOG
 KMahjonggLayout
 Layout
 Solitaire
@@ -35,6 +45,7 @@ TilePosition+Equality
 intToTilePosition
 kmahjonggLayoutFieldsToPositions
 linesToKMahjonggLayout
+matchIds
 orderedLayoutPositions
 parseLayout
 tilePositionToInt
@@ -61,7 +72,7 @@ Resource
 ResourceStreamBuffer
 
 # render
-MC_RENDER_TILE_THEME_LOG
+OMC_RENDER_TILE_THEME_LOG
 createShaderProgram
 setupCamera
 TileTheme
