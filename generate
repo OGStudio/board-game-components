@@ -17,18 +17,18 @@ FEATURES_FILENAME=Features.txt
 # List of components.
 COMPONENTS="
 01.Layout
-02.Theme
-03.MatchTiles
-04.RemoteLayoutTheme
 "
+#02.Theme
+#03.MatchTiles
+#04.RemoteLayoutTheme
 
 # Platform -> Path to Features.txt
 PLATFORMS=(
-    "desktop"
-    "web"
+    "ios"
 )
+    #"desktop"
+    #"web"
 #    "android"
-#    "ios"
 
 FEATURES_TXT_DIR="src" 
 FEATURE_DIRS=(
@@ -49,7 +49,6 @@ FEATURES_TXT_DIR_ANDROID_CPP="app/src/main/cpp"
 FEATURES_TXT_DIR_ANDROID_JAVA="app/src/main/java"
 FEATURE_DIR_ANDROID="/android"
 
-FEATURES_TXT_DIR_IOS="xcodeproject/App"
 FEATURE_DIR_IOS="/ios"
 
 processFeatureDir()
@@ -71,9 +70,10 @@ processFeatureDirs()
     dirFeaturesAbs=$1
 
     for ((id=0; id < ${#FEATURE_DIRS[@]}; id++)); do
-        dirFeaturesOSGCPE=$DIR_OSGCPE/features${FEATURE_DIRS[$id]}
-        dirFeaturesMC=$DIR/features${FEATURE_DIRS[$id]}
-        processFeatureDir $dirFeaturesAbs Features.txt $dirFeaturesOSGCPE $dirFeaturesMC
+        dirFeatures=${FEATURE_DIRS[$id]}
+        dirFeaturesOSGCPE=$DIR_OSGCPE/features$dirFeatures
+        dirFeaturesOMC=$DIR/features$dirFeatures
+        processFeatureDir $dirFeaturesAbs Features.txt $dirFeaturesOSGCPE $dirFeaturesOMC
     done
 }
 
@@ -96,12 +96,11 @@ main()
             # Objective-C features for iOS.
             if [ $platform == "ios" ]; then
                 echo "process Objective-C features for '$platform'"
-                dirFeaturesAbs=$DIR/$component/$platform/$FEATURES_TXT_DIR_IOS
                 dir=$DIR/features${FEATURE_DIR_IOS}
-                # TODO
-#        dirFeaturesOSGCPE=$DIR/features${FEATURE_DIRS[$id]}
-#        dirFeaturesMC=$DIR/features${FEATURE_DIRS[$id]}
-#                processFeatureDir $dirFeaturesAbs Features.txt $dir
+                dirFeaturesOSGCPE=$DIR_OSGCPE/features${FEATURE_DIR_IOS}
+                dirFeaturesOMC=$DIR/features${FEATURE_DIR_IOS}
+                dirFeaturesAbs=$DIR/$component/$platform/$FEATURES_TXT_DIR
+                processFeatureDir $dirFeaturesAbs Features.txt $dirFeaturesOSGCPE $dirFeaturesOMC
             fi
 
             # C++ and Java features for Android.
