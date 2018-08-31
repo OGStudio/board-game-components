@@ -1,4 +1,5 @@
 FEATURE main.h/Include
+#include "tile-theme.png.h"
 #include "scene.h"
 #include <osg/MatrixTransform>
 

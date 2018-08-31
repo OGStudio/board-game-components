@@ -56,6 +56,7 @@ freely, subject to the following restrictions:
 
 // Example+Theme End
 // Example+ThemeTest Start
+#include "tile-theme.png.h"
 #include "scene.h"
 #include <osg/MatrixTransform>
 
