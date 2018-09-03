@@ -25,11 +25,12 @@ freely, subject to the following restrictions:
 #ifndef OGS_MAHJONG_COMPONENTS_RESOURCE_H
 #define OGS_MAHJONG_COMPONENTS_RESOURCE_H
 
+// FEATURE ResourceStreamBuffer/Include
 // FEATURE node/Include
 // FEATURE setTextureImage/Include
 // FEATURE createTexture/Include
 
-// FEATURE OSGCPE_RESOURCE_LOG/Impl
+// FEATURE RESOURCE_LOG/Impl
 
 namespace omc
 {

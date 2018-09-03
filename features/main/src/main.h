@@ -43,7 +43,7 @@ freely, subject to the following restrictions:
 
 // FEATURE Example+createTiles/Include
 
-// FEATURE OMC_MAIN_EXAMPLE_LOG/Impl
+// FEATURE MAIN_EXAMPLE_LOG/Impl
 
 // FEATURE Example+StaticPluginOSG/Impl
 // FEATURE Example+StaticPluginPNG/Impl

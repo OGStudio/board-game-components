@@ -17,18 +17,18 @@ FEATURES_FILENAME=Features.txt
 # List of components.
 COMPONENTS="
 01.Layout
-02.Theme
-03.MatchTiles
-04.RemoteLayoutTheme
 "
+#02.Theme
+#03.MatchTiles
+#04.RemoteLayoutTheme
 
 # Platform -> Path to Features.txt
 PLATFORMS=(
-    "ios"
-    "desktop"
-    "web"
+    "android"
 )
-#    "android"
+#    "ios"
+#    "desktop"
+#    "web"
 
 FEATURES_TXT_DIR="src" 
 FEATURE_DIRS=(
@@ -106,16 +106,15 @@ main()
             # C++ and Java features for Android.
             if [ $platform == "android" ]; then
                 echo "process C++ features for '$platform'"
-                dirFeaturesAbs=$DIR/$component/$platform/${FEATURES_TXT_DIR_ANDROID_CPP}
+                dirFeaturesAbs=$DIR/$component/$platform/$FEATURES_TXT_DIR_ANDROID_CPP
                 processFeatureDirs $dirFeaturesAbs
 
                 echo "process Java features for '$platform'"
-                dirFeaturesAbs=$DIR/$component/$platform/$FEATURES_TXT_DIR_ANDROID_JAVA
                 dir=$DIR/features${FEATURE_DIR_ANDROID}
-                # TODO
-                #processFeatureDir $dirFeaturesAbs Features.txt $dir
-#        dirFeaturesOSGCPE=$DIR/features${FEATURE_DIRS[$id]}
-#        dirFeaturesMC=$DIR/features${FEATURE_DIRS[$id]}
+                dirFeaturesOSGCPE=$DIR_OSGCPE/features${FEATURE_DIR_ANDROID}
+                dirFeaturesOMC=$DIR/features${FEATURE_DIR_ANDROID}
+                dirFeaturesAbs=$DIR/$component/$platform/$FEATURES_TXT_DIR_ANDROID_JAVA
+                processFeatureDir $dirFeaturesAbs Features.txt $dirFeaturesOSGCPE $dirFeaturesOMC
             fi
         done
     done

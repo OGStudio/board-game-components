@@ -25,8 +25,9 @@ freely, subject to the following restrictions:
 #ifndef OGS_MAHJONG_COMPONENTS_MAHJONG_H
 #define OGS_MAHJONG_COMPONENTS_MAHJONG_H
 
-// FEATURE OMC_MAHJONG_LOG/Impl
+// FEATURE MAHJONG_LOG/Impl
 // FEATURE orderedLayoutPositions/Include
+// FEATURE parseLayout/Include
 
 namespace omc
 {

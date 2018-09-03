@@ -23,31 +23,54 @@ freely, subject to the following restrictions:
 */
 
 #include "main.h"
-// FEATURE library-android/Include
-// FEATURE library-ios/Include
-// FEATURE library+httpClient-android/Include
+// library-android Start
+#include <jni.h>
 
-// FEATURE library+Ex01+JNI-android/Impl
+// library-android End
+
+// library+Ex01+JNI-android Start
+#define JNI_FUNC(FUNC_NAME) \
+    JNIEXPORT void JNICALL Java_org_opengamestudio_omc01_library_ ## FUNC_NAME
+#define JNI_ARG JNIEnv *env, jobject /* this */
+// library+Ex01+JNI-android End
 
 using namespace omc;
 
 // Example instance.
 main::Example *example = 0;
 
-// FEATURE library-android/NamespaceStart
-// FEATURE library-ios/NamespaceStart
+// library-android Start
+extern "C" {
 
-// FEATURE library+init-android/Impl
-// FEATURE library+init-ios/Impl
-// FEATURE library+frame-android/Impl
-// FEATURE library+frame-ios/Impl
-// FEATURE library+handleMousePress-android/Impl
-// FEATURE library+jniStrings-android/Impl
+// library-android End
 
-// FEATURE library+httpClient-android/Impl
-// FEATURE library+httpClient-ios/Impl
+// library+init-android Start
+// Setup graphics context.
+JNI_FUNC(init)(JNI_ARG, jint width, jint height)
+{
+    // Create example only once.
+    // If we create example at stack, the instance might get initialized
+    // before plugin readers/writers are available, which would break everything.
+    if (!example)
+    {
+        main::Example::Parameters parameters;
+        example = new main::Example(parameters);
+    }
+    return example->app->setupWindow(width, height);
+}
+// library+init-android End
+// library+frame-android Start
+// Rendering.
+JNI_FUNC(frame)(JNI_ARG)
+{
+    example->app->frame();
+}
 
-// FEATURE library-android/NamespaceEnd
-// FEATURE library-ios/NamespaceEnd
+// library+frame-android End
 
-// FEATURE library-openscenegraph/Impl
+
+// library-android Start
+} // extern "C".
+
+// library-android End
+

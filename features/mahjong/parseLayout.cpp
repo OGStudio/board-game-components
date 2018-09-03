@@ -1,3 +1,6 @@
+FEATURE mahjong.h/Include
+#include <iostream>
+
 FEATURE mahjong.h/Impl
 bool parseLayout(std::istream &in, Layout &layout)
 {

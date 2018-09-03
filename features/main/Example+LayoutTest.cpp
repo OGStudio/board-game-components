@@ -29,7 +29,7 @@ private:
         mahjong::Layout layout;
         if (!this->loadLayout(cat, layout))
         {
-            OMC_MAIN_EXAMPLE_LOG("Could not load layout");
+            MAIN_EXAMPLE_LOG("Could not load layout");
             return;
         }
         osg::Vec3 color(0.7, 0.5, 0.3);

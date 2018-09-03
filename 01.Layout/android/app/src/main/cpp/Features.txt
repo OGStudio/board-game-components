@@ -1,13 +1,7 @@
-# ios
-AppDelegate
-AppDelegate+RenderVC
-RenderVC
-RenderVC+FrameReporting
-
 # main
 Application
 Application+frame+Reporting
-Application+setupWindow-ios
+Application+setupWindow-embedded
 Application+Logging
 Application+Rendering
 
@@ -18,9 +12,11 @@ Example+LayoutTest
 Example+Scene
 Example+VBO
 
-library-ios
-library+init-ios
-library+frame-ios
+library+Ex01+JNI-android
+
+library-android
+library+init-android
+library+frame-android
 
 # core
 Reporter
@@ -36,7 +32,7 @@ parseLayout
 
 # log
 Logger
-log-default
+log-android
 logLevelToString
 logprintf
 
@@ -52,9 +48,7 @@ string
 
 # render
 VBOSetupVisitor
-createGraphicsContext-ios
 createShaderProgram
-setupCamera
 
 # scene
 createShape

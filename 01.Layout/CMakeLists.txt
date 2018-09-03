@@ -11,6 +11,8 @@ PROJECT(OMC01_LAYOUT)
 SET(COMPONENT_BINARY_NAME "omc01-layout")
 SET(OSGCPE_DIR ${OMC_DIR}/../openscenegraph-cross-platform-examples)
 
+MESSAGE("OSGCPE_DIR: '${OSGCPE_DIR}'")
+
 # Use C++11.
 ADD_DEFINITIONS("-std=c++11")
 
