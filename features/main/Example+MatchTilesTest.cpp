@@ -20,11 +20,11 @@ private:
             [&] {
                 if (this->isGameVictorious)
                 {
-                    OMC_MAIN_EXAMPLE_LOG("Game over: VICTORY");
+                    MAIN_EXAMPLE_LOG("Game over: VICTORY");
                 }
                 else
                 {
-                    OMC_MAIN_EXAMPLE_LOG("Game over: LOSS");
+                    MAIN_EXAMPLE_LOG("Game over: LOSS");
                 }
             }
         );

@@ -28,6 +28,8 @@ freely, subject to the following restrictions:
 // FEATURE library+httpClient-android/Include
 
 // FEATURE library+Ex01+JNI-android/Impl
+// FEATURE library+Ex02+JNI-android/Impl
+// FEATURE library+Ex03+JNI-android/Impl
 
 using namespace omc;
 

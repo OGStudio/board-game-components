@@ -20,7 +20,7 @@ private:
         std::istream in(&buf);
         if (!mahjong::parseLayout(in, this->layout))
         {
-            OMC_MAIN_EXAMPLE_LOG("Could not parse built-in layout");
+            MAIN_EXAMPLE_LOG("Could not parse built-in layout");
             return;
         }
 

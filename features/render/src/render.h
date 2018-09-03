@@ -32,7 +32,7 @@ freely, subject to the following restrictions:
 // FEATURE TileTheme/Include
 // FEATURE VBOSetupVisitor/Include
 
-// FEATURE OMC_RENDER_TILE_THEME_LOG/Impl
+// FEATURE RENDER_TILE_THEME_LOG/Impl
 
 namespace omc
 {

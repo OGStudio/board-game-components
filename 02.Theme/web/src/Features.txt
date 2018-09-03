@@ -6,7 +6,7 @@ Application+setupWindow-embedded
 Application+Logging
 Application+Rendering
 
-OMC_MAIN_EXAMPLE_LOG
+MAIN_EXAMPLE_LOG
 Example
 Example+02
 Example+Scene
@@ -31,7 +31,7 @@ Logger
 printfString
 
 # resource
-OSGCPE_RESOURCE_LOG
+RESOURCE_LOG
 Resource
 ResourceStreamBuffer
 createTexture
@@ -41,7 +41,7 @@ setTextureImage
 string
 
 # render
-OMC_RENDER_TILE_THEME_LOG
+RENDER_TILE_THEME_LOG
 TileTheme
 VBOSetupVisitor
 createShaderProgram

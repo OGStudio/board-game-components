@@ -39,17 +39,6 @@ freely, subject to the following restrictions:
 
 // TileTheme End
 
-// OMC_RENDER_TILE_THEME_LOG Start
-#include "log.h"
-#include "format.h"
-#define OMC_RENDER_TILE_THEME_LOG_PREFIX "render::TileTheme(%p) %s"
-#define OMC_RENDER_TILE_THEME_LOG(...) \
-    log::logprintf( \
-        OMC_RENDER_TILE_THEME_LOG_PREFIX, \
-        this, \
-        format::printfString(__VA_ARGS__).c_str() \
-    )
-// OMC_RENDER_TILE_THEME_LOG End
 
 namespace omc
 {
@@ -152,7 +141,7 @@ class TileTheme
             std::string errorMessage;
             if (!this->validateInputs(id, geode, errorMessage))
             {
-                OMC_RENDER_TILE_THEME_LOG(
+                RENDER_TILE_THEME_LOG(
                     "ERROR Could not set face id for geode: '%s'",
                     errorMessage.c_str()
                 );

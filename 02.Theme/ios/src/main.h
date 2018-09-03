@@ -67,6 +67,17 @@ freely, subject to the following restrictions:
 // Example+VBO End
 
 
+// MAIN_EXAMPLE_LOG Start
+#include "log.h"
+#include "format.h"
+#define MAIN_EXAMPLE_LOG_PREFIX "main::Example(%p) %s"
+#define MAIN_EXAMPLE_LOG(...) \
+    log::logprintf( \
+        MAIN_EXAMPLE_LOG_PREFIX, \
+        this, \
+        format::printfString(__VA_ARGS__).c_str() \
+    )
+// MAIN_EXAMPLE_LOG End
 
 // Example+StaticPluginOSG Start
 #include <osgDB/Registry>
@@ -314,7 +325,7 @@ struct Example
             // Make sure model is valid.
             if (!model)
             {
-                OMC_MAIN_EXAMPLE_LOG(
+                MAIN_EXAMPLE_LOG(
                     "ERROR Could not setup tile model '%s/%s'",
                     tileResource.group.c_str(),
                     tileResource.name.c_str()

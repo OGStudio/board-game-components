@@ -33,7 +33,7 @@ class TileTheme
             std::string errorMessage;
             if (!this->validateInputs(id, geode, errorMessage))
             {
-                OMC_RENDER_TILE_THEME_LOG(
+                RENDER_TILE_THEME_LOG(
                     "ERROR Could not set face id for geode: '%s'",
                     errorMessage.c_str()
                 );

@@ -27,12 +27,12 @@ private:
             this->parseLayoutResponse(response, url);
         };
         auto failure = [&](std::string reason) {
-            OMC_MAIN_EXAMPLE_LOG(
+            MAIN_EXAMPLE_LOG(
                 "ERROR Could not load layout: %s",
                 reason.c_str()
             );
         };
-        OMC_MAIN_EXAMPLE_LOG("Loading layout from '%s'", url.c_str());
+        MAIN_EXAMPLE_LOG("Loading layout from '%s'", url.c_str());
         this->app->httpClient->get(url, success, failure);
     }
     void parseLayoutResponse(
@@ -52,11 +52,11 @@ private:
             this->scene->addChild(tileScene);
             // Reset the scene.
             this->app->setScene(this->scene);
-            OMC_MAIN_EXAMPLE_LOG("Successfully loaded layout");
+            MAIN_EXAMPLE_LOG("Successfully loaded layout");
         }
         else
         {
-            OMC_MAIN_EXAMPLE_LOG("ERROR Could not parse loaded layout");
+            MAIN_EXAMPLE_LOG("ERROR Could not parse loaded layout");
         }
     }
 
@@ -68,12 +68,12 @@ private:
             this->parseThemeResponse(response, url);
         };
         auto failure = [&](std::string reason) {
-            OMC_MAIN_EXAMPLE_LOG(
+            MAIN_EXAMPLE_LOG(
                 "ERROR Could not load theme: %s",
                 reason.c_str()
             );
         };
-        OMC_MAIN_EXAMPLE_LOG("Loading theme from '%s'", url.c_str());
+        MAIN_EXAMPLE_LOG("Loading theme from '%s'", url.c_str());
         this->app->httpClient->get(url, success, failure);
     }
     void parseThemeResponse(const std::string &response, const std::string &url)
@@ -89,5 +89,5 @@ private:
         auto texture = resource::createTexture(themeRes);
         this->themeMaterial->setTextureAttributeAndModes(0, texture);
         this->themeMaterialSelected->setTextureAttributeAndModes(0, texture);
-        OMC_MAIN_EXAMPLE_LOG("Successfully loaded theme");
+        MAIN_EXAMPLE_LOG("Successfully loaded theme");
     }

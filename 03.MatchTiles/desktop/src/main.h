@@ -317,7 +317,7 @@ struct Example
             std::istream in(&buf);
             if (!mahjong::parseLayout(in, this->layout))
             {
-                OMC_MAIN_EXAMPLE_LOG("Could not parse built-in layout");
+                MAIN_EXAMPLE_LOG("Could not parse built-in layout");
                 return;
             }
     
@@ -434,11 +434,11 @@ struct Example
                 [&] {
                     if (this->isGameVictorious)
                     {
-                        OMC_MAIN_EXAMPLE_LOG("Game over: VICTORY");
+                        MAIN_EXAMPLE_LOG("Game over: VICTORY");
                     }
                     else
                     {
-                        OMC_MAIN_EXAMPLE_LOG("Game over: LOSS");
+                        MAIN_EXAMPLE_LOG("Game over: LOSS");
                     }
                 }
             );
@@ -565,7 +565,7 @@ struct Example
             // Make sure model is valid.
             if (!model)
             {
-                OMC_MAIN_EXAMPLE_LOG(
+                MAIN_EXAMPLE_LOG(
                     "ERROR Could not setup tile model '%s/%s'",
                     tileResource.group.c_str(),
                     tileResource.name.c_str()
