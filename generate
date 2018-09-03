@@ -17,18 +17,18 @@ FEATURES_FILENAME=Features.txt
 # List of components.
 COMPONENTS="
 01.Layout
+02.Theme
+03.MatchTiles
+04.RemoteLayoutTheme
 "
-#02.Theme
-#03.MatchTiles
-#04.RemoteLayoutTheme
 
 # Platform -> Path to Features.txt
 PLATFORMS=(
     "android"
+    "ios"
+    "desktop"
+    "web"
 )
-#    "ios"
-#    "desktop"
-#    "web"
 
 FEATURES_TXT_DIR="src" 
 FEATURE_DIRS=(

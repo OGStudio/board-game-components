@@ -25,6 +25,10 @@ freely, subject to the following restrictions:
 #ifndef OGS_MAHJONG_COMPONENTS_RESOURCE_H
 #define OGS_MAHJONG_COMPONENTS_RESOURCE_H
 
+// ResourceStreamBuffer Start
+#include <iostream>
+
+// ResourceStreamBuffer End
 // node Start
 #include <osgDB/Registry>
 
@@ -39,17 +43,6 @@ freely, subject to the following restrictions:
 
 // createTexture End
 
-// OSGCPE_RESOURCE_LOG Start
-#include "log.h"
-#include "format.h"
-#define OSGCPE_RESOURCE_LOG_PREFIX "resource %s"
-#define OSGCPE_RESOURCE_LOG(...) \
-    log::logprintf( \
-        OSGCPE_RESOURCE_LOG_PREFIX, \
-        format::printfString(__VA_ARGS__).c_str() \
-    )
-
-// OSGCPE_RESOURCE_LOG End
 
 namespace omc
 {
@@ -114,7 +107,7 @@ std::string extension(const Resource &resource)
     // Return empty extension if we cannot detect it.
     if (dotPosition == std::string::npos)
     {
-        OSGCPE_RESOURCE_LOG(
+        RESOURCE_LOG(
             "ERROR Could not detect file extension for '%s/%s' resource",
             resource.group.c_str(),
             resource.name.c_str()
@@ -133,7 +126,7 @@ osg::ref_ptr<osg::Node> node(Resource &resource, const std::string ext = "")
     // Return empty node if extention is absent.
     if (ex.empty())
     {
-        OSGCPE_RESOURCE_LOG(
+        RESOURCE_LOG(
             "ERROR Could not read node of '%s/%s' resource "
             "because extension is absent",
             resource.group.c_str(),
@@ -153,7 +146,7 @@ osg::ref_ptr<osg::Node> node(Resource &resource, const std::string ext = "")
         }
         else
         {
-            OSGCPE_RESOURCE_LOG(
+            RESOURCE_LOG(
                 "ERROR Could not read node of '%s/%s' resource from buffer.",
                 resource.group.c_str(),
                 resource.name.c_str()
@@ -162,7 +155,7 @@ osg::ref_ptr<osg::Node> node(Resource &resource, const std::string ext = "")
     }
     else
     {
-        OSGCPE_RESOURCE_LOG(
+        RESOURCE_LOG(
             "ERROR Could not read node of '%s/%s' resource because "
             "node reader for extension '%s' is absent.",
             resource.group.c_str(),
@@ -186,7 +179,7 @@ unsigned char * stringToResourceContents(const std::string &str)
     auto dat = const_cast<char *>(str.data());
     if (!dat)
     {
-        OSGCPE_RESOURCE_LOG(
+        RESOURCE_LOG(
             "ERROR Could not convert string to resource contents "
             "at 'const char * -> char *' stage"
         );
@@ -195,7 +188,7 @@ unsigned char * stringToResourceContents(const std::string &str)
     auto contents = reinterpret_cast<unsigned char *>(dat);
     if (!contents)
     {
-        OSGCPE_RESOURCE_LOG(
+        RESOURCE_LOG(
             "ERROR Could not convert string to resource contents "
             "at 'char * -> usigned char *' stage"
         );
@@ -222,7 +215,7 @@ void setTextureImage(
     // Do nothing if extension is absent.
     if (ex.empty())
     {
-        OSGCPE_RESOURCE_LOG(
+        RESOURCE_LOG(
             "ERROR Could not read image of '%s/%s' resource "
             "because extension is absent",
             resource.group.c_str(),
@@ -245,7 +238,7 @@ void setTextureImage(
         }
         else
         {
-            OSGCPE_RESOURCE_LOG(
+            RESOURCE_LOG(
                 "ERROR Could not read image of '%s/%s' resource from buffer.",
                 resource.group.c_str(),
                 resource.name.c_str()
@@ -254,7 +247,7 @@ void setTextureImage(
     }
     else
     {
-        OSGCPE_RESOURCE_LOG(
+        RESOURCE_LOG(
             "ERROR Could not read image of '%s/%s' resource because "
             "image reader for extension '%s' is absent.",
             resource.group.c_str(),

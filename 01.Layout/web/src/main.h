@@ -70,17 +70,17 @@ freely, subject to the following restrictions:
 // Example+VBO End
 
 
-// OMC_MAIN_EXAMPLE_LOG Start
+// MAIN_EXAMPLE_LOG Start
 #include "log.h"
 #include "format.h"
-#define OMC_MAIN_EXAMPLE_LOG_PREFIX "main::Example(%p) %s"
-#define OMC_MAIN_EXAMPLE_LOG(...) \
+#define MAIN_EXAMPLE_LOG_PREFIX "main::Example(%p) %s"
+#define MAIN_EXAMPLE_LOG(...) \
     log::logprintf( \
-        OMC_MAIN_EXAMPLE_LOG_PREFIX, \
+        MAIN_EXAMPLE_LOG_PREFIX, \
         this, \
         format::printfString(__VA_ARGS__).c_str() \
     )
-// OMC_MAIN_EXAMPLE_LOG End
+// MAIN_EXAMPLE_LOG End
 
 
 namespace omc
@@ -328,7 +328,7 @@ struct Example
             mahjong::Layout layout;
             if (!this->loadLayout(cat, layout))
             {
-                OMC_MAIN_EXAMPLE_LOG("Could not load layout");
+                MAIN_EXAMPLE_LOG("Could not load layout");
                 return;
             }
             osg::Vec3 color(0.7, 0.5, 0.3);

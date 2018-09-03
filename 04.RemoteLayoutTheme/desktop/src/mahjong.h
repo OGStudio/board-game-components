@@ -25,16 +25,10 @@ freely, subject to the following restrictions:
 #ifndef OGS_MAHJONG_COMPONENTS_MAHJONG_H
 #define OGS_MAHJONG_COMPONENTS_MAHJONG_H
 
-// OMC_MAHJONG_LOG Start
-#include "log.h"
-#include "format.h"
-#define OMC_MAHJONG_LOG_PREFIX "mahjong %s"
-#define OMC_MAHJONG_LOG(...) \
-    log::logprintf( \
-        OMC_MAHJONG_LOG_PREFIX, \
-        format::printfString(__VA_ARGS__).c_str() \
-    )
-// OMC_MAHJONG_LOG End
+// parseLayout Start
+#include <iostream>
+
+// parseLayout End
 
 namespace omc
 {
@@ -202,7 +196,7 @@ bool linesToKMahjonggLayout(
     {
         if (fields.size() != layoutDraft.depth)
         {
-            OMC_MAHJONG_LOG(
+            MAHJONG_LOG(
                 "ERROR Specified layout depth (%d) is not equal to actual one (%d)",
                 layoutDraft.depth,
                 fields.size()

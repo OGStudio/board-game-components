@@ -25,6 +25,10 @@ freely, subject to the following restrictions:
 #ifndef OGS_MAHJONG_COMPONENTS_RESOURCE_H
 #define OGS_MAHJONG_COMPONENTS_RESOURCE_H
 
+// ResourceStreamBuffer Start
+#include <iostream>
+
+// ResourceStreamBuffer End
 
 
 namespace omc

@@ -5,8 +5,6 @@ SET(OMC_DIR "${CMAKE_SOURCE_DIR}/../../../../ogs-mahjong-components")
 # Include common CMakeLists.txt.
 INCLUDE(${CMAKE_SOURCE_DIR}/../../CMakeLists.txt)
 
-MESSAGE("OSGCPE_LINK_LIBS: '${OSGCPE_LINK_LIBS}'")
-
 # Reference sources.
 INCLUDE_DIRECTORIES(src/main/cpp)
 # Create native library.
@@ -18,5 +16,5 @@ FIND_LIBRARY(log-lib log)
 TARGET_LINK_LIBRARIES(
     library
     ${log-lib}
-    ${OSGCPE_LINK_LIBS}
+    ${OMC_LINK_LIBS}
 )
