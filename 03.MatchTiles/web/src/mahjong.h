@@ -25,6 +25,16 @@ freely, subject to the following restrictions:
 #ifndef OGS_MAHJONG_COMPONENTS_MAHJONG_H
 #define OGS_MAHJONG_COMPONENTS_MAHJONG_H
 
+// MAHJONG_LOG Start
+#include "log.h"
+#include "format.h"
+#define MAHJONG_LOG_PREFIX "mahjong %s"
+#define MAHJONG_LOG(...) \
+    log::logprintf( \
+        MAHJONG_LOG_PREFIX, \
+        format::printfString(__VA_ARGS__).c_str() \
+    )
+// MAHJONG_LOG End
 // orderedLayoutPositions Start
 #include <random>
 

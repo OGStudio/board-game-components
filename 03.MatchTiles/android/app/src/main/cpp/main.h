@@ -172,24 +172,34 @@ class Application
             this->frameReporter.report();
         }
     // Application+frame+Reporting End
-    // Application+setupWindow-ios Start
-    UIView *setupWindow(
-        int width,
-        int height,
-        float scale,
-        UIView *parentView
-    ) {
-        osgViewer::GraphicsWindowIOS *gc =
-            dynamic_cast<osgViewer::GraphicsWindowIOS *>(
-                render::createGraphicsContext(width, height, scale, parentView)
-            );
-        // Configure viewer's camera with FOVY and window size.
-        osg::Camera *cam = this->viewer->getCamera();
-        render::setupCamera(cam, gc, 30, width * scale, height * scale);
-        // Return UIView for embedding.
-        return (UIView *)gc->getView();
-    }
-    // Application+setupWindow-ios End
+    // Application+handleMousePress-android Start
+    public:
+        void handleMousePress(bool down, float x, float y)
+        {
+            auto queue = this->viewer->getEventQueue();
+            float correctedY = (this->windowHeight - y);
+            if (down)
+            {
+                queue->mouseButtonPress(x, correctedY, 1 /* LMB */);
+            }
+            else
+            {
+                queue->mouseButtonRelease(x, correctedY, 1 /* LMB */);
+            }
+        }
+    // Application+handleMousePress-android End
+    // Application+setupWindow-embedded Start
+    private:
+        int windowWidth;
+        int windowHeight;
+    public:
+        void setupWindow(int width, int height)
+        {
+            this->viewer->setUpViewerAsEmbeddedInWindow(0, 0, width, height);
+            this->windowWidth = width;
+            this->windowHeight = height;
+        }
+    // Application+setupWindow-embedded End
 
     // Application+Logging Start
     private:

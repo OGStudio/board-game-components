@@ -25,18 +25,10 @@ freely, subject to the following restrictions:
 #ifndef OGS_MAHJONG_COMPONENTS_RENDER_H
 #define OGS_MAHJONG_COMPONENTS_RENDER_H
 
-// createGraphicsContext-ios Start
-#include <osgViewer/api/IOS/GraphicsWindowIOS>
-
-// createGraphicsContext-ios End
 // createShaderProgram Start
 #include <osg/Program>
 
 // createShaderProgram End
-// setupCamera Start
-#include <osg/Camera>
-
-// setupCamera End
 // TileTheme Start
 #include <osg/Geode>
 #include <osg/Geometry>
@@ -66,37 +58,6 @@ namespace omc
 namespace render
 {
 
-// createGraphicsContext-ios Start
-// Create graphics context for iOS.
-osg::GraphicsContext *createGraphicsContext(
-    int width,
-    int height,
-    float scale,
-    UIView *parentView
-) {
-    // Traits is a struct to combine necessary parameters.
-    osg::GraphicsContext::Traits *traits =
-        new osg::GraphicsContext::Traits;
-    // Geometry.
-    traits->x = 0;
-    traits->y = 0;
-    traits->width = width * scale;
-    traits->height = height * scale;
-    // Double buffer (simply put, it's a flicker fix).
-    traits->doubleBuffer = true;
-    // Parent view.
-    osg::ref_ptr<osgViewer::GraphicsWindowIOS::WindowData> dat =
-        new osgViewer::GraphicsWindowIOS::WindowData(
-            parentView,
-            0,
-            osgViewer::GraphicsWindowIOS::WindowData::IGNORE_ORIENTATION
-        );
-    dat->setViewContentScaleFactor(scale);
-    traits->inheritedWindowData = dat;
-    // Create GC.
-    return osg::GraphicsContext::createGraphicsContext(traits);
-}
-// createGraphicsContext-ios End
 // createShaderProgram Start
 osg::Program *createShaderProgram(
     const std::string &vertexShader,
@@ -112,27 +73,6 @@ osg::Program *createShaderProgram(
     return prog.release();
 }
 // createShaderProgram End
-// setupCamera Start
-// Configure camera with common defaults.
-void setupCamera(
-    osg::Camera *cam,
-    osg::GraphicsContext *gc,
-    double fovy,
-    int width,
-    int height
-) {
-    // Provide GC.
-    cam->setGraphicsContext(gc);
-    // Viewport must have the same size.
-    cam->setViewport(new osg::Viewport(0, 0, width, height));
-    // Clear depth and color buffers each frame.
-    cam->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    // Aspect ratio.
-    float aspect = static_cast<float>(width) / static_cast<float>(height);
-    // Configure projection.
-    cam->setProjectionMatrixAsPerspective(fovy, aspect, 1, 1000);
-}
-// setupCamera End
 
 
 // TileTheme Start

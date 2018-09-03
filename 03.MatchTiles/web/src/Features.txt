@@ -8,7 +8,7 @@ Application+Logging
 Application+Mouse
 Application+Rendering
 
-OMC_MAIN_EXAMPLE_LOG
+MAIN_EXAMPLE_LOG
 Example
 Example+03
 Example+Game
@@ -35,7 +35,7 @@ main-web
 Reporter
 
 # mahjong
-OMC_MAHJONG_LOG
+MAHJONG_LOG
 KMahjonggLayout
 Layout
 Solitaire
@@ -62,7 +62,7 @@ stringStartsWith
 trimmedString
 
 # resource
-OSGCPE_RESOURCE_LOG
+RESOURCE_LOG
 Resource
 ResourceStreamBuffer
 createTexture
@@ -72,7 +72,7 @@ setTextureImage
 string
 
 # render
-OMC_RENDER_TILE_THEME_LOG
+RENDER_TILE_THEME_LOG
 TileTheme
 VBOSetupVisitor
 createShaderProgram

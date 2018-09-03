@@ -45,6 +45,17 @@ freely, subject to the following restrictions:
 
 // VBOSetupVisitor End
 
+// RENDER_TILE_THEME_LOG Start
+#include "log.h"
+#include "format.h"
+#define RENDER_TILE_THEME_LOG_PREFIX "render::TileTheme(%p) %s"
+#define RENDER_TILE_THEME_LOG(...) \
+    log::logprintf( \
+        RENDER_TILE_THEME_LOG_PREFIX, \
+        this, \
+        format::printfString(__VA_ARGS__).c_str() \
+    )
+// RENDER_TILE_THEME_LOG End
 
 namespace omc
 {

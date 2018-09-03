@@ -1,14 +1,9 @@
-# ios
-AppDelegate
-AppDelegate+RenderVC
-RenderVC
-RenderVC+FrameReporting
-
 # main
 Application
 Application+camera
 Application+frame+Reporting
-Application+setupWindow-ios
+Application+handleMousePress-android
+Application+setupWindow-embedded
 Application+Logging
 Application+Mouse
 Application+Rendering
@@ -34,9 +29,12 @@ Example+VBO
 Example+UnmatchedTilesDeselection
 Example+createTiles
 
-library-ios
-library+init-ios
-library+frame-ios
+library+Ex03+JNI-android
+
+library-android
+library+init-android
+library+frame-android
+library+handleMousePress-android
 
 # core
 Reporter
@@ -59,7 +57,7 @@ tilePositionToInt
 
 # log
 Logger
-log-default
+log-android
 logLevelToString
 logprintf
 
@@ -82,9 +80,7 @@ string
 RENDER_TILE_THEME_LOG
 TileTheme
 VBOSetupVisitor
-createGraphicsContext-ios
 createShaderProgram
-setupCamera
 
 # scene
 degreesToQuaternion
