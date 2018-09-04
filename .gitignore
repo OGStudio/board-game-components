@@ -5,7 +5,6 @@ build
 *.xcuserdatad
 IDEWorkspaceChecks.plist
 # Android Studio.
-build
 .gradle
 .idea
 .externalNativeBuild

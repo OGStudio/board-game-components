@@ -96,10 +96,10 @@ main()
             # Objective-C features for iOS.
             if [ $platform == "ios" ]; then
                 echo "process Objective-C features for '$platform'"
+                dirFeaturesAbs=$DIR/$component/$platform/$FEATURES_TXT_DIR
                 dir=$DIR/features${FEATURE_DIR_IOS}
                 dirFeaturesOSGCPE=$DIR_OSGCPE/features${FEATURE_DIR_IOS}
                 dirFeaturesOMC=$DIR/features${FEATURE_DIR_IOS}
-                dirFeaturesAbs=$DIR/$component/$platform/$FEATURES_TXT_DIR
                 processFeatureDir $dirFeaturesAbs Features.txt $dirFeaturesOSGCPE $dirFeaturesOMC
             fi
 
@@ -110,10 +110,10 @@ main()
                 processFeatureDirs $dirFeaturesAbs
 
                 echo "process Java features for '$platform'"
+                dirFeaturesAbs=$DIR/$component/$platform/$FEATURES_TXT_DIR_ANDROID_JAVA
                 dir=$DIR/features${FEATURE_DIR_ANDROID}
                 dirFeaturesOSGCPE=$DIR_OSGCPE/features${FEATURE_DIR_ANDROID}
                 dirFeaturesOMC=$DIR/features${FEATURE_DIR_ANDROID}
-                dirFeaturesAbs=$DIR/$component/$platform/$FEATURES_TXT_DIR_ANDROID_JAVA
                 processFeatureDir $dirFeaturesAbs Features.txt $dirFeaturesOSGCPE $dirFeaturesOMC
             fi
         done
