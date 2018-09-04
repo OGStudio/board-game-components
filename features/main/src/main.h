@@ -94,7 +94,7 @@ namespace main
         // FEATURE Example+ThemeTest/Setup
         // FEATURE Example+LayoutTest/Setup
         // FEATURE Example+MatchTilesTest/Setup
-        // FEATURE Example+RemoteLayoutTheme/Setup
+        // FEATURE Example+SetLayoutThemeSeedTest/Setup
         // FEATURE Example+VBO/Setup
 // FEATURE Example/TearDown
         // FEATURE Example+Theme/TearDown
@@ -107,7 +107,7 @@ namespace main
     // FEATURE Example+MatchedTilesRemoval/Impl
     // FEATURE Example+MatchTilesTest/Impl
     // FEATURE Example+NodeSelection/Impl
-    // FEATURE Example+RemoteLayoutTheme/Impl
+    // FEATURE Example+SetLayoutThemeSeedTest/Impl
     // FEATURE Example+Scene/Impl
     // FEATURE Example+Theme/Impl
     // FEATURE Example+ThemeTest/Impl
