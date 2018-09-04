@@ -38,6 +38,10 @@ freely, subject to the following restrictions:
 #include "log.h"
 
 // Application+Logging End
+// Application+Mouse Start
+#include "input.h"
+
+// Application+Mouse End
 // Application+Rendering Start
 #include "render.h"
 
@@ -46,6 +50,13 @@ freely, subject to the following restrictions:
 
 // Application+Rendering End
 
+// Example+DefaultLayoutTheme Start
+#include "X_shaped.layout.h"
+#include "tile-theme.png.h"
+
+#include "mahjong.h"
+
+// Example+DefaultLayoutTheme End
 // Example+Scene Start
 #include <osg/MatrixTransform>
 
@@ -67,6 +78,17 @@ freely, subject to the following restrictions:
 
 // Example+createTiles End
 
+// MAIN_EXAMPLE_LOG Start
+#include "log.h"
+#include "format.h"
+#define MAIN_EXAMPLE_LOG_PREFIX "main::Example(%p) %s"
+#define MAIN_EXAMPLE_LOG(...) \
+    log::logprintf( \
+        MAIN_EXAMPLE_LOG_PREFIX, \
+        this, \
+        format::printfString(__VA_ARGS__).c_str() \
+    )
+// MAIN_EXAMPLE_LOG End
 
 // Example+StaticPluginOSG Start
 #include <osgDB/Registry>
@@ -108,6 +130,10 @@ class Application
             this->setupRendering();
             
             // Application+Rendering End
+            // Application+Mouse Start
+            this->setupMouse();
+            
+            // Application+Mouse End
             // Application+HTTPClient Start
             this->setupHTTPClient();
             
@@ -130,6 +156,10 @@ class Application
             this->tearHTTPClientDown();
             
             // Application+HTTPClient End
+            // Application+Mouse Start
+            this->tearMouseDown();
+            
+            // Application+Mouse End
             // Application+Rendering Start
             this->tearRenderingDown();
             
@@ -142,6 +172,13 @@ class Application
         }
 
 // Application End
+    // Application+camera Start
+    public:
+        osg::Camera *camera()
+        {
+            return this->viewer->getCamera();
+        }
+    // Application+camera End
     // Application+frame+Reporting Start
     public:
         core::Reporter frameReporter;
@@ -235,6 +272,23 @@ class Application
             osg::setNotifyHandler(0);
         }
     // Application+Logging End
+    // Application+Mouse Start
+    public:
+        osg::ref_ptr<input::Mouse> mouse;
+    private:
+        void setupMouse()
+        {
+            // Create mouse events' handler.
+            this->mouse = new input::Mouse;
+            // Register it.
+            this->viewer->addEventHandler(this->mouse);
+        }
+        void tearMouseDown()
+        {
+            // This also removes Mouse instance.
+            this->viewer->removeEventHandler(this->mouse);
+        }
+    // Application+Mouse End
     // Application+Rendering Start
     public:
         void setScene(osg::Node *scene)
@@ -264,7 +318,7 @@ class Application
 // Application End
 
 // Example+04 Start
-const auto EXAMPLE_TITLE = "OMC-04: Remote layout and theme";
+const auto EXAMPLE_TITLE = "OMC-04: Set layout, theme, seed";
 // Example+04 End
 
 // Example Start
@@ -279,6 +333,10 @@ struct Example
         this->app = new Application(EXAMPLE_TITLE);
 
 // Example End
+        // Example+Game Start
+        this->setupGame();
+        
+        // Example+Game End
         // Example+Scene Start
         this->setupScene();
         
@@ -287,10 +345,6 @@ struct Example
         this->setupTheme();
         
         // Example+Theme End
-        // Example+RemoteLayoutTheme Start
-        this->setupRemoteLayoutTheme(parameters);
-        
-        // Example+RemoteLayoutTheme End
 // Example Start
     }
     ~Example()
@@ -301,102 +355,182 @@ struct Example
         this->tearThemeDown();
         
         // Example+Theme End
+        // Example+Game Start
+        this->tearGameDown();
+        
+        // Example+Game End
 // Example Start
         delete this->app;
     }
 
 // Example End
-    // Example+RemoteLayoutTheme Start
+    // Example+DefaultLayoutTheme Start
     private:
-        void setupRemoteLayoutTheme(const Parameters &parameters)
+        mahjong::Layout layout;
+        void setupDefaultLayoutTheme()
         {
-            // Load remote layout and/or theme.
-            for (auto parameter : parameters)
+            // Load default built-in layout.
+            resource::Resource layoutResource(
+                "layouts",
+                "X_shaped.layout",
+                X_shaped_layout,
+                X_shaped_layout_len
+            );
+            resource::ResourceStreamBuffer buf(layoutResource);
+            std::istream in(&buf);
+            if (!mahjong::parseLayout(in, this->layout))
             {
-                auto key = parameter.first;
-                auto value = parameter.second;
-                if (key == "layout")
-                {
-                    this->loadRemoteLayout(value);
-                }
-                else if (key == "theme")
-                {
-                    this->loadRemoteTheme(value);
-                }
+                MAIN_EXAMPLE_LOG("Could not parse built-in layout");
+                return;
             }
-        }
     
-        void loadRemoteLayout(const std::string &url)
-        {
-            auto success = [&](std::string response) {
-                this->parseLayoutResponse(response, url);
-            };
-            auto failure = [&](std::string reason) {
-                MAIN_EXAMPLE_LOG(
-                    "ERROR Could not load layout: %s",
-                    reason.c_str()
-                );
-            };
-            MAIN_EXAMPLE_LOG("Loading layout from '%s'", url.c_str());
-            this->app->httpClient->get(url, success, failure);
-        }
-        void parseLayoutResponse(
-            const std::string &response,
-            const std::string &url
-        ) {
-            mahjong::Layout layout;
-            std::istringstream in(response);
-            if (mahjong::parseLayout(in, layout))
-            {
-                auto tileScene = this->createTiles(layout.positions);
-                // Apply normal state material to the whole scene.
-                tileScene->setStateSet(this->themeMaterial);
-                // Rotate the tile scene to have a better view.
-                scene::setSimpleRotation(tileScene, {60, 0, 0});
-                // Add tile scene to the scene.
-                this->scene->addChild(tileScene);
-                // Reset the scene.
-                this->app->setScene(this->scene);
-                MAIN_EXAMPLE_LOG("Successfully loaded layout");
-            }
-            else
-            {
-                MAIN_EXAMPLE_LOG("ERROR Could not parse loaded layout");
-            }
-        }
-    
-        void loadRemoteTheme(const std::string &url)
-        {
-            auto success = [=](std::string response) {
-                // NOTE We use `=` in lambda capture to capture url copy
-                // NOTE Otherwise we have crash when parsing.
-                this->parseThemeResponse(response, url);
-            };
-            auto failure = [&](std::string reason) {
-                MAIN_EXAMPLE_LOG(
-                    "ERROR Could not load theme: %s",
-                    reason.c_str()
-                );
-            };
-            MAIN_EXAMPLE_LOG("Loading theme from '%s'", url.c_str());
-            this->app->httpClient->get(url, success, failure);
-        }
-        void parseThemeResponse(const std::string &response, const std::string &url)
-        {
-            resource::Resource
-                themeRes(
-                    "theme-remote",
-                    url,
-                    resource::stringToResourceContents(response),
-                    response.length()
-                );
-            // Set texture to materials.
-            auto texture = resource::createTexture(themeRes);
+            // Set theme materials.
+            resource::Resource texRes(
+                "textures",
+                "tile-theme.png",
+                tile_theme_png,
+                tile_theme_png_len
+            );
+            auto texture = resource::createTexture(texRes);
             this->themeMaterial->setTextureAttributeAndModes(0, texture);
             this->themeMaterialSelected->setTextureAttributeAndModes(0, texture);
-            MAIN_EXAMPLE_LOG("Successfully loaded theme");
         }
-    // Example+RemoteLayoutTheme End
+    // Example+DefaultLayoutTheme End
+    // Example+Game Start
+    private:
+        mahjong::Solitaire *game;
+    
+        void setupGame()
+        {
+            this->game = new mahjong::Solitaire();
+        }
+        void tearGameDown()
+        {
+            delete this->game;
+        }
+    // Example+Game End
+    // Example+GameState Start
+    private:
+        bool isGameVictorious = false;
+        core::Reporter finishedGame;
+        void setupGameState()
+        {
+            this->removedTiles.addCallback(
+                [&] {
+                    this->detectGameState();
+                }
+            );
+        }
+        void detectGameState()
+        {
+            if (!this->game->hasTurns())
+            {
+                this->isGameVictorious = !this->game->hasTiles();
+                this->finishedGame.report();
+            }
+        }
+    // Example+GameState End
+    // Example+MatchedTilesRemoval Start
+    private:
+        core::Reporter removedTiles;
+    
+        void setupMatchedTilesRemoval()
+        {
+            this->tilesMatchChanged.addCallback(
+                [&] {
+                    // Make sure there was a match.
+                    if (!this->tilesMatch)
+                    {
+                        return;
+                    }
+    
+                    this->removeMatchedTiles();
+                }
+            );
+        }
+        void removeMatchedTiles()
+        {
+            auto nodeTile1 = this->selectedTiles[0];
+            auto nodeTile2 = this->selectedTiles[1];
+    
+            // Deselect tiles.
+            this->selectedTiles.clear();
+            this->selectedTilesChanged.report();
+    
+            // Remove tiles from Solitaire (logical representation).
+            this->game->removeTiles(nodeTile1.tile, nodeTile2.tile);
+    
+            // Remove items from visual-to-logical correspondence.
+            {
+                auto it = this->tileNodes.find(nodeTile1.node);
+                this->tileNodes.erase(it);
+            }
+            {
+                auto it = this->tileNodes.find(nodeTile2.node);
+                this->tileNodes.erase(it);
+            }
+    
+            // Remove nodes from the scene.
+            this->tileScene->removeChild(nodeTile1.node);
+            this->tileScene->removeChild(nodeTile2.node);
+            
+            // Report.
+            this->removedTiles.report();
+        }
+    // Example+MatchedTilesRemoval End
+    // Example+NodeSelection Start
+    private:
+        const std::string nodeSelectionCallbackName = "NodeSelection";
+        const unsigned int selectionNodeMask = 0x00000004;
+        osg::Node *selectedNode;
+        core::Reporter selectedNodeChanged;
+    
+        void setupNodeSelection()
+        {
+            // Mark nodes as selectable by excluding specific bitmask.
+            auto nodesCount = this->tileScene->getNumChildren();
+            for (int id = 0; id < nodesCount; ++id)
+            {
+                auto node = this->tileScene->getChild(id);
+                node->setNodeMask(node->getNodeMask() & ~this->selectionNodeMask);
+            }
+    
+            // Listen to mouse clicks.
+            this->app->mouse->pressedButtonsChanged.addCallback(
+                [&] {
+                    // Try to select a node upon a click or a tap.
+                    bool clicked = !this->app->mouse->pressedButtons.empty();
+                    if (clicked)
+                    {
+                        this->selectNode();
+                    }
+                },
+                this->nodeSelectionCallbackName
+            );
+        }
+        void tearNodeSelectionDown()
+        {
+            this->app->mouse->pressedButtonsChanged.removeCallback(
+                this->nodeSelectionCallbackName
+            );
+        }
+        void selectNode()
+        {
+            auto node =
+                scene::nodeAtPosition(
+                    this->app->mouse->position,
+                    this->app->camera(),
+                    this->selectionNodeMask
+                );
+    
+            // Report successful selection.
+            if (node)
+            {
+                this->selectedNode = node;
+                this->selectedNodeChanged.report();
+            }
+        }
+    // Example+NodeSelection End
     // Example+Scene Start
     private:
         osg::ref_ptr<osg::MatrixTransform> scene;
@@ -509,6 +643,194 @@ struct Example
             this->themeMaterialSelected = selected;
         }
     // Example+Theme End
+    // Example+Tiles Start
+    private:
+        osg::ref_ptr<osg::MatrixTransform> tileScene;
+        std::map<osg::Node *, mahjong::Tile> tileNodes;
+    
+        void setupTiles()
+        {
+            // Order layout positions with seed.
+            int seed = time(0);
+            auto positions = mahjong::orderedLayoutPositions(layout.positions, seed);
+            auto matchIds = mahjong::matchIds(positions.size());
+    
+            // Create tile nodes.
+            auto tileScene = this->createTiles(positions, matchIds);
+            // Set default (non-selected) material.
+            tileScene->setStateSet(this->themeMaterial);
+            // Rotate the scene to have a better view.
+            scene::setSimpleRotation(tileScene, {60, 0, 0});
+            // Set the scene.
+            this->scene->addChild(tileScene);
+            this->app->setScene(this->scene);
+    
+            // Create logical tiles.
+            int tilesCount = positions.size();
+            std::vector<mahjong::Tile> tiles;
+            for (int i = 0; i < tilesCount; ++i)
+            {
+                auto position = positions[i];
+                auto matchId = matchIds[i];
+    
+                mahjong::Tile tile;
+                tile.position = position;
+                tile.matchId = matchId;
+                tiles.push_back(tile);
+    
+                // Keep correspondence of visual tiles to logical ones.
+                auto node = tileScene->getChild(i);
+                this->tileNodes[node] = tile;
+            }
+    
+            // Provide logical tiles to the game.
+            this->game->setTiles(tiles);
+            // Keep reference to tile nodes.
+            this->tileScene = tileScene;
+        }
+    // Example+Tiles End
+    // Example+TileMatching Start
+    private:
+        bool tilesMatch = false;
+        core::Reporter tilesMatchChanged;
+    
+        void setupTileMatching()
+        {
+            this->selectedTilesChanged.addCallback(
+                [&] {
+                    // Only perform matching once two tiles have been selected.
+                    if (this->selectedTiles.size() == 2)
+                    {
+                        this->matchTiles();
+                    }
+                }
+            );
+        }
+        void matchTiles()
+        {
+            auto nodeTile = this->selectedTiles.begin();
+            auto tile1 = nodeTile->tile;
+            ++nodeTile;
+            auto tile2 = nodeTile->tile;
+    
+            this->tilesMatch = this->game->tilesMatch(tile1, tile2);
+            this->tilesMatchChanged.report();
+        }
+    // Example+TileMatching End
+    // Example+TileSelection Start
+    private:
+        struct NodeTile
+        {
+            osg::Node *node;
+            mahjong::Tile tile;
+        };
+        std::vector<NodeTile> selectedTiles;
+        core::Reporter selectedTilesChanged;
+        const std::string tileSelectionCallbackName = "TileSelection";
+    
+        void setupTileSelection()
+        {
+            this->selectedNodeChanged.addCallback(
+                [&] {
+                    this->selectTile();
+                },
+                this->tileSelectionCallbackName
+            );
+        }
+        void tearTileSelectionDown()
+        {
+            this->selectedNodeChanged.removeCallback(
+                this->tileSelectionCallbackName
+            );
+        }
+        void selectTile()
+        {
+            auto node = this->selectedNode;
+            auto tile = this->tileNodes[node];
+    
+            // Make sure tile is selectable.
+            if (!this->game->isTileSelectable(tile))
+            {
+                return;
+            }
+    
+            // Make sure the tile has not yet been selected.
+            for (auto nodeTile : this->selectedTiles)
+            {
+                if (nodeTile.node == node)
+                {
+                    return;
+                }
+            }
+    
+            // Select and report.
+            this->selectedTiles.push_back({node, tile});
+            this->selectedTilesChanged.report();
+        }
+    // Example+TileSelection End
+    // Example+TileSelectionDepiction Start
+    private:
+        std::vector<NodeTile> depictedTiles;
+    
+        void setupTileSelectionDepiction()
+        {
+            this->selectedTilesChanged.addCallback(
+                [&] {
+                    this->depictSelectedTiles();
+                }
+            );
+        }
+        void depictSelectedTiles()
+        {
+            // Remove depiction of previously selected tiles.
+            for (auto nodeTile : this->depictedTiles)
+            {
+                auto node = nodeTile.node;
+                this->depictNodeSelection(node, false);
+            }
+    
+            // Depict currently selected tiles.
+            for (auto nodeTile : this->selectedTiles)
+            {
+                auto node = nodeTile.node;
+                this->depictNodeSelection(node, true);
+            }
+    
+            // Keep depicted tiles.
+            this->depictedTiles = this->selectedTiles;
+        }
+        void depictNodeSelection(osg::Node *node, bool isSelected)
+        {
+            osg::StateSet *material = 
+                isSelected ? 
+                this->themeMaterialSelected :
+                0;
+            node->setStateSet(material);
+        }
+    // Example+TileSelectionDepiction End
+    // Example+UnmatchedTilesDeselection Start
+    private:
+        void setupUnmatchedTilesDeselection()
+        {
+            this->tilesMatchChanged.addCallback(
+                [&] {
+                    // Make sure there was no match.
+                    if (this->tilesMatch)
+                    {
+                        return;
+                    }
+    
+                    this->deselectUnmatchedTiles();
+                }
+            );
+        }
+        void deselectUnmatchedTiles()
+        {
+            // Deselect the first unmatched tile only.
+            this->selectedTiles.erase(this->selectedTiles.begin());
+            this->selectedTilesChanged.report();
+        }
+    // Example+UnmatchedTilesDeselection End
  
     // Example+createTiles Start
     // Make sure positions' count is equal to matchIds' one.

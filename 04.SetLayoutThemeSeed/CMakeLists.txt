@@ -7,8 +7,8 @@
 # * COMPONENT_BINARY_NAME
 # * OMC_LINK_LIBS
 
-PROJECT(OMC04_REMOTE_LAYOUT_THEME)
-SET(COMPONENT_BINARY_NAME "omc04-remote-layout-theme")
+PROJECT(OMC04_SET_LAYOUT_THEME_SEED)
+SET(COMPONENT_BINARY_NAME "omc04-set-layout-theme-seed")
 SET(OSGCPE_DIR ${OMC_DIR}/../openscenegraph-cross-platform-examples)
 
 # Use C++11.

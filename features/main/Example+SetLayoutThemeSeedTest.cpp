@@ -1,10 +1,20 @@
 FEATURE main.h/Setup
-this->setupRemoteLayoutTheme(parameters);
+this->setupSetLayoutThemeSeedTest(parameters);
 
 FEATURE main.h/Impl
 private:
-    void setupRemoteLayoutTheme(const Parameters &parameters)
+    void setupSetLayoutThemeSeedTest(const Parameters &parameters)
     {
+        this->setupDefaultLayoutTheme();
+        this->setupTiles();
+        this->setupNodeSelection();
+        this->setupTileSelection();
+        this->setupTileSelectionDepiction();
+        this->setupTileMatching();
+        this->setupUnmatchedTilesDeselection();
+        this->setupMatchedTilesRemoval();
+        this->setupGameState();
+        /*
         // Load remote layout and/or theme.
         for (auto parameter : parameters)
         {
@@ -19,8 +29,14 @@ private:
                 this->loadRemoteTheme(value);
             }
         }
+        */
+    }
+    void tearSetLayoutThemeSeedTestDown()
+    {
+        this->tearNodeSelectionDown();
     }
 
+    /*
     void loadRemoteLayout(const std::string &url)
     {
         auto success = [&](std::string response) {
@@ -35,6 +51,8 @@ private:
         MAIN_EXAMPLE_LOG("Loading layout from '%s'", url.c_str());
         this->app->httpClient->get(url, success, failure);
     }
+    */
+    /*
     void parseLayoutResponse(
         const std::string &response,
         const std::string &url
@@ -59,7 +77,9 @@ private:
             MAIN_EXAMPLE_LOG("ERROR Could not parse loaded layout");
         }
     }
+    */
 
+    /*
     void loadRemoteTheme(const std::string &url)
     {
         auto success = [=](std::string response) {
@@ -76,6 +96,8 @@ private:
         MAIN_EXAMPLE_LOG("Loading theme from '%s'", url.c_str());
         this->app->httpClient->get(url, success, failure);
     }
+    */
+    /*
     void parseThemeResponse(const std::string &response, const std::string &url)
     {
         resource::Resource
@@ -91,3 +113,4 @@ private:
         this->themeMaterialSelected->setTextureAttributeAndModes(0, texture);
         MAIN_EXAMPLE_LOG("Successfully loaded theme");
     }
+    */

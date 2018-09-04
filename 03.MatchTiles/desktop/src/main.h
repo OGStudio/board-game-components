@@ -454,7 +454,7 @@ struct Example
                 }
             );
         }
-        void tearMatchTilesDown()
+        void tearMatchTilesTestDown()
         {
             this->tearNodeSelectionDown();
         }

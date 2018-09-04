@@ -1,21 +1,33 @@
 # main
 Application
+Application+camera
 Application+frame+Reporting
 Application+run
 Application+setupWindow-desktop
 Application+HTTPClient
 Application+HTTPClientProcessor
 Application+Logging
+Application+Mouse
 Application+Rendering
 
-OMC_MAIN_EXAMPLE_LOG
+MAIN_EXAMPLE_LOG
 Example
 Example+04
-Example+RemoteLayoutTheme
+Example+SetLayoutThemeSeedTest
+Example+Game
+Example+GameState
+Example+DefaultLayoutTheme
+Example+MatchedTilesRemoval
+Example+NodeSelection
 Example+Scene
 Example+Theme
+Example+Tiles
+Example+TileMatching
+Example+TileSelection
+Example+TileSelectionDepiction
 Example+StaticPluginOSG
 Example+StaticPluginPNG
+Example+UnmatchedTilesDeselection
 Example+createTiles
 
 main-desktop
@@ -25,20 +37,26 @@ main+Arguments-desktop
 Reporter
 
 # mahjong
-OMC_MAHJONG_LOG
-Layout
+MAHJONG_LOG
 KMahjonggLayout
+Layout
+Solitaire
+Tile
 TilePosition
+TilePosition+Equality
+intToTilePosition
 kmahjonggLayoutFieldsToPositions
 linesToKMahjonggLayout
 matchIds
+orderedLayoutPositions
 parseLayout
+tilePositionToInt
 
 # log
+Logger
 log-default
 logLevelToString
 logprintf
-Logger
 
 # format
 commandLineArgumentsToParameters
@@ -48,27 +66,33 @@ stringStartsWith
 trimmedString
 
 # resource
-OSGCPE_RESOURCE_LOG
+RESOURCE_LOG
+Resource
+ResourceStreamBuffer
 createTexture
 extension
 node
 setTextureImage
 string
 stringToResourceContents
-Resource
-ResourceStreamBuffer
 
 # render
-OMC_RENDER_TILE_THEME_LOG
+RENDER_TILE_THEME_LOG
+TileTheme
 createGraphicsContext-desktop
 createShaderProgram
 setupCamera
-TileTheme
 
 # scene
 degreesToQuaternion
 setSimplePosition
 setSimpleRotation
+
+nodeAtPosition
+
+# input
+Mouse
+MouseButtons
 
 # network
 HTTPClient
