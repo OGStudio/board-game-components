@@ -70,7 +70,9 @@ RESOURCE_LOG
 Resource
 ResourceStreamBuffer
 createTexture
+expandGitHubPath
 extension
+isPathRemote
 node
 setTextureImage
 string

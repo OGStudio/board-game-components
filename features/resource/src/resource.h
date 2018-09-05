@@ -48,6 +48,9 @@ namespace resource
 // FEATURE setTextureImage/Impl
 // FEATURE createTexture/Impl
 
+// FEATURE expandGitHubPath/Impl
+// FEATURE isPathRemote/Impl
+
 } // namespace resource
 } // namespace omc
 

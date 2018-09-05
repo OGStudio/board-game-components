@@ -6,6 +6,9 @@ private:
     void setupSetLayoutThemeSeedTest(const Parameters &parameters)
     {
         this->setupDefaultLayoutTheme();
+        this->loadLayout(parameters);
+        //this->loadTheme(parameters);
+        /*
         this->setupTiles();
         this->setupNodeSelection();
         this->setupTileSelection();
@@ -14,6 +17,7 @@ private:
         this->setupUnmatchedTilesDeselection();
         this->setupMatchedTilesRemoval();
         this->setupGameState();
+        */
         /*
         // Load remote layout and/or theme.
         for (auto parameter : parameters)
@@ -35,6 +39,48 @@ private:
     {
         this->tearNodeSelectionDown();
     }
+
+    // Layout.
+
+    core::Reporter layoutLoaded;
+    void loadLayout(const Parameters &parameters)
+    {
+        auto it = parameters.find("layout");
+
+        // Skip loading layout if `layout` parameter is absent.
+        if (it == parameters.end())
+        {
+            this->layoutLoaded.report();
+            return;
+        }
+
+        // Load layout.
+        auto layoutValue = it->second;
+        
+        // Try to expand layout in case it's a collapsed remote path.
+        layoutValue = resource::expandGitHubPath(layoutValue);
+        //layoutValue = resource::expandBitBucketPath(layoutValue);
+
+        if (resource::isPathRemote(layoutValue))
+        {
+            this->loadRemoteLayout(layoutValue);
+        }
+        // TODO Check if it's internal layout.
+        // TODO Otherwise it's a local layout.
+    }
+    void loadInternalLayout(const std::string &layoutName)
+    {
+        MAIN_EXAMPLE_LOG("TODO load internal layout: '%s'", layoutName.c_str());
+    }
+    void loadLocalLayout(const std::string &layoutFileName)
+    {
+        MAIN_EXAMPLE_LOG("TODO load local layout: '%s'", layoutFileName.c_str());
+    }
+    void loadRemoteLayout(const std::string &layoutURL)
+    {
+        MAIN_EXAMPLE_LOG("TODO load remote layout: '%s'", layoutURL.c_str());
+    }
+    
 
     /*
     void loadRemoteLayout(const std::string &url)

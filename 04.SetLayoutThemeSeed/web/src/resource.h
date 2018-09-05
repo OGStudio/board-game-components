@@ -271,6 +271,7 @@ osg::Texture2D *createTexture(const Resource &resource)
 }
 // createTexture End
 
+
 } // namespace resource
 } // namespace omc
 
