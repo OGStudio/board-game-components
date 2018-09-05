@@ -70,7 +70,9 @@ RESOURCE_LOG
 Resource
 ResourceStreamBuffer
 createTexture
+expandBitBucketPath
 expandGitHubPath
+expandRemotePath
 extension
 isPathRemote
 node

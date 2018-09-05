@@ -593,7 +593,7 @@ struct Example
             
             // Try to expand layout in case it's a collapsed remote path.
             layoutValue = resource::expandGitHubPath(layoutValue);
-            //layoutValue = resource::expandBitBucketPath(layoutValue);
+            layoutValue = resource::expandBitBucketPath(layoutValue);
     
             if (resource::isPathRemote(layoutValue))
             {

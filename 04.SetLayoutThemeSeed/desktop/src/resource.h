@@ -282,11 +282,13 @@ osg::Texture2D *createTexture(const Resource &resource)
 }
 // createTexture End
 
-// expandGitHubPath Start
-std::string expandGitHubPath(const std::string &path)
-{
-    const std::string prefix = "github://";
-
+// expandRemotePath Start
+std::string expandRemotePath(
+    const std::string &path,
+    const std::string &prefix,
+    const std::string &servicePrefix,
+    const std::string &serviceBranch
+) {
     // Make sure we have expected prefix.
     if (!format::stringStartsWith(path, prefix))
     {
@@ -306,15 +308,37 @@ std::string expandGitHubPath(const std::string &path)
     auto repository =
         format::printfString("%s/%s", parts[0].c_str(), parts[1].c_str());
     auto fileName = location.substr(repository.length() + 1);
-    auto githubPrefix = "https://raw.githubusercontent.com";
-    auto githubBranch = "master";
     return
         format::printfString(
             "%s/%s/%s/%s",
-            githubPrefix,
+            servicePrefix.c_str(),
             repository.c_str(),
-            githubBranch,
+            serviceBranch.c_str(),
             fileName.c_str()
+        );
+}
+// expandRemotePath End
+// expandBitBucketPath Start
+std::string expandBitBucketPath(const std::string &path)
+{
+    return
+        expandRemotePath(
+            path,
+            "bitbucket://",
+            "https://bitbucket.org",
+            "raw/default"
+        );
+}
+// expandBitBucketPath End
+// expandGitHubPath Start
+std::string expandGitHubPath(const std::string &path)
+{
+    return
+        expandRemotePath(
+            path,
+            "github://",
+            "https://raw.githubusercontent.com",
+            "master"
         );
 }
 // expandGitHubPath End

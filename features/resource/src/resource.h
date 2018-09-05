@@ -48,6 +48,8 @@ namespace resource
 // FEATURE setTextureImage/Impl
 // FEATURE createTexture/Impl
 
+// FEATURE expandRemotePath/Impl
+// FEATURE expandBitBucketPath/Impl
 // FEATURE expandGitHubPath/Impl
 // FEATURE isPathRemote/Impl
 
