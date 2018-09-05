@@ -712,7 +712,7 @@ struct Example
         {
             // Order layout positions with seed.
             int seed = time(0);
-            auto positions = mahjong::orderedLayoutPositions(layout.positions, seed);
+            auto positions = mahjong::orderedLayoutPositions(this->layout.positions, seed);
             auto matchIds = mahjong::matchIds(positions.size());
     
             // Create tile nodes.

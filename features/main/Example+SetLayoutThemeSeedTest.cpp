@@ -3,13 +3,35 @@ this->setupSetLayoutThemeSeedTest(parameters);
 
 FEATURE main.h/Impl
 private:
+    core::Reporter layoutLoaded;
+
     void setupSetLayoutThemeSeedTest(const Parameters &parameters)
     {
         this->setupDefaultLayoutTheme();
+        this->setupContinuationAfterLoading();
+
         this->loadLayout(parameters);
         //this->loadTheme(parameters);
-        /*
+    }
+    /*
+    void tearSetLayoutThemeSeedTestDown()
+    {
+        this->tearNodeSelectionDown();
+    }
+    */
+    void setupContinuationAfterLoading()
+    {
+        this->layoutLoaded.addOneTimeCallback(
+            [&] {
+                this->setupContinuation();
+            }
+        );
+
+    }
+    void setupContinuation()
+    {
         this->setupTiles();
+        /*
         this->setupNodeSelection();
         this->setupTileSelection();
         this->setupTileSelectionDepiction();
@@ -18,31 +40,10 @@ private:
         this->setupMatchedTilesRemoval();
         this->setupGameState();
         */
-        /*
-        // Load remote layout and/or theme.
-        for (auto parameter : parameters)
-        {
-            auto key = parameter.first;
-            auto value = parameter.second;
-            if (key == "layout")
-            {
-                this->loadRemoteLayout(value);
-            }
-            else if (key == "theme")
-            {
-                this->loadRemoteTheme(value);
-            }
-        }
-        */
-    }
-    void tearSetLayoutThemeSeedTestDown()
-    {
-        this->tearNodeSelectionDown();
     }
 
     // Layout.
 
-    core::Reporter layoutLoaded;
     void loadLayout(const Parameters &parameters)
     {
         auto it = parameters.find("layout");
@@ -76,54 +77,47 @@ private:
     {
         MAIN_EXAMPLE_LOG("TODO load local layout: '%s'", layoutFileName.c_str());
     }
-    void loadRemoteLayout(const std::string &layoutURL)
-    {
-        MAIN_EXAMPLE_LOG("TODO load remote layout: '%s'", layoutURL.c_str());
-    }
-    
-
-    /*
     void loadRemoteLayout(const std::string &url)
     {
+        MAIN_EXAMPLE_LOG("Loading remote layout '%s'", url.c_str());
+
         auto success = [&](std::string response) {
-            this->parseLayoutResponse(response, url);
+            // Response exists.
+            if (response.length())
+            {
+                // Parse it.
+                std::istringstream in(response);
+                if (!mahjong::parseLayout(in, this->layout))
+                {
+                    MAIN_EXAMPLE_LOG("ERROR Could not parse remote layout");
+                }
+                else
+                {
+                    MAIN_EXAMPLE_LOG("Successfully loaded and parsed remote layout");
+                }
+            }
+            // Response does not exist.
+            else
+            {
+                MAIN_EXAMPLE_LOG("ERROR Loaded layout is empty");
+            }
+
+            // Report.
+            this->layoutLoaded.report();
         };
+
         auto failure = [&](std::string reason) {
             MAIN_EXAMPLE_LOG(
-                "ERROR Could not load layout: %s",
+                "ERROR Could not load remote layout: '%s'",
                 reason.c_str()
             );
+
+            // Report.
+            this->layoutLoaded.report();
         };
-        MAIN_EXAMPLE_LOG("Loading layout from '%s'", url.c_str());
+
         this->app->httpClient->get(url, success, failure);
     }
-    */
-    /*
-    void parseLayoutResponse(
-        const std::string &response,
-        const std::string &url
-    ) {
-        mahjong::Layout layout;
-        std::istringstream in(response);
-        if (mahjong::parseLayout(in, layout))
-        {
-            auto tileScene = this->createTiles(layout.positions);
-            // Apply normal state material to the whole scene.
-            tileScene->setStateSet(this->themeMaterial);
-            // Rotate the tile scene to have a better view.
-            scene::setSimpleRotation(tileScene, {60, 0, 0});
-            // Add tile scene to the scene.
-            this->scene->addChild(tileScene);
-            // Reset the scene.
-            this->app->setScene(this->scene);
-            MAIN_EXAMPLE_LOG("Successfully loaded layout");
-        }
-        else
-        {
-            MAIN_EXAMPLE_LOG("ERROR Could not parse loaded layout");
-        }
-    }
-    */
 
     /*
     void loadRemoteTheme(const std::string &url)
