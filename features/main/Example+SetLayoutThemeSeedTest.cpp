@@ -15,7 +15,7 @@ private:
 
         this->setupSequence.setActions({
             "loadLayout",
-            //"loadTheme",
+            "loadTheme",
             "finishSetup",
         });
 
@@ -24,6 +24,11 @@ private:
             this->setupSequence,
             "loadLayout",
             this->loadLayout()
+        );
+        CORE_REGISTER_SEQUENCE_ACTION(
+            this->setupSequence,
+            "loadTheme",
+            this->loadTheme()
         );
         CORE_REGISTER_SEQUENCE_ACTION(
             this->setupSequence,
@@ -52,6 +57,19 @@ private:
         auto value = it->second;
         return this->loadLayout(value);
     }
+    core::Reporter *loadTheme()
+    {
+        // Do nothing if `theme` parameter is absent.
+        auto it = this->parameters.find("theme");
+        if (it == this->parameters.end())
+        {
+            return 0;
+        }
+
+        // Load theme otherwise.
+        auto value = it->second;
+        return this->loadTheme(value);
+    }
     core::Reporter *finishSetup()
     {
         this->setupTiles();
@@ -66,39 +84,3 @@ private:
         */
         return 0;
     }
-
-    /*
-    void loadRemoteTheme(const std::string &url)
-    {
-        auto success = [=](std::string response) {
-            // NOTE We use `=` in lambda capture to capture url copy
-            // NOTE Otherwise we have crash when parsing.
-            this->parseThemeResponse(response, url);
-        };
-        auto failure = [&](std::string reason) {
-            MAIN_EXAMPLE_LOG(
-                "ERROR Could not load theme: %s",
-                reason.c_str()
-            );
-        };
-        MAIN_EXAMPLE_LOG("Loading theme from '%s'", url.c_str());
-        this->app->httpClient->get(url, success, failure);
-    }
-    */
-    /*
-    void parseThemeResponse(const std::string &response, const std::string &url)
-    {
-        resource::Resource
-            themeRes(
-                "theme-remote",
-                url,
-                resource::stringToResourceContents(response),
-                response.length()
-            );
-        // Set texture to materials.
-        auto texture = resource::createTexture(themeRes);
-        this->themeMaterial->setTextureAttributeAndModes(0, texture);
-        this->themeMaterialSelected->setTextureAttributeAndModes(0, texture);
-        MAIN_EXAMPLE_LOG("Successfully loaded theme");
-    }
-    */

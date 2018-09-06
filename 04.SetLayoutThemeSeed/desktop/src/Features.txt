@@ -33,6 +33,7 @@ Example+StaticPluginPNG
 Example+UnmatchedTilesDeselection
 Example+createTiles
 Example+loadLayout
+Example+loadTheme
 
 main-desktop
 main+Arguments-desktop

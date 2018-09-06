@@ -641,7 +641,7 @@ struct Example
     
             this->setupSequence.setActions({
                 "loadLayout",
-                //"loadTheme",
+                "loadTheme",
                 "finishSetup",
             });
     
@@ -650,6 +650,11 @@ struct Example
                 this->setupSequence,
                 "loadLayout",
                 this->loadLayout()
+            );
+            CORE_REGISTER_SEQUENCE_ACTION(
+                this->setupSequence,
+                "loadTheme",
+                this->loadTheme()
             );
             CORE_REGISTER_SEQUENCE_ACTION(
                 this->setupSequence,
@@ -678,6 +683,19 @@ struct Example
             auto value = it->second;
             return this->loadLayout(value);
         }
+        core::Reporter *loadTheme()
+        {
+            // Do nothing if `theme` parameter is absent.
+            auto it = this->parameters.find("theme");
+            if (it == this->parameters.end())
+            {
+                return 0;
+            }
+    
+            // Load theme otherwise.
+            auto value = it->second;
+            return this->loadTheme(value);
+        }
         core::Reporter *finishSetup()
         {
             this->setupTiles();
@@ -692,42 +710,6 @@ struct Example
             */
             return 0;
         }
-    
-        /*
-        void loadRemoteTheme(const std::string &url)
-        {
-            auto success = [=](std::string response) {
-                // NOTE We use `=` in lambda capture to capture url copy
-                // NOTE Otherwise we have crash when parsing.
-                this->parseThemeResponse(response, url);
-            };
-            auto failure = [&](std::string reason) {
-                MAIN_EXAMPLE_LOG(
-                    "ERROR Could not load theme: %s",
-                    reason.c_str()
-                );
-            };
-            MAIN_EXAMPLE_LOG("Loading theme from '%s'", url.c_str());
-            this->app->httpClient->get(url, success, failure);
-        }
-        */
-        /*
-        void parseThemeResponse(const std::string &response, const std::string &url)
-        {
-            resource::Resource
-                themeRes(
-                    "theme-remote",
-                    url,
-                    resource::stringToResourceContents(response),
-                    response.length()
-                );
-            // Set texture to materials.
-            auto texture = resource::createTexture(themeRes);
-            this->themeMaterial->setTextureAttributeAndModes(0, texture);
-            this->themeMaterialSelected->setTextureAttributeAndModes(0, texture);
-            MAIN_EXAMPLE_LOG("Successfully loaded theme");
-        }
-        */
     // Example+SetLayoutThemeSeedTest End
     // Example+Scene Start
     private:
@@ -1176,6 +1158,106 @@ struct Example
             this->app->httpClient->get(url, success, failure);
         }
     // Example+loadLayout End
+    // Example+loadTheme Start
+    private:
+        core::Reporter themeLoaded;
+    
+        core::Reporter *loadTheme(const std::string &theme)
+        {
+            // Try to expand theme in case it's a collapsed remote path.
+            auto path = theme;
+            path = resource::expandBitBucketPath(path);
+            path = resource::expandGitHubPath(path);
+    
+            // Remote.
+            if (resource::isPathRemote(path))
+            {
+                this->loadRemoteTheme(path);
+                return &this->themeLoaded;
+            }
+    
+            // Local or internal.
+            auto internalTheme =
+                this->internalThemes->resource("themes", theme);
+            // Internal.
+            if (internalTheme)
+            {
+                this->loadInternalTheme(*internalTheme);
+            }
+            // Local.
+            else
+            {
+                this->loadLocalTheme(theme);
+            }
+    
+            // Report finish instantly.
+            return 0;
+        }
+        void loadInternalTheme(resource::Resource &theme)
+        {
+            this->setupThemeMaterials(theme);
+            MAIN_EXAMPLE_LOG("Successfully loaded internal theme");
+        }
+        void loadLocalTheme(const std::string &themeFileName)
+        {
+            std::ifstream localTheme(themeFileName);
+            if (localTheme)
+            {
+                // Read file contents into string.
+                std::string fileContents(
+                    (std::istreambuf_iterator<char>(localTheme)),
+                    (std::istreambuf_iterator<char>())
+                );
+                resource::Resource res(
+                    "themes",
+                    themeFileName,
+                    resource::stringToResourceContents(fileContents),
+                    fileContents.length()
+                );
+                this->setupThemeMaterials(res);
+            }
+            else
+            {
+                MAIN_EXAMPLE_LOG("ERROR Could not read local theme");
+            }
+        }
+        void loadRemoteTheme(const std::string &url)
+        {
+            MAIN_EXAMPLE_LOG("Loading remote layout '%s'", url.c_str());
+    
+            auto success = [=](std::string response) {
+                // NOTE Use `=` in lambda capture to capture url copy
+                // NOTE Otherwise we have crash when referencing `url`.
+                resource::Resource res(
+                    "themes",
+                    url,
+                    resource::stringToResourceContents(response),
+                    response.length()
+                );
+                this->setupThemeMaterials(res);
+    
+                // Report finish.
+                this->themeLoaded.report();
+            };
+            auto failure = [&](std::string reason) {
+                MAIN_EXAMPLE_LOG(
+                    "ERROR Could not load remote theme: '%s'",
+                    reason.c_str()
+                );
+                // Report finish.
+                this->themeLoaded.report();
+            };
+    
+            // Initiate loading.
+            this->app->httpClient->get(url, success, failure);
+        }
+        void setupThemeMaterials(resource::Resource &res)
+        {
+            auto texture = resource::createTexture(res);
+            this->themeMaterial->setTextureAttributeAndModes(0, texture);
+            this->themeMaterialSelected->setTextureAttributeAndModes(0, texture);
+        }
+    // Example+loadTheme End
 // Example Start
 };
 // Example End

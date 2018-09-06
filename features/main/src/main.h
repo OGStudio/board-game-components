@@ -127,6 +127,7 @@ namespace main
  
     // FEATURE Example+createTiles/Impl
     // FEATURE Example+loadLayout/Impl
+    // FEATURE Example+loadTheme/Impl
 // FEATURE Example/End
 
 } // namespace main
