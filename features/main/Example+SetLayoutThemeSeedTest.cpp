@@ -1,37 +1,57 @@
 FEATURE main.h/Setup
-this->setupSetLayoutThemeSeedTest(parameters);
+this->setupSetLayoutThemeSeedTest();
 
 FEATURE main.h/TearDown
 this->tearSetLayoutThemeSeedTestDown();
 
 FEATURE main.h/Impl
 private:
-    core::Reporter layoutLoaded;
-
-    void setupSetLayoutThemeSeedTest(const Parameters &parameters)
+    core::Sequence setupSequence;
+    void setupSetLayoutThemeSeedTest()
     {
         this->setupInternalLayouts();
         this->setupDefaultLayoutTheme();
-        this->setupContinuationAfterLoading();
 
-        this->loadLayout(parameters);
-        //this->loadTheme(parameters);
+        this->setupSequence.setActions({
+            "loadLayout",
+            //"loadTheme",
+            "finishSetup",
+        });
+
+        // Register actions.
+        CORE_REGISTER_SEQUENCE_ACTION(
+            this->setupSequence,
+            "loadLayout",
+            this->loadLayout()
+        );
+        CORE_REGISTER_SEQUENCE_ACTION(
+            this->setupSequence,
+            "finishSetup",
+            this->finishSetup()
+        );
+
+        // Enable sequence.
+        this->setupSequence.setEnabled(true);
     }
     void tearSetLayoutThemeSeedTestDown()
     {
         this->tearInternalLayoutsDown();
         //this->tearNodeSelectionDown();
     }
-    void setupContinuationAfterLoading()
+    core::Reporter *loadLayout()
     {
-        this->layoutLoaded.addOneTimeCallback(
-            [&] {
-                this->setupContinuation();
-            }
-        );
+        // Do nothing if `layout` parameter is absent.
+        auto it = this->parameters.find("layout");
+        if (it == this->parameters.end())
+        {
+            return 0;
+        }
 
+        // Load layout otherwise.
+        auto value = it->second;
+        return this->loadLayout(value);
     }
-    void setupContinuation()
+    core::Reporter *finishSetup()
     {
         this->setupTiles();
         /*
@@ -43,128 +63,7 @@ private:
         this->setupMatchedTilesRemoval();
         this->setupGameState();
         */
-    }
-
-    // Layout.
-
-    void loadLayout(const Parameters &parameters)
-    {
-        auto it = parameters.find("layout");
-
-        // Skip loading layout if `layout` parameter is absent.
-        if (it == parameters.end())
-        {
-            this->layoutLoaded.report();
-            return;
-        }
-
-        // Load layout.
-        auto layoutValue = it->second;
-        
-        // Try to expand layout in case it's a collapsed remote path.
-        layoutValue = resource::expandBitBucketPath(layoutValue);
-        layoutValue = resource::expandGitHubPath(layoutValue);
-
-        // Remote.
-        if (resource::isPathRemote(layoutValue))
-        {
-            this->loadRemoteLayout(layoutValue);
-        }
-        // Local or internal.
-        else
-        {
-            auto internalLayout =
-                this->internalLayouts->resource("layouts", layoutValue);
-            // Internal.
-            if (internalLayout)
-            {
-                this->loadInternalLayout(*internalLayout);
-            }
-            // Local.
-            else
-            {
-                this->loadLocalLayout(layoutValue);
-            }
-        }
-    }
-    void loadInternalLayout(resource::Resource &layout)
-    {
-        resource::ResourceStreamBuffer buf(layout);
-        std::istream in(&buf);
-        if (!mahjong::parseLayout(in, this->layout))
-        {
-            MAIN_EXAMPLE_LOG("ERROR Could not parse internal layout");
-        }
-        else
-        {
-            MAIN_EXAMPLE_LOG("Successfully loaded and parsed internal layout");
-        }
-
-        // Report.
-        this->layoutLoaded.report();
-    }
-    void loadLocalLayout(const std::string &layoutFileName)
-    {
-        std::ifstream localLayout(layoutFileName);
-        if (localLayout)
-        {
-            if (!mahjong::parseLayout(localLayout, this->layout))
-            {
-                MAIN_EXAMPLE_LOG("ERROR Could not parse local layout");
-            }
-            else
-            {
-                MAIN_EXAMPLE_LOG("Successfully loaded and parsed local layout");
-            }
-        }
-        else
-        {
-            MAIN_EXAMPLE_LOG("ERROR Could not read local layout");
-        }
-
-        // Report.
-        this->layoutLoaded.report();
-    }
-    void loadRemoteLayout(const std::string &url)
-    {
-        MAIN_EXAMPLE_LOG("Loading remote layout '%s'", url.c_str());
-
-        auto success = [&](std::string response) {
-            // Response exists.
-            if (response.length())
-            {
-                // Parse it.
-                std::istringstream in(response);
-                if (!mahjong::parseLayout(in, this->layout))
-                {
-                    MAIN_EXAMPLE_LOG("ERROR Could not parse remote layout");
-                }
-                else
-                {
-                    MAIN_EXAMPLE_LOG("Successfully loaded and parsed remote layout");
-                }
-            }
-            // Response does not exist.
-            else
-            {
-                MAIN_EXAMPLE_LOG("ERROR Loaded layout is empty");
-            }
-
-            // Report.
-            this->layoutLoaded.report();
-        };
-
-        auto failure = [&](std::string reason) {
-            MAIN_EXAMPLE_LOG(
-                "ERROR Could not load remote layout: '%s'",
-                reason.c_str()
-            );
-
-            // Report.
-            this->layoutLoaded.report();
-        };
-
-        this->app->httpClient->get(url, success, failure);
+        return 0;
     }
 
     /*

@@ -32,6 +32,28 @@ freely, subject to the following restrictions:
 #include <vector>
 
 // Reporter End
+// Sequence Start
+#include <map>
+
+// Sequence End
+
+// CORE_SEQUENCE_LOG Start
+#include "log.h"
+#include "format.h"
+#define CORE_SEQUENCE_LOG_PREFIX "core::Sequence(%p) %s"
+#define CORE_SEQUENCE_LOG(...) \
+    log::logprintf( \
+        CORE_SEQUENCE_LOG_PREFIX, \
+        this, \
+        format::printfString(__VA_ARGS__).c_str() \
+    )
+
+// CORE_SEQUENCE_LOG End
+// CORE_REGISTER_SEQUENCE_ACTION Start
+#define CORE_REGISTER_SEQUENCE_ACTION(SEQUENCE, ACTION, CALL) \
+    SEQUENCE.registerAction(ACTION, [=]() { return CALL; });
+
+// CORE_REGISTER_SEQUENCE_ACTION End
 
 namespace omc
 {
@@ -55,12 +77,12 @@ class Reporter
             // before `report()` call.
             if (this->reactivateInactiveCallback(name))
             {
-                //OSGCPE_CORE_REPORTER_LOG("reactivated callback named '%s'", name.c_str());
+                //CORE_REPORTER_LOG("reactivated callback named '%s'", name.c_str());
                 return;
             }
 
             this->callbacks.push_back({callback, name});
-            //OSGCPE_CORE_REPORTER_LOG("added callback named '%s'", name.c_str());
+            //CORE_REPORTER_LOG("added callback named '%s'", name.c_str());
         }
 
         void addOneTimeCallback(Callback callback)
@@ -150,6 +172,124 @@ class Reporter
         }
 };
 // Reporter End
+// Sequence Start
+class Sequence
+{
+    public:
+        typedef std::vector<std::string> Actions;
+        typedef std::function<core::Reporter *()> Callback;
+
+    public:
+        Sequence() { }
+
+        std::string name;
+        bool isRepeatable = false;
+
+        void registerAction(const std::string &name, Callback callback)
+        {
+            this->actions[name] = callback;
+        }
+
+        void setActions(const Actions &sequence)
+        {
+            this->sequence = sequence;
+        }
+
+        void setEnabled(bool state)
+        {
+            // Make sure action sequence is valid.
+            if (!this->isActionSequenceValid(this->sequence))
+            {
+                CORE_SEQUENCE_LOG(
+                    "ERROR Could not set action sequence because there are "
+                    "missing actions in the sequence"
+                );
+                return;
+            }
+
+            this->isActive = state;
+
+            // Activate.
+            if (state)
+            {
+                this->actionId = -1;
+                this->executeNextAction();
+            }
+        }
+
+    private:
+        std::map<std::string, Callback> actions;
+        Actions sequence; 
+        int actionId = -1;
+        bool isActive = false;
+
+        Callback *callback(const std::string &action)
+        {
+            auto it = this->actions.find(action);
+            if (it != this->actions.end())
+            {
+                return &it->second;
+            }
+            return 0;
+        }
+
+        void executeNextAction()
+        {
+            // Make sure this sequence is active.
+            if (!this->isActive)
+            {
+                return;
+            }
+
+            // Make sure there are actions to execute.
+            if (this->actionId + 1 >= this->sequence.size())
+            {
+                // Quit if this sequence is not repeatable.
+                if (!this->isRepeatable)
+                {
+                    return;
+                }
+                // Reset otherwise.
+                this->actionId = -1;
+            }
+
+            // Execute action.
+            auto action = this->sequence[++this->actionId];
+            auto callback = this->callback(action);
+            auto reporter = (*callback)();
+
+            //CORE_SEQUENCE_LOG("Executed action '%s'", action.c_str());
+
+            // Wait for execution completion report if it exists.
+            if (reporter)
+            {
+                reporter->addOneTimeCallback(
+                    [=]{
+                        this->executeNextAction();
+                    }
+                );
+            }
+            // Otherwise execute the next action right away.
+            else
+            {
+                this->executeNextAction();
+            }
+        }
+
+        bool isActionSequenceValid(const Actions &actions)
+        {
+            // Make sure each action has a callback.
+            for (auto action : actions)
+            {
+                if (!this->callback(action))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+};
+// Sequence End
 
 } // namespace core
 } // namespace omc

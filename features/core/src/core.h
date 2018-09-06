@@ -26,6 +26,10 @@ freely, subject to the following restrictions:
 #define OGS_MAHJONG_COMPONENTS_CORE_H
 
 // FEATURE Reporter/Include
+// FEATURE Sequence/Include
+
+// FEATURE CORE_SEQUENCE_LOG/Impl
+// FEATURE CORE_REGISTER_SEQUENCE_ACTION/Impl
 
 namespace omc
 {
@@ -33,6 +37,7 @@ namespace core
 {
 
 // FEATURE Reporter/Impl
+// FEATURE Sequence/Impl
 
 } // namespace core
 } // namespace omc

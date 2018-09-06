@@ -89,6 +89,7 @@ namespace main
 // FEATURE Example+04/Title
 
 // FEATURE Example/Setup
+        // FEATURE Example+Parameters/Setup
         // FEATURE Example+Game/Setup
         // FEATURE Example+Scene/Setup
         // FEATURE Example+Theme/Setup
@@ -110,6 +111,7 @@ namespace main
     // FEATURE Example+MatchedTilesRemoval/Impl
     // FEATURE Example+MatchTilesTest/Impl
     // FEATURE Example+NodeSelection/Impl
+    // FEATURE Example+Parameters/Impl
     // FEATURE Example+SetLayoutThemeSeedTest/Impl
     // FEATURE Example+Scene/Impl
     // FEATURE Example+Theme/Impl
@@ -122,6 +124,7 @@ namespace main
     // FEATURE Example+VBO/Impl
  
     // FEATURE Example+createTiles/Impl
+    // FEATURE Example+loadLayout/Impl
 // FEATURE Example/End
 
 } // namespace main

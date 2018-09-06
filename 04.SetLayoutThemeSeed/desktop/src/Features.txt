@@ -20,6 +20,7 @@ Example+DefaultLayoutTheme
 Example+InternalLayouts
 Example+MatchedTilesRemoval
 Example+NodeSelection
+Example+Parameters
 Example+Scene
 Example+Theme
 Example+Tiles
@@ -30,12 +31,16 @@ Example+StaticPluginOSG
 Example+StaticPluginPNG
 Example+UnmatchedTilesDeselection
 Example+createTiles
+Example+loadLayout
 
 main-desktop
 main+Arguments-desktop
 
 # core
+CORE_SEQUENCE_LOG
+CORE_REGISTER_SEQUENCE_ACTION
 Reporter
+Sequence
 
 # mahjong
 MAHJONG_LOG
