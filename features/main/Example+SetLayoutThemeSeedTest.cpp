@@ -10,6 +10,7 @@ private:
     void setupSetLayoutThemeSeedTest()
     {
         this->setupInternalLayouts();
+        this->setupInternalThemes();
         this->setupDefaultLayoutTheme();
 
         this->setupSequence.setActions({

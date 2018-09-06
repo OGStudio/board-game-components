@@ -35,6 +35,7 @@ freely, subject to the following restrictions:
 
 // FEATURE Example+DefaultLayoutTheme/Include
 // FEATURE Example+InternalLayouts/Include
+// FEATURE Example+InternalThemes/Include
 // FEATURE Example+LayoutTest/Include
 // FEATURE Example+MatchTilesTest/Include
 // FEATURE Example+Scene/Include
@@ -107,6 +108,7 @@ namespace main
     // FEATURE Example+Game/Impl
     // FEATURE Example+GameState/Impl
     // FEATURE Example+InternalLayouts/Impl
+    // FEATURE Example+InternalThemes/Impl
     // FEATURE Example+LayoutTest/Impl
     // FEATURE Example+MatchedTilesRemoval/Impl
     // FEATURE Example+MatchTilesTest/Impl

@@ -18,6 +18,7 @@ Example+Game
 Example+GameState
 Example+DefaultLayoutTheme
 Example+InternalLayouts
+Example+InternalThemes
 Example+MatchedTilesRemoval
 Example+NodeSelection
 Example+Parameters
