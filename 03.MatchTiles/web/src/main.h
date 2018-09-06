@@ -406,7 +406,7 @@ struct Example
             std::istream in(&buf);
             if (!mahjong::parseLayout(in, this->layout))
             {
-                MAIN_EXAMPLE_LOG("ERROR Could not parse built-in layout");
+                MAIN_EXAMPLE_LOG("ERROR Could not parse internal layout");
                 return;
             }
     

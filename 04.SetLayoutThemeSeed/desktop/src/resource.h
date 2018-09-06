@@ -54,17 +54,6 @@ freely, subject to the following restrictions:
     )
 
 // RESOURCE_LOG End
-// RESOURCE_POOL_LOG Start
-#include "log.h"
-#include "format.h"
-#define RESOURCE_POOL_LOG_PREFIX "resource::Pool(%p) %s"
-#define RESOURCE_POOL_LOG(...) \
-    log::logprintf( \
-        RESOURCE_POOL_LOG_PREFIX, \
-        this, \
-        format::printfString(__VA_ARGS__).c_str() \
-    )
-// RESOURCE_POOL_LOG End
 
 namespace omc
 {
@@ -129,7 +118,7 @@ class Pool
 
         std::vector<Resource> resources;
 
-        void addResource(const Resource &resource)
+        void addResource(Resource &resource)
         {
             this->resources.push_back(resource);
         }
@@ -148,25 +137,9 @@ class Pool
                 }
             }
 
-            RESOURCE_POOL_LOG(
-                "ERROR Could not find '%s/%s' resource",
-                group.c_str(),
-                name.c_str()
-            );
             return 0;
         }
 };
-
-/*
-void Pool::addResources(std::vector<Resource> resources)
-{
-    // Append resources.
-    this->resources.insert(
-        this->resources.end(), resources.begin(), resources.end()
-    );
-}
-*/
-
 // Pool End
 
 // extension Start

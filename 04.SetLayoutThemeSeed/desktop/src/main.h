@@ -395,7 +395,7 @@ struct Example
             std::istream in(&buf);
             if (!mahjong::parseLayout(in, this->layout))
             {
-                MAIN_EXAMPLE_LOG("ERROR Could not parse built-in layout");
+                MAIN_EXAMPLE_LOG("ERROR Could not parse internal layout");
                 return;
             }
     
@@ -657,14 +657,31 @@ struct Example
             // Local or internal.
             else
             {
-    
+                auto internalLayout =
+                    this->internalLayouts->resource("layouts", layoutValue);
+                // Internal.
+                if (internalLayout)
+                {
+                    this->loadInternalLayout(*internalLayout);
+                }
+                // Local.
+                else
+                {
+                    this->loadLocalLayout(layoutValue);
+                }
             }
-            // TODO Check if it's internal layout.
-            // TODO Otherwise it's a local layout.
         }
-        void loadInternalLayout(const std::string &layoutName)
+        void loadInternalLayout(resource::Resource &layout)
         {
-            MAIN_EXAMPLE_LOG("TODO load internal layout: '%s'", layoutName.c_str());
+            resource::ResourceStreamBuffer buf(layout);
+            std::istream in(&buf);
+            if (!mahjong::parseLayout(in, this->layout))
+            {
+                MAIN_EXAMPLE_LOG("ERROR Could not parse internal layout");
+            }
+    
+            // Report.
+            this->layoutLoaded.report();
         }
         void loadLocalLayout(const std::string &layoutFileName)
         {

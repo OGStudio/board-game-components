@@ -68,7 +68,6 @@ trimmedString
 
 # resource
 RESOURCE_LOG
-RESOURCE_POOL_LOG
 Pool
 Resource
 ResourceStreamBuffer
