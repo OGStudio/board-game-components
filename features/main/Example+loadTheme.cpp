@@ -55,6 +55,7 @@ private:
                 fileContents.length()
             );
             this->setupThemeMaterials(res);
+            MAIN_EXAMPLE_LOG("Successfully loaded local theme");
         }
         else
         {
@@ -75,6 +76,7 @@ private:
                 response.length()
             );
             this->setupThemeMaterials(res);
+            MAIN_EXAMPLE_LOG("Successfully loaded remote theme");
 
             // Report finish.
             this->themeLoaded.report();
