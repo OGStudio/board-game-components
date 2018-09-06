@@ -679,13 +679,35 @@ struct Example
             {
                 MAIN_EXAMPLE_LOG("ERROR Could not parse internal layout");
             }
+            else
+            {
+                MAIN_EXAMPLE_LOG("Successfully loaded and parsed internal layout");
+            }
     
             // Report.
             this->layoutLoaded.report();
         }
         void loadLocalLayout(const std::string &layoutFileName)
         {
-            MAIN_EXAMPLE_LOG("TODO load local layout: '%s'", layoutFileName.c_str());
+            std::ifstream localLayout(layoutFileName);
+            if (localLayout)
+            {
+                if (!mahjong::parseLayout(localLayout, this->layout))
+                {
+                    MAIN_EXAMPLE_LOG("ERROR Could not parse local layout");
+                }
+                else
+                {
+                    MAIN_EXAMPLE_LOG("Successfully loaded and parsed local layout");
+                }
+            }
+            else
+            {
+                MAIN_EXAMPLE_LOG("ERROR Could not read local layout");
+            }
+    
+            // Report.
+            this->layoutLoaded.report();
         }
         void loadRemoteLayout(const std::string &url)
         {
