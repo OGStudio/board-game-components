@@ -17,6 +17,7 @@ Example+SetLayoutThemeSeedTest
 Example+Game
 Example+GameState
 Example+DefaultLayoutTheme
+Example+InternalLayouts
 Example+MatchedTilesRemoval
 Example+NodeSelection
 Example+Scene
@@ -67,6 +68,8 @@ trimmedString
 
 # resource
 RESOURCE_LOG
+RESOURCE_POOL_LOG
+Pool
 Resource
 ResourceStreamBuffer
 createTexture

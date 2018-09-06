@@ -47,9 +47,7 @@ freely, subject to the following restrictions:
 // Application+Rendering End
 
 // Example+DefaultLayoutTheme Start
-#include "X_shaped.layout.h"
 #include "tile-theme.png.h"
-
 #include "mahjong.h"
 
 // Example+DefaultLayoutTheme End
@@ -327,18 +325,19 @@ struct Example
         mahjong::Layout layout;
         void setupDefaultLayoutTheme()
         {
-            // Load default built-in layout.
-            resource::Resource layoutResource(
-                "layouts",
-                "X_shaped.layout",
-                X_shaped_layout,
-                X_shaped_layout_len
-            );
-            resource::ResourceStreamBuffer buf(layoutResource);
+            // Load internal "X_shaped.layout" by default.
+            auto layoutResource =
+                this->internalLayouts->resource("layouts", "X_shaped.layout");
+            if (!layoutResource)
+            {
+                MAIN_EXAMPLE_LOG("ERROR Could not locate internal layout");
+                return;
+            }
+            resource::ResourceStreamBuffer buf(*layoutResource);
             std::istream in(&buf);
             if (!mahjong::parseLayout(in, this->layout))
             {
-                MAIN_EXAMPLE_LOG("Could not parse built-in layout");
+                MAIN_EXAMPLE_LOG("ERROR Could not parse built-in layout");
                 return;
             }
     

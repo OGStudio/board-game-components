@@ -51,12 +51,18 @@ freely, subject to the following restrictions:
 // Application+Rendering End
 
 // Example+DefaultLayoutTheme Start
-#include "X_shaped.layout.h"
 #include "tile-theme.png.h"
-
 #include "mahjong.h"
 
 // Example+DefaultLayoutTheme End
+// Example+InternalLayouts Start
+#include "X_shaped.layout.h"
+#include "short-loss.layout.h"
+#include "short-victory.layout.h"
+
+#include "resource.h"
+
+// Example+InternalLayouts End
 // Example+Scene Start
 #include <osg/MatrixTransform>
 
@@ -355,6 +361,10 @@ struct Example
     {
 
 // Example End
+        // Example+SetLayoutThemeSeedTest Start
+        this->tearSetLayoutThemeSeedTestDown();
+        
+        // Example+SetLayoutThemeSeedTest End
         // Example+Theme Start
         this->tearThemeDown();
         
@@ -373,18 +383,19 @@ struct Example
         mahjong::Layout layout;
         void setupDefaultLayoutTheme()
         {
-            // Load default built-in layout.
-            resource::Resource layoutResource(
-                "layouts",
-                "X_shaped.layout",
-                X_shaped_layout,
-                X_shaped_layout_len
-            );
-            resource::ResourceStreamBuffer buf(layoutResource);
+            // Load internal "X_shaped.layout" by default.
+            auto layoutResource =
+                this->internalLayouts->resource("layouts", "X_shaped.layout");
+            if (!layoutResource)
+            {
+                MAIN_EXAMPLE_LOG("ERROR Could not locate internal layout");
+                return;
+            }
+            resource::ResourceStreamBuffer buf(*layoutResource);
             std::istream in(&buf);
             if (!mahjong::parseLayout(in, this->layout))
             {
-                MAIN_EXAMPLE_LOG("Could not parse built-in layout");
+                MAIN_EXAMPLE_LOG("ERROR Could not parse built-in layout");
                 return;
             }
     
@@ -434,6 +445,48 @@ struct Example
             }
         }
     // Example+GameState End
+    // Example+InternalLayouts Start
+    private:
+        resource::Pool *internalLayouts;
+        void setupInternalLayouts()
+        {
+            // Create pool.
+            this->internalLayouts = new resource::Pool;
+    
+            // Register internal layouts.
+            {
+                resource::Resource res(
+                    "layouts",
+                    "X_shaped.layout",
+                    X_shaped_layout,
+                    X_shaped_layout_len
+                );
+                this->internalLayouts->addResource(res);
+            }
+            {
+                resource::Resource res(
+                    "layouts",
+                    "short-loss.layout",
+                    short_loss_layout,
+                    short_loss_layout_len
+                );
+                this->internalLayouts->addResource(res);
+            }
+            {
+                resource::Resource res(
+                    "layouts",
+                    "short-victory.layout",
+                    short_victory_layout,
+                    short_victory_layout_len
+                );
+                this->internalLayouts->addResource(res);
+            }
+        }
+        void tearInternalLayoutsDown()
+        {
+            delete this->internalLayouts;
+        }
+    // Example+InternalLayouts End
     // Example+MatchedTilesRemoval Start
     private:
         core::Reporter removedTiles;
@@ -541,18 +594,18 @@ struct Example
     
         void setupSetLayoutThemeSeedTest(const Parameters &parameters)
         {
+            this->setupInternalLayouts();
             this->setupDefaultLayoutTheme();
             this->setupContinuationAfterLoading();
     
             this->loadLayout(parameters);
             //this->loadTheme(parameters);
         }
-        /*
         void tearSetLayoutThemeSeedTestDown()
         {
-            this->tearNodeSelectionDown();
+            this->tearInternalLayoutsDown();
+            //this->tearNodeSelectionDown();
         }
-        */
         void setupContinuationAfterLoading()
         {
             this->layoutLoaded.addOneTimeCallback(
@@ -596,9 +649,15 @@ struct Example
             layoutValue = resource::expandBitBucketPath(layoutValue);
             layoutValue = resource::expandGitHubPath(layoutValue);
     
+            // Remote.
             if (resource::isPathRemote(layoutValue))
             {
                 this->loadRemoteLayout(layoutValue);
+            }
+            // Local or internal.
+            else
+            {
+    
             }
             // TODO Check if it's internal layout.
             // TODO Otherwise it's a local layout.

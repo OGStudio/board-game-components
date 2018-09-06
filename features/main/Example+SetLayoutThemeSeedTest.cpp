@@ -1,24 +1,27 @@
 FEATURE main.h/Setup
 this->setupSetLayoutThemeSeedTest(parameters);
 
+FEATURE main.h/TearDown
+this->tearSetLayoutThemeSeedTestDown();
+
 FEATURE main.h/Impl
 private:
     core::Reporter layoutLoaded;
 
     void setupSetLayoutThemeSeedTest(const Parameters &parameters)
     {
+        this->setupInternalLayouts();
         this->setupDefaultLayoutTheme();
         this->setupContinuationAfterLoading();
 
         this->loadLayout(parameters);
         //this->loadTheme(parameters);
     }
-    /*
     void tearSetLayoutThemeSeedTestDown()
     {
-        this->tearNodeSelectionDown();
+        this->tearInternalLayoutsDown();
+        //this->tearNodeSelectionDown();
     }
-    */
     void setupContinuationAfterLoading()
     {
         this->layoutLoaded.addOneTimeCallback(
@@ -62,9 +65,15 @@ private:
         layoutValue = resource::expandBitBucketPath(layoutValue);
         layoutValue = resource::expandGitHubPath(layoutValue);
 
+        // Remote.
         if (resource::isPathRemote(layoutValue))
         {
             this->loadRemoteLayout(layoutValue);
+        }
+        // Local or internal.
+        else
+        {
+
         }
         // TODO Check if it's internal layout.
         // TODO Otherwise it's a local layout.

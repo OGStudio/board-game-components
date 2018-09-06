@@ -54,6 +54,17 @@ freely, subject to the following restrictions:
     )
 
 // RESOURCE_LOG End
+// RESOURCE_POOL_LOG Start
+#include "log.h"
+#include "format.h"
+#define RESOURCE_POOL_LOG_PREFIX "resource::Pool(%p) %s"
+#define RESOURCE_POOL_LOG(...) \
+    log::logprintf( \
+        RESOURCE_POOL_LOG_PREFIX, \
+        this, \
+        format::printfString(__VA_ARGS__).c_str() \
+    )
+// RESOURCE_POOL_LOG End
 
 namespace omc
 {
@@ -110,6 +121,53 @@ struct ResourceStreamBuffer : std::streambuf
     }
 };
 // ResourceStreamBuffer End
+// Pool Start
+class Pool
+{
+    public:
+        Pool() { }
+
+        std::vector<Resource> resources;
+
+        void addResource(const Resource &resource)
+        {
+            this->resources.push_back(resource);
+        }
+
+        Resource *resource(const std::string &group, const std::string &name)
+        {
+            auto count = this->resources.size();
+            for (int i = 0; i < count; ++i)
+            {
+                Resource *res = &this->resources[i];
+                if (
+                    (res->group == group) &&
+                    (res->name == name)
+                ) {
+                    return res;
+                }
+            }
+
+            RESOURCE_POOL_LOG(
+                "ERROR Could not find '%s/%s' resource",
+                group.c_str(),
+                name.c_str()
+            );
+            return 0;
+        }
+};
+
+/*
+void Pool::addResources(std::vector<Resource> resources)
+{
+    // Append resources.
+    this->resources.insert(
+        this->resources.end(), resources.begin(), resources.end()
+    );
+}
+*/
+
+// Pool End
 
 // extension Start
 std::string extension(const Resource &resource)

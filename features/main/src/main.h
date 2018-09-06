@@ -34,6 +34,7 @@ freely, subject to the following restrictions:
 // FEATURE Application+Rendering/Include
 
 // FEATURE Example+DefaultLayoutTheme/Include
+// FEATURE Example+InternalLayouts/Include
 // FEATURE Example+LayoutTest/Include
 // FEATURE Example+MatchTilesTest/Include
 // FEATURE Example+Scene/Include
@@ -97,12 +98,14 @@ namespace main
         // FEATURE Example+SetLayoutThemeSeedTest/Setup
         // FEATURE Example+VBO/Setup
 // FEATURE Example/TearDown
+        // FEATURE Example+SetLayoutThemeSeedTest/TearDown
         // FEATURE Example+Theme/TearDown
         // FEATURE Example+Game/TearDown
 // FEATURE Example/Impl
     // FEATURE Example+DefaultLayoutTheme/Impl
     // FEATURE Example+Game/Impl
     // FEATURE Example+GameState/Impl
+    // FEATURE Example+InternalLayouts/Impl
     // FEATURE Example+LayoutTest/Impl
     // FEATURE Example+MatchedTilesRemoval/Impl
     // FEATURE Example+MatchTilesTest/Impl

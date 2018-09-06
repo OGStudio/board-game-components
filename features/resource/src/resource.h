@@ -31,6 +31,7 @@ freely, subject to the following restrictions:
 // FEATURE createTexture/Include
 
 // FEATURE RESOURCE_LOG/Impl
+// FEATURE RESOURCE_POOL_LOG/Impl
 
 namespace omc
 {
@@ -39,6 +40,7 @@ namespace resource
 
 // FEATURE Resource/Impl
 // FEATURE ResourceStreamBuffer/Impl
+// FEATURE Pool/Impl
 
 // FEATURE extension/Impl
 // FEATURE node/Impl
