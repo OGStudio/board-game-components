@@ -330,9 +330,9 @@ struct Example
                 return;
             }
     
-            // Load internal "tile-theme.png" theme by default.
+            // Load internal "numbers-theme.png" theme by default.
             auto themeResource =
-                this->internalThemes->resource("themes", "tile-theme.png");
+                this->internalThemes->resource("themes", "numbers-theme.png");
             if (!themeResource)
             {
                 MAIN_EXAMPLE_LOG("ERROR Could not locate internal theme");

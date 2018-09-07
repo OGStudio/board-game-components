@@ -63,7 +63,7 @@ freely, subject to the following restrictions:
 
 // Example+InternalLayouts End
 // Example+InternalThemes Start
-#include "tile-theme.png.h"
+#include "numbers-theme.png.h"
 
 #include "resource.h"
 
@@ -408,9 +408,9 @@ struct Example
                 return;
             }
     
-            // Load internal "tile-theme.png" theme by default.
+            // Load internal "numbers-theme.png" theme by default.
             auto themeResource =
-                this->internalThemes->resource("themes", "tile-theme.png");
+                this->internalThemes->resource("themes", "numbers-theme.png");
             if (!themeResource)
             {
                 MAIN_EXAMPLE_LOG("ERROR Could not locate internal theme");
@@ -509,9 +509,9 @@ struct Example
             {
                 resource::Resource res(
                     "themes",
-                    "tile-theme.png",
-                    tile_theme_png,
-                    tile_theme_png_len
+                    "numbers-theme.png",
+                    numbers_theme_png,
+                    numbers_theme_png_len
                 );
                 this->internalThemes->addResource(res);
             }

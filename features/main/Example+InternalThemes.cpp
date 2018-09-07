@@ -1,5 +1,5 @@
 FEATURE main.h/Include
-#include "tile-theme.png.h"
+#include "numbers-theme.png.h"
 
 #include "resource.h"
 
@@ -15,9 +15,9 @@ private:
         {
             resource::Resource res(
                 "themes",
-                "tile-theme.png",
-                tile_theme_png,
-                tile_theme_png_len
+                "numbers-theme.png",
+                numbers_theme_png,
+                numbers_theme_png_len
             );
             this->internalThemes->addResource(res);
         }
