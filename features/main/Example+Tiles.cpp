@@ -3,10 +3,9 @@ private:
     osg::ref_ptr<osg::MatrixTransform> tileScene;
     std::map<osg::Node *, mahjong::Tile> tileNodes;
 
-    void setupTiles()
+    void setupTiles(int seed)
     {
         // Order layout positions with seed.
-        int seed = time(0);
         auto positions = mahjong::orderedLayoutPositions(this->layout.positions, seed);
         auto matchIds = mahjong::matchIds(positions.size());
 
@@ -15,7 +14,7 @@ private:
         // Set default (non-selected) material.
         tileScene->setStateSet(this->themeMaterial);
         // Rotate the scene to have a better view.
-        scene::setSimpleRotation(tileScene, {60, 0, 0});
+        scene::setSimpleRotation(tileScene, {65, 0, 0});
         // Set the scene.
         this->scene->addChild(tileScene);
         this->app->setScene(this->scene);

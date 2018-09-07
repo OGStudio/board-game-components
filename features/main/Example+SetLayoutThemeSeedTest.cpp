@@ -73,7 +73,6 @@ private:
     core::Reporter *finishSetup()
     {
         this->setupTiles();
-        /*
         this->setupNodeSelection();
         this->setupTileSelection();
         this->setupTileSelectionDepiction();
@@ -81,6 +80,21 @@ private:
         this->setupUnmatchedTilesDeselection();
         this->setupMatchedTilesRemoval();
         this->setupGameState();
-        */
+
         return 0;
+    }
+    void setupTiles()
+    {
+        // By default, use seed of the current time.
+        int seed = time(0);
+
+        // Override it with the seed coming from parameters.
+        auto it = this->parameters.find("seed");
+        if (it != this->parameters.end())
+        {
+            seed = atoi(it->second.c_str());
+            MAIN_EXAMPLE_LOG("Using seed '%d'", seed);
+        }
+
+        this->setupTiles(seed);
     }

@@ -699,7 +699,6 @@ struct Example
         core::Reporter *finishSetup()
         {
             this->setupTiles();
-            /*
             this->setupNodeSelection();
             this->setupTileSelection();
             this->setupTileSelectionDepiction();
@@ -707,8 +706,23 @@ struct Example
             this->setupUnmatchedTilesDeselection();
             this->setupMatchedTilesRemoval();
             this->setupGameState();
-            */
+    
             return 0;
+        }
+        void setupTiles()
+        {
+            // By default, use seed of the current time.
+            int seed = time(0);
+    
+            // Override it with the seed coming from parameters.
+            auto it = this->parameters.find("seed");
+            if (it != this->parameters.end())
+            {
+                seed = atoi(it->second.c_str());
+                MAIN_EXAMPLE_LOG("Using seed '%d'", seed);
+            }
+    
+            this->setupTiles(seed);
         }
     // Example+SetLayoutThemeSeedTest End
     // Example+Scene Start
@@ -828,10 +842,9 @@ struct Example
         osg::ref_ptr<osg::MatrixTransform> tileScene;
         std::map<osg::Node *, mahjong::Tile> tileNodes;
     
-        void setupTiles()
+        void setupTiles(int seed)
         {
             // Order layout positions with seed.
-            int seed = time(0);
             auto positions = mahjong::orderedLayoutPositions(this->layout.positions, seed);
             auto matchIds = mahjong::matchIds(positions.size());
     
@@ -840,7 +853,7 @@ struct Example
             // Set default (non-selected) material.
             tileScene->setStateSet(this->themeMaterial);
             // Rotate the scene to have a better view.
-            scene::setSimpleRotation(tileScene, {60, 0, 0});
+            scene::setSimpleRotation(tileScene, {65, 0, 0});
             // Set the scene.
             this->scene->addChild(tileScene);
             this->app->setScene(this->scene);
