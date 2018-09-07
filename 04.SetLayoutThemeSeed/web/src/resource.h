@@ -43,6 +43,17 @@ freely, subject to the following restrictions:
 
 // createTexture End
 
+// RESOURCE_LOG Start
+#include "log.h"
+#include "format.h"
+#define RESOURCE_LOG_PREFIX "resource %s"
+#define RESOURCE_LOG(...) \
+    log::logprintf( \
+        RESOURCE_LOG_PREFIX, \
+        format::printfString(__VA_ARGS__).c_str() \
+    )
+
+// RESOURCE_LOG End
 
 namespace omc
 {
@@ -99,6 +110,37 @@ struct ResourceStreamBuffer : std::streambuf
     }
 };
 // ResourceStreamBuffer End
+// Pool Start
+class Pool
+{
+    public:
+        Pool() { }
+
+        std::vector<Resource> resources;
+
+        void addResource(Resource &resource)
+        {
+            this->resources.push_back(resource);
+        }
+
+        Resource *resource(const std::string &group, const std::string &name)
+        {
+            auto count = this->resources.size();
+            for (int i = 0; i < count; ++i)
+            {
+                Resource *res = &this->resources[i];
+                if (
+                    (res->group == group) &&
+                    (res->name == name)
+                ) {
+                    return res;
+                }
+            }
+
+            return 0;
+        }
+};
+// Pool End
 
 // extension Start
 std::string extension(const Resource &resource)
@@ -271,6 +313,76 @@ osg::Texture2D *createTexture(const Resource &resource)
 }
 // createTexture End
 
+// expandRemotePath Start
+std::string expandRemotePath(
+    const std::string &path,
+    const std::string &prefix,
+    const std::string &servicePrefix,
+    const std::string &serviceBranch
+) {
+    // Make sure we have expected prefix.
+    if (!format::stringStartsWith(path, prefix))
+    {
+        return path;
+    }
+
+    auto location = path.substr(prefix.length());
+    auto parts = format::splitString(location, "/");
+
+    // Make sure we have enough location parts to assemble both
+    // repository name and file name.
+    if (parts.size() < 3)
+    {
+        return path;
+    }
+
+    auto repository =
+        format::printfString("%s/%s", parts[0].c_str(), parts[1].c_str());
+    auto fileName = location.substr(repository.length() + 1);
+    return
+        format::printfString(
+            "%s/%s/%s/%s",
+            servicePrefix.c_str(),
+            repository.c_str(),
+            serviceBranch.c_str(),
+            fileName.c_str()
+        );
+}
+// expandRemotePath End
+// expandBitBucketPath Start
+std::string expandBitBucketPath(const std::string &path)
+{
+    return
+        expandRemotePath(
+            path,
+            "bitbucket://",
+            "https://bitbucket.org",
+            "raw/default"
+        );
+}
+// expandBitBucketPath End
+// expandGitHubPath Start
+std::string expandGitHubPath(const std::string &path)
+{
+    return
+        expandRemotePath(
+            path,
+            "github://",
+            "https://raw.githubusercontent.com",
+            "master"
+        );
+}
+// expandGitHubPath End
+// isPathRemote Start
+bool isPathRemote(const std::string &path)
+{
+    return
+        format::stringStartsWith(path, "http://") ||
+        format::stringStartsWith(path, "https://")
+        ;
+}
+
+// isPathRemote End
 
 } // namespace resource
 } // namespace omc

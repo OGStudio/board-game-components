@@ -1,44 +1,71 @@
 # main
 Application
+Application+camera
 Application+frame+Reporting
 Application+handleEvent-web
 Application+setupWindow-embedded
 Application+HTTPClient
 Application+HTTPClientProcessor
 Application+Logging
+Application+Mouse
 Application+Rendering
 
-OMC_MAIN_EXAMPLE_LOG
+MAIN_EXAMPLE_LOG
 Example
-Example+03
-Example+RemoteLayoutTheme
+Example+04
+Example+SetLayoutThemeSeedTest
+Example+Game
+Example+GameState
+Example+DefaultLayoutTheme
+Example+InternalLayouts
+Example+InternalThemes
+Example+MatchedTilesRemoval
+Example+NodeSelection
+Example+Parameters
 Example+Scene
 Example+Theme
+Example+Tiles
+Example+TileMatching
+Example+TileSelection
+Example+TileSelectionDepiction
 Example+StaticPluginOSG
 Example+StaticPluginPNG
+Example+UnmatchedTilesDeselection
 Example+VBO
 Example+createTiles
+Example+loadLayout
+Example+loadTheme
 
 main-web
 main+Arguments-web
 
 # core
+CORE_SEQUENCE_LOG
+CORE_REGISTER_SEQUENCE_ACTION
 Reporter
+Sequence
 
 # mahjong
-OMC_MAHJONG_LOG
-Layout
+MAHJONG_LOG
 KMahjonggLayout
+Layout
+Solitaire
+Tile
 TilePosition
+TilePosition+Equality
+intToTilePosition
 kmahjonggLayoutFieldsToPositions
 linesToKMahjonggLayout
+matchIds
+orderedLayoutPositions
 parseLayout
+tilePositionToInt
 
 # log
+Logger
 log-default
 logLevelToString
 logprintf
-Logger
 
 # format
 urlQueryToParameters
@@ -48,27 +75,38 @@ stringStartsWith
 trimmedString
 
 # resource
-OSGCPE_RESOURCE_LOG
+RESOURCE_LOG
+Pool
+Resource
+ResourceStreamBuffer
 createTexture
+expandBitBucketPath
+expandGitHubPath
+expandRemotePath
 extension
+isPathRemote
 node
 setTextureImage
 string
 stringToResourceContents
-Resource
-ResourceStreamBuffer
 
 # render
-OMC_RENDER_TILE_THEME_LOG
-createShaderProgram
-setupCamera
+RENDER_TILE_THEME_LOG
 TileTheme
 VBOSetupVisitor
+createShaderProgram
+setupCamera
 
 # scene
 degreesToQuaternion
 setSimplePosition
 setSimpleRotation
+
+nodeAtPosition
+
+# input
+Mouse
+MouseButtons
 
 # network
 HTTPClient

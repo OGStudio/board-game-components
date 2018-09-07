@@ -42,6 +42,10 @@ freely, subject to the following restrictions:
 #include "log.h"
 
 // Application+Logging End
+// Application+Mouse Start
+#include "input.h"
+
+// Application+Mouse End
 // Application+Rendering Start
 #include "render.h"
 
@@ -50,6 +54,24 @@ freely, subject to the following restrictions:
 
 // Application+Rendering End
 
+// Example+DefaultLayoutTheme Start
+#include "mahjong.h"
+
+// Example+DefaultLayoutTheme End
+// Example+InternalLayouts Start
+#include "X_shaped.layout.h"
+#include "short-loss.layout.h"
+#include "short-victory.layout.h"
+
+#include "resource.h"
+
+// Example+InternalLayouts End
+// Example+InternalThemes Start
+#include "numbers-theme.png.h"
+
+#include "resource.h"
+
+// Example+InternalThemes End
 // Example+Scene Start
 #include <osg/MatrixTransform>
 
@@ -75,6 +97,17 @@ freely, subject to the following restrictions:
 
 // Example+createTiles End
 
+// MAIN_EXAMPLE_LOG Start
+#include "log.h"
+#include "format.h"
+#define MAIN_EXAMPLE_LOG_PREFIX "main::Example(%p) %s"
+#define MAIN_EXAMPLE_LOG(...) \
+    log::logprintf( \
+        MAIN_EXAMPLE_LOG_PREFIX, \
+        this, \
+        format::printfString(__VA_ARGS__).c_str() \
+    )
+// MAIN_EXAMPLE_LOG End
 
 // Example+StaticPluginOSG Start
 #include <osgDB/Registry>
@@ -116,6 +149,10 @@ class Application
             this->setupRendering();
             
             // Application+Rendering End
+            // Application+Mouse Start
+            this->setupMouse();
+            
+            // Application+Mouse End
             // Application+HTTPClient Start
             this->setupHTTPClient();
             
@@ -138,6 +175,10 @@ class Application
             this->tearHTTPClientDown();
             
             // Application+HTTPClient End
+            // Application+Mouse Start
+            this->tearMouseDown();
+            
+            // Application+Mouse End
             // Application+Rendering Start
             this->tearRenderingDown();
             
@@ -150,6 +191,13 @@ class Application
         }
 
 // Application End
+    // Application+camera Start
+    public:
+        osg::Camera *camera()
+        {
+            return this->viewer->getCamera();
+        }
+    // Application+camera End
     // Application+frame+Reporting Start
     public:
         core::Reporter frameReporter;
@@ -310,6 +358,23 @@ class Application
             osg::setNotifyHandler(0);
         }
     // Application+Logging End
+    // Application+Mouse Start
+    public:
+        osg::ref_ptr<input::Mouse> mouse;
+    private:
+        void setupMouse()
+        {
+            // Create mouse events' handler.
+            this->mouse = new input::Mouse;
+            // Register it.
+            this->viewer->addEventHandler(this->mouse);
+        }
+        void tearMouseDown()
+        {
+            // This also removes Mouse instance.
+            this->viewer->removeEventHandler(this->mouse);
+        }
+    // Application+Mouse End
     // Application+Rendering Start
     public:
         void setScene(osg::Node *scene)
@@ -338,9 +403,9 @@ class Application
 };
 // Application End
 
-// Example+03 Start
-const auto EXAMPLE_TITLE = "OMC-03: Match tiles";
-// Example+03 End
+// Example+04 Start
+const auto EXAMPLE_TITLE = "OMC-04: Set layout, theme, seed";
+// Example+04 End
 
 // Example Start
 struct Example
@@ -354,6 +419,14 @@ struct Example
         this->app = new Application(EXAMPLE_TITLE);
 
 // Example End
+        // Example+Parameters Start
+        this->setupParameters(parameters);
+        
+        // Example+Parameters End
+        // Example+Game Start
+        this->setupGame();
+        
+        // Example+Game End
         // Example+Scene Start
         this->setupScene();
         
@@ -362,6 +435,10 @@ struct Example
         this->setupTheme();
         
         // Example+Theme End
+        // Example+SetLayoutThemeSeedTest Start
+        this->setupSetLayoutThemeSeedTest();
+        
+        // Example+SetLayoutThemeSeedTest End
         // Example+VBO Start
         this->setupSceneVBO();
         
@@ -372,15 +449,361 @@ struct Example
     {
 
 // Example End
+        // Example+SetLayoutThemeSeedTest Start
+        this->tearSetLayoutThemeSeedTestDown();
+        
+        // Example+SetLayoutThemeSeedTest End
         // Example+Theme Start
         this->tearThemeDown();
         
         // Example+Theme End
+        // Example+Game Start
+        this->tearGameDown();
+        
+        // Example+Game End
 // Example Start
         delete this->app;
     }
 
 // Example End
+    // Example+DefaultLayoutTheme Start
+    private:
+        mahjong::Layout layout;
+        void setupDefaultLayoutTheme()
+        {
+            // Load internal "X_shaped.layout" layout by default.
+            auto layoutResource =
+                this->internalLayouts->resource("layouts", "X_shaped.layout");
+            if (!layoutResource)
+            {
+                MAIN_EXAMPLE_LOG("ERROR Could not locate internal layout");
+                return;
+            }
+            resource::ResourceStreamBuffer buf(*layoutResource);
+            std::istream in(&buf);
+            if (!mahjong::parseLayout(in, this->layout))
+            {
+                MAIN_EXAMPLE_LOG("ERROR Could not parse internal layout");
+                return;
+            }
+    
+            // Load internal "numbers-theme.png" theme by default.
+            auto themeResource =
+                this->internalThemes->resource("themes", "numbers-theme.png");
+            if (!themeResource)
+            {
+                MAIN_EXAMPLE_LOG("ERROR Could not locate internal theme");
+                return;
+            }
+            auto texture = resource::createTexture(*themeResource);
+            this->themeMaterial->setTextureAttributeAndModes(0, texture);
+            this->themeMaterialSelected->setTextureAttributeAndModes(0, texture);
+        }
+    // Example+DefaultLayoutTheme End
+    // Example+Game Start
+    private:
+        mahjong::Solitaire *game;
+    
+        void setupGame()
+        {
+            this->game = new mahjong::Solitaire();
+        }
+        void tearGameDown()
+        {
+            delete this->game;
+        }
+    // Example+Game End
+    // Example+GameState Start
+    private:
+        bool isGameVictorious = false;
+        core::Reporter finishedGame;
+        void setupGameState()
+        {
+            this->removedTiles.addCallback(
+                [&] {
+                    this->detectGameState();
+                }
+            );
+        }
+        void detectGameState()
+        {
+            if (!this->game->hasTurns())
+            {
+                this->isGameVictorious = !this->game->hasTiles();
+                this->finishedGame.report();
+            }
+        }
+    // Example+GameState End
+    // Example+InternalLayouts Start
+    private:
+        resource::Pool *internalLayouts;
+        void setupInternalLayouts()
+        {
+            // Create pool.
+            this->internalLayouts = new resource::Pool;
+    
+            // Register internal layouts.
+            {
+                resource::Resource res(
+                    "layouts",
+                    "X_shaped.layout",
+                    X_shaped_layout,
+                    X_shaped_layout_len
+                );
+                this->internalLayouts->addResource(res);
+            }
+            {
+                resource::Resource res(
+                    "layouts",
+                    "short-loss.layout",
+                    short_loss_layout,
+                    short_loss_layout_len
+                );
+                this->internalLayouts->addResource(res);
+            }
+            {
+                resource::Resource res(
+                    "layouts",
+                    "short-victory.layout",
+                    short_victory_layout,
+                    short_victory_layout_len
+                );
+                this->internalLayouts->addResource(res);
+            }
+        }
+        void tearInternalLayoutsDown()
+        {
+            delete this->internalLayouts;
+        }
+    // Example+InternalLayouts End
+    // Example+InternalThemes Start
+    private:
+        resource::Pool *internalThemes;
+        void setupInternalThemes()
+        {
+            // Create pool.
+            this->internalThemes = new resource::Pool;
+    
+            // Register internal themes.
+            {
+                resource::Resource res(
+                    "themes",
+                    "numbers-theme.png",
+                    numbers_theme_png,
+                    numbers_theme_png_len
+                );
+                this->internalThemes->addResource(res);
+            }
+        }
+        void tearInternalThemesDown()
+        {
+            delete this->internalThemes;
+        }
+    // Example+InternalThemes End
+    // Example+MatchedTilesRemoval Start
+    private:
+        core::Reporter removedTiles;
+    
+        void setupMatchedTilesRemoval()
+        {
+            this->tilesMatchChanged.addCallback(
+                [&] {
+                    // Make sure there was a match.
+                    if (!this->tilesMatch)
+                    {
+                        return;
+                    }
+    
+                    this->removeMatchedTiles();
+                }
+            );
+        }
+        void removeMatchedTiles()
+        {
+            auto nodeTile1 = this->selectedTiles[0];
+            auto nodeTile2 = this->selectedTiles[1];
+    
+            // Deselect tiles.
+            this->selectedTiles.clear();
+            this->selectedTilesChanged.report();
+    
+            // Remove tiles from Solitaire (logical representation).
+            this->game->removeTiles(nodeTile1.tile, nodeTile2.tile);
+    
+            // Remove items from visual-to-logical correspondence.
+            {
+                auto it = this->tileNodes.find(nodeTile1.node);
+                this->tileNodes.erase(it);
+            }
+            {
+                auto it = this->tileNodes.find(nodeTile2.node);
+                this->tileNodes.erase(it);
+            }
+    
+            // Remove nodes from the scene.
+            this->tileScene->removeChild(nodeTile1.node);
+            this->tileScene->removeChild(nodeTile2.node);
+            
+            // Report.
+            this->removedTiles.report();
+        }
+    // Example+MatchedTilesRemoval End
+    // Example+NodeSelection Start
+    private:
+        const std::string nodeSelectionCallbackName = "NodeSelection";
+        const unsigned int selectionNodeMask = 0x00000004;
+        osg::Node *selectedNode;
+        core::Reporter selectedNodeChanged;
+    
+        void setupNodeSelection()
+        {
+            // Mark nodes as selectable by excluding specific bitmask.
+            auto nodesCount = this->tileScene->getNumChildren();
+            for (int id = 0; id < nodesCount; ++id)
+            {
+                auto node = this->tileScene->getChild(id);
+                node->setNodeMask(node->getNodeMask() & ~this->selectionNodeMask);
+            }
+    
+            // Listen to mouse clicks.
+            this->app->mouse->pressedButtonsChanged.addCallback(
+                [&] {
+                    // Try to select a node upon a click or a tap.
+                    bool clicked = !this->app->mouse->pressedButtons.empty();
+                    if (clicked)
+                    {
+                        this->selectNode();
+                    }
+                },
+                this->nodeSelectionCallbackName
+            );
+        }
+        void tearNodeSelectionDown()
+        {
+            this->app->mouse->pressedButtonsChanged.removeCallback(
+                this->nodeSelectionCallbackName
+            );
+        }
+        void selectNode()
+        {
+            auto node =
+                scene::nodeAtPosition(
+                    this->app->mouse->position,
+                    this->app->camera(),
+                    this->selectionNodeMask
+                );
+    
+            // Report successful selection.
+            if (node)
+            {
+                this->selectedNode = node;
+                this->selectedNodeChanged.report();
+            }
+        }
+    // Example+NodeSelection End
+    // Example+Parameters Start
+    private:
+        Parameters parameters;
+        void setupParameters(const Parameters &parameters)
+        {
+            this->parameters = parameters;
+        }
+    // Example+Parameters End
+    // Example+SetLayoutThemeSeedTest Start
+    private:
+        core::Sequence setupSequence;
+        void setupSetLayoutThemeSeedTest()
+        {
+            this->setupInternalLayouts();
+            this->setupInternalThemes();
+            this->setupDefaultLayoutTheme();
+    
+            this->setupSequence.setActions({
+                "loadLayout",
+                "loadTheme",
+                "finishSetup",
+            });
+    
+            // Register actions.
+            CORE_REGISTER_SEQUENCE_ACTION(
+                this->setupSequence,
+                "loadLayout",
+                this->loadLayout()
+            );
+            CORE_REGISTER_SEQUENCE_ACTION(
+                this->setupSequence,
+                "loadTheme",
+                this->loadTheme()
+            );
+            CORE_REGISTER_SEQUENCE_ACTION(
+                this->setupSequence,
+                "finishSetup",
+                this->finishSetup()
+            );
+    
+            // Enable sequence.
+            this->setupSequence.setEnabled(true);
+        }
+        void tearSetLayoutThemeSeedTestDown()
+        {
+            this->tearInternalLayoutsDown();
+            //this->tearNodeSelectionDown();
+        }
+        core::Reporter *loadLayout()
+        {
+            // Do nothing if `layout` parameter is absent.
+            auto it = this->parameters.find("layout");
+            if (it == this->parameters.end())
+            {
+                return 0;
+            }
+    
+            // Load layout otherwise.
+            auto value = it->second;
+            return this->loadLayout(value);
+        }
+        core::Reporter *loadTheme()
+        {
+            // Do nothing if `theme` parameter is absent.
+            auto it = this->parameters.find("theme");
+            if (it == this->parameters.end())
+            {
+                return 0;
+            }
+    
+            // Load theme otherwise.
+            auto value = it->second;
+            return this->loadTheme(value);
+        }
+        core::Reporter *finishSetup()
+        {
+            this->setupTiles();
+            this->setupNodeSelection();
+            this->setupTileSelection();
+            this->setupTileSelectionDepiction();
+            this->setupTileMatching();
+            this->setupUnmatchedTilesDeselection();
+            this->setupMatchedTilesRemoval();
+            this->setupGameState();
+    
+            return 0;
+        }
+        void setupTiles()
+        {
+            // By default, use seed of the current time.
+            int seed = time(0);
+    
+            // Override it with the seed coming from parameters.
+            auto it = this->parameters.find("seed");
+            if (it != this->parameters.end())
+            {
+                seed = atoi(it->second.c_str());
+                MAIN_EXAMPLE_LOG("Using seed '%d'", seed);
+            }
+    
+            this->setupTiles(seed);
+        }
+    // Example+SetLayoutThemeSeedTest End
     // Example+Scene Start
     private:
         osg::ref_ptr<osg::MatrixTransform> scene;
@@ -493,6 +916,193 @@ struct Example
             this->themeMaterialSelected = selected;
         }
     // Example+Theme End
+    // Example+Tiles Start
+    private:
+        osg::ref_ptr<osg::MatrixTransform> tileScene;
+        std::map<osg::Node *, mahjong::Tile> tileNodes;
+    
+        void setupTiles(int seed)
+        {
+            // Order layout positions with seed.
+            auto positions = mahjong::orderedLayoutPositions(this->layout.positions, seed);
+            auto matchIds = mahjong::matchIds(positions.size());
+    
+            // Create tile nodes.
+            auto tileScene = this->createTiles(positions, matchIds);
+            // Set default (non-selected) material.
+            tileScene->setStateSet(this->themeMaterial);
+            // Rotate the scene to have a better view.
+            scene::setSimpleRotation(tileScene, {65, 0, 0});
+            // Set the scene.
+            this->scene->addChild(tileScene);
+            this->app->setScene(this->scene);
+    
+            // Create logical tiles.
+            int tilesCount = positions.size();
+            std::vector<mahjong::Tile> tiles;
+            for (int i = 0; i < tilesCount; ++i)
+            {
+                auto position = positions[i];
+                auto matchId = matchIds[i];
+    
+                mahjong::Tile tile;
+                tile.position = position;
+                tile.matchId = matchId;
+                tiles.push_back(tile);
+    
+                // Keep correspondence of visual tiles to logical ones.
+                auto node = tileScene->getChild(i);
+                this->tileNodes[node] = tile;
+            }
+    
+            // Provide logical tiles to the game.
+            this->game->setTiles(tiles);
+            // Keep reference to tile nodes.
+            this->tileScene = tileScene;
+        }
+    // Example+Tiles End
+    // Example+TileMatching Start
+    private:
+        bool tilesMatch = false;
+        core::Reporter tilesMatchChanged;
+    
+        void setupTileMatching()
+        {
+            this->selectedTilesChanged.addCallback(
+                [&] {
+                    // Only perform matching once two tiles have been selected.
+                    if (this->selectedTiles.size() == 2)
+                    {
+                        this->matchTiles();
+                    }
+                }
+            );
+        }
+        void matchTiles()
+        {
+            auto nodeTile = this->selectedTiles.begin();
+            auto tile1 = nodeTile->tile;
+            ++nodeTile;
+            auto tile2 = nodeTile->tile;
+    
+            this->tilesMatch = this->game->tilesMatch(tile1, tile2);
+            this->tilesMatchChanged.report();
+        }
+    // Example+TileMatching End
+    // Example+TileSelection Start
+    private:
+        struct NodeTile
+        {
+            osg::Node *node;
+            mahjong::Tile tile;
+        };
+        std::vector<NodeTile> selectedTiles;
+        core::Reporter selectedTilesChanged;
+        const std::string tileSelectionCallbackName = "TileSelection";
+    
+        void setupTileSelection()
+        {
+            this->selectedNodeChanged.addCallback(
+                [&] {
+                    this->selectTile();
+                },
+                this->tileSelectionCallbackName
+            );
+        }
+        void tearTileSelectionDown()
+        {
+            this->selectedNodeChanged.removeCallback(
+                this->tileSelectionCallbackName
+            );
+        }
+        void selectTile()
+        {
+            auto node = this->selectedNode;
+            auto tile = this->tileNodes[node];
+    
+            // Make sure tile is selectable.
+            if (!this->game->isTileSelectable(tile))
+            {
+                return;
+            }
+    
+            // Make sure the tile has not yet been selected.
+            for (auto nodeTile : this->selectedTiles)
+            {
+                if (nodeTile.node == node)
+                {
+                    return;
+                }
+            }
+    
+            // Select and report.
+            this->selectedTiles.push_back({node, tile});
+            this->selectedTilesChanged.report();
+        }
+    // Example+TileSelection End
+    // Example+TileSelectionDepiction Start
+    private:
+        std::vector<NodeTile> depictedTiles;
+    
+        void setupTileSelectionDepiction()
+        {
+            this->selectedTilesChanged.addCallback(
+                [&] {
+                    this->depictSelectedTiles();
+                }
+            );
+        }
+        void depictSelectedTiles()
+        {
+            // Remove depiction of previously selected tiles.
+            for (auto nodeTile : this->depictedTiles)
+            {
+                auto node = nodeTile.node;
+                this->depictNodeSelection(node, false);
+            }
+    
+            // Depict currently selected tiles.
+            for (auto nodeTile : this->selectedTiles)
+            {
+                auto node = nodeTile.node;
+                this->depictNodeSelection(node, true);
+            }
+    
+            // Keep depicted tiles.
+            this->depictedTiles = this->selectedTiles;
+        }
+        void depictNodeSelection(osg::Node *node, bool isSelected)
+        {
+            osg::StateSet *material = 
+                isSelected ? 
+                this->themeMaterialSelected :
+                0;
+            node->setStateSet(material);
+        }
+    // Example+TileSelectionDepiction End
+    // Example+UnmatchedTilesDeselection Start
+    private:
+        void setupUnmatchedTilesDeselection()
+        {
+            this->tilesMatchChanged.addCallback(
+                [&] {
+                    // Make sure there was no match.
+                    if (this->tilesMatch)
+                    {
+                        return;
+                    }
+    
+                    this->deselectUnmatchedTiles();
+                }
+            );
+        }
+        void deselectUnmatchedTiles()
+        {
+            // Deselect the first unmatched tile only.
+            this->selectedTiles.erase(this->selectedTiles.begin());
+            this->selectedTilesChanged.report();
+        }
+    // Example+UnmatchedTilesDeselection End
     // Example+VBO Start
     private:
         void setupSceneVBO()
@@ -547,6 +1157,218 @@ struct Example
         return tileScene.release();
     }
     // Example+createTiles End
+    // Example+loadLayout Start
+    private:
+        core::Reporter layoutLoaded;
+    
+        core::Reporter *loadLayout(const std::string &layout)
+        {
+            // Try to expand layout in case it's a collapsed remote path.
+            auto path = layout;
+            path = resource::expandBitBucketPath(path);
+            path = resource::expandGitHubPath(path);
+    
+            // Remote.
+            if (resource::isPathRemote(path))
+            {
+                this->loadRemoteLayout(path);
+                return &this->layoutLoaded;
+            }
+    
+            // Local or internal.
+            auto internalLayout =
+                this->internalLayouts->resource("layouts", layout);
+            // Internal.
+            if (internalLayout)
+            {
+                this->loadInternalLayout(*internalLayout);
+            }
+            // Local.
+            else
+            {
+                this->loadLocalLayout(layout);
+            }
+    
+            // Report finish instantly.
+            return 0;
+        }
+        void loadInternalLayout(resource::Resource &layout)
+        {
+            resource::ResourceStreamBuffer buf(layout);
+            std::istream in(&buf);
+            if (!mahjong::parseLayout(in, this->layout))
+            {
+                MAIN_EXAMPLE_LOG("ERROR Could not parse internal layout");
+            }
+            else
+            {
+                MAIN_EXAMPLE_LOG("Successfully loaded and parsed internal layout");
+            }
+        }
+        void loadLocalLayout(const std::string &layoutFileName)
+        {
+            std::ifstream localLayout(layoutFileName);
+            if (localLayout)
+            {
+                if (!mahjong::parseLayout(localLayout, this->layout))
+                {
+                    MAIN_EXAMPLE_LOG("ERROR Could not parse local layout");
+                }
+                else
+                {
+                    MAIN_EXAMPLE_LOG("Successfully loaded and parsed local layout");
+                }
+            }
+            else
+            {
+                MAIN_EXAMPLE_LOG("ERROR Could not read local layout");
+            }
+        }
+        void loadRemoteLayout(const std::string &url)
+        {
+            MAIN_EXAMPLE_LOG("Loading remote layout '%s'", url.c_str());
+    
+            auto success = [&](std::string response) {
+                // Response exists.
+                if (response.length())
+                {
+                    // Parse it.
+                    std::istringstream in(response);
+                    if (!mahjong::parseLayout(in, this->layout))
+                    {
+                        MAIN_EXAMPLE_LOG("ERROR Could not parse remote layout");
+                    }
+                    else
+                    {
+                        MAIN_EXAMPLE_LOG("Successfully loaded and parsed remote layout");
+                    }
+                }
+                // Response does not exist.
+                else
+                {
+                    MAIN_EXAMPLE_LOG("ERROR Loaded layout is empty");
+                }
+    
+                // Report finish.
+                this->layoutLoaded.report();
+            };
+    
+            auto failure = [&](std::string reason) {
+                MAIN_EXAMPLE_LOG(
+                    "ERROR Could not load remote layout: '%s'",
+                    reason.c_str()
+                );
+    
+                // Report finish.
+                this->layoutLoaded.report();
+            };
+    
+            // Initiate loading.
+            this->app->httpClient->get(url, success, failure);
+        }
+    // Example+loadLayout End
+    // Example+loadTheme Start
+    private:
+        core::Reporter themeLoaded;
+    
+        core::Reporter *loadTheme(const std::string &theme)
+        {
+            // Try to expand theme in case it's a collapsed remote path.
+            auto path = theme;
+            path = resource::expandBitBucketPath(path);
+            path = resource::expandGitHubPath(path);
+    
+            // Remote.
+            if (resource::isPathRemote(path))
+            {
+                this->loadRemoteTheme(path);
+                return &this->themeLoaded;
+            }
+    
+            // Local or internal.
+            auto internalTheme =
+                this->internalThemes->resource("themes", theme);
+            // Internal.
+            if (internalTheme)
+            {
+                this->loadInternalTheme(*internalTheme);
+            }
+            // Local.
+            else
+            {
+                this->loadLocalTheme(theme);
+            }
+    
+            // Report finish instantly.
+            return 0;
+        }
+        void loadInternalTheme(resource::Resource &theme)
+        {
+            this->setupThemeMaterials(theme);
+            MAIN_EXAMPLE_LOG("Successfully loaded internal theme");
+        }
+        void loadLocalTheme(const std::string &themeFileName)
+        {
+            std::ifstream localTheme(themeFileName);
+            if (localTheme)
+            {
+                // Read file contents into string.
+                std::string fileContents(
+                    (std::istreambuf_iterator<char>(localTheme)),
+                    (std::istreambuf_iterator<char>())
+                );
+                resource::Resource res(
+                    "themes",
+                    themeFileName,
+                    resource::stringToResourceContents(fileContents),
+                    fileContents.length()
+                );
+                this->setupThemeMaterials(res);
+                MAIN_EXAMPLE_LOG("Successfully loaded local theme");
+            }
+            else
+            {
+                MAIN_EXAMPLE_LOG("ERROR Could not read local theme");
+            }
+        }
+        void loadRemoteTheme(const std::string &url)
+        {
+            MAIN_EXAMPLE_LOG("Loading remote layout '%s'", url.c_str());
+    
+            auto success = [=](std::string response) {
+                // NOTE Use `=` in lambda capture to capture url copy
+                // NOTE Otherwise we have crash when referencing `url`.
+                resource::Resource res(
+                    "themes",
+                    url,
+                    resource::stringToResourceContents(response),
+                    response.length()
+                );
+                this->setupThemeMaterials(res);
+                MAIN_EXAMPLE_LOG("Successfully loaded remote theme");
+    
+                // Report finish.
+                this->themeLoaded.report();
+            };
+            auto failure = [&](std::string reason) {
+                MAIN_EXAMPLE_LOG(
+                    "ERROR Could not load remote theme: '%s'",
+                    reason.c_str()
+                );
+                // Report finish.
+                this->themeLoaded.report();
+            };
+    
+            // Initiate loading.
+            this->app->httpClient->get(url, success, failure);
+        }
+        void setupThemeMaterials(resource::Resource &res)
+        {
+            auto texture = resource::createTexture(res);
+            this->themeMaterial->setTextureAttributeAndModes(0, texture);
+            this->themeMaterialSelected->setTextureAttributeAndModes(0, texture);
+        }
+    // Example+loadTheme End
 // Example Start
 };
 // Example End
