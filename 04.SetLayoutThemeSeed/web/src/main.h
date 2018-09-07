@@ -1333,7 +1333,7 @@ struct Example
         }
         void loadRemoteTheme(const std::string &url)
         {
-            MAIN_EXAMPLE_LOG("Loading remote layout '%s'", url.c_str());
+            MAIN_EXAMPLE_LOG("Loading remote theme '%s'", url.c_str());
     
             auto success = [=](std::string response) {
                 // NOTE Use `=` in lambda capture to capture url copy
