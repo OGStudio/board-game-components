@@ -13,7 +13,7 @@ Application+Rendering
 MAIN_EXAMPLE_LOG
 Example
 Example+04
-Example+SetLayoutThemeSeedTest
+#Example+SetLayoutThemeSeedTest
 Example+Game
 Example+GameState
 Example+DefaultLayoutTheme
