@@ -33,7 +33,7 @@ freely, subject to the following restrictions:
 // FEATURE Application+Logging/Include
 // FEATURE Application+Mouse/Include
 // FEATURE Application+Rendering/Include
-// FEATURE Application+WindowResizing/Include
+// FEATURE Application+WindowResizing-web/Include
 
 // FEATURE Example+DefaultLayoutTheme/Include
 // FEATURE Example+InternalLayouts/Include
@@ -87,7 +87,7 @@ namespace main
     // FEATURE Application+Logging/Impl
     // FEATURE Application+Mouse/Impl
     // FEATURE Application+Rendering/Impl
-    // FEATURE Application+WindowResizing/Impl
+    // FEATURE Application+WindowResizing-web/Impl
 // FEATURE Application/End
 
 // FEATURE Example+01/Title

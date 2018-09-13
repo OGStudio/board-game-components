@@ -84,6 +84,9 @@ int main(int argc, char *argv[])
     }
     
     // main-web End
+    // main+WindowResizing-web Start
+    example->app->resizeWindowToCanvasSize();
+    // main+WindowResizing-web End
     // main-web Start
     // Render asynchronously.
     emscripten_set_main_loop(loop, -1, 0);

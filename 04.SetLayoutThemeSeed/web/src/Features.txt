@@ -11,6 +11,7 @@ Application+HTTPClientProcessor
 Application+Logging
 Application+Mouse
 Application+Rendering
+Application+WindowResizing-web
 
 MAIN_EXAMPLE_LOG
 Example
@@ -41,6 +42,7 @@ Example+loadTheme
 main-web
 main+Arguments-web
 main+Input-web
+main+WindowResizing-web
 
 # core
 CORE_SEQUENCE_LOG

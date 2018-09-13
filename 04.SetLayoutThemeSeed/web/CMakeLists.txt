@@ -27,7 +27,7 @@ TARGET_LINK_LIBRARIES(
 # * -s USE_ZLIB=1: use zlib, necessary for libpng
 # * -s FETCH=1: use FetchAPI, necessary for making HTTP(s) requests
 # * -s WASM=0: disable WebAssembly because FetchAPI is unsupported there yet
-SET(BUILD_FLAGS "-O0 -s USE_SDL=2 -s ALLOW_MEMORY_GROWTH=1 -s USE_LIBPNG=1 -s USE_ZLIB=1 -s FETCH=1 -s WASM=0")
+SET(BUILD_FLAGS "-O3 -s USE_SDL=2 -s ALLOW_MEMORY_GROWTH=1 -s USE_LIBPNG=1 -s USE_ZLIB=1 -s FETCH=1 -s WASM=0")
 #SET(BUILD_FLAGS "-O3 -s USE_SDL=2 -s ALLOW_MEMORY_GROWTH=1 -s USE_LIBPNG=1 -s USE_ZLIB=1 -s FETCH=1 -s WASM=0")
 ADD_DEFINITIONS(${BUILD_FLAGS})
 

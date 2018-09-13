@@ -41,6 +41,7 @@ int main(int argc, char *argv[])
     // FEATURE main-web/Setup
         // FEATURE main+Arguments-web/Impl
     // FEATURE main-web/End
+    // FEATURE main+WindowResizing-web/Setup
     // FEATURE main-web/Run
 
     return 0;
