@@ -1,9 +1,11 @@
 # main
+MAIN_APPLICATION_LOG
 Application
 Application+camera
 Application+frame+Reporting
 Application+handleEvent-web
 Application+setupWindow-embedded
+Application+setupWindow-web
 Application+HTTPClient
 Application+HTTPClientProcessor
 Application+Logging
@@ -13,7 +15,7 @@ Application+Rendering
 MAIN_EXAMPLE_LOG
 Example
 Example+04
-#Example+SetLayoutThemeSeedTest
+Example+SetLayoutThemeSeedTest
 Example+Game
 Example+GameState
 Example+DefaultLayoutTheme
@@ -38,6 +40,7 @@ Example+loadTheme
 
 main-web
 main+Arguments-web
+main+Input-web
 
 # core
 CORE_SEQUENCE_LOG

@@ -27,11 +27,13 @@ freely, subject to the following restrictions:
 
 // FEATURE Application+frame+Reporting/Include
 // FEATURE Application+handleEvent-web/Include
+// FEATURE Application+setupWindow-web/Include
 
 // FEATURE Application+HTTPClient/Include
 // FEATURE Application+Logging/Include
 // FEATURE Application+Mouse/Include
 // FEATURE Application+Rendering/Include
+// FEATURE Application+WindowResizing/Include
 
 // FEATURE Example+DefaultLayoutTheme/Include
 // FEATURE Example+InternalLayouts/Include
@@ -45,6 +47,7 @@ freely, subject to the following restrictions:
 
 // FEATURE Example+createTiles/Include
 
+// FEATURE MAIN_APPLICATION_LOG/Impl
 // FEATURE MAIN_EXAMPLE_LOG/Impl
 
 // FEATURE Example+StaticPluginOSG/Impl
@@ -61,6 +64,7 @@ namespace main
             // FEATURE Application+Mouse/Setup
             // FEATURE Application+HTTPClient/Setup
             // FEATURE Application+HTTPClientProcessor/Setup
+            // FEATURE Application+WindowResizing-web/Setup
 // FEATURE Application/TearDown
             // FEATURE Application+HTTPClientProcessor/TearDown
             // FEATURE Application+HTTPClient/TearDown
@@ -76,12 +80,14 @@ namespace main
     // FEATURE Application+setupWindow-desktop/Impl
     // FEATURE Application+setupWindow-embedded/Impl
     // FEATURE Application+setupWindow-ios/Impl
+    // FEATURE Application+setupWindow-web/Impl
 
     // FEATURE Application+HTTPClient/Impl
     // FEATURE Application+HTTPClientProcessor/Impl
     // FEATURE Application+Logging/Impl
     // FEATURE Application+Mouse/Impl
     // FEATURE Application+Rendering/Impl
+    // FEATURE Application+WindowResizing/Impl
 // FEATURE Application/End
 
 // FEATURE Example+01/Title
@@ -100,6 +106,7 @@ namespace main
         // FEATURE Example+SetLayoutThemeSeedTest/Setup
         // FEATURE Example+VBO/Setup
 // FEATURE Example/TearDown
+        // FEATURE Example+MatchTilesTest/TearDown
         // FEATURE Example+SetLayoutThemeSeedTest/TearDown
         // FEATURE Example+Theme/TearDown
         // FEATURE Example+Game/TearDown

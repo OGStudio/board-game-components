@@ -33,6 +33,10 @@ freely, subject to the following restrictions:
 #include <SDL2/SDL.h>
 
 // Application+handleEvent-web End
+// Application+setupWindow-web Start
+#include <SDL2/SDL.h>
+
+// Application+setupWindow-web End
 
 // Application+Logging Start
 #include "log.h"
@@ -54,6 +58,20 @@ freely, subject to the following restrictions:
 #include "mahjong.h"
 
 // Example+DefaultLayoutTheme End
+// Example+InternalLayouts Start
+#include "X_shaped.layout.h"
+#include "short-loss.layout.h"
+#include "short-victory.layout.h"
+
+#include "resource.h"
+
+// Example+InternalLayouts End
+// Example+InternalThemes Start
+#include "numbers-theme.png.h"
+
+#include "resource.h"
+
+// Example+InternalThemes End
 // Example+Scene Start
 #include <osg/MatrixTransform>
 
@@ -79,6 +97,17 @@ freely, subject to the following restrictions:
 
 // Example+createTiles End
 
+// MAIN_APPLICATION_LOG Start
+#include "log.h"
+#include "format.h"
+#define MAIN_APPLICATION_LOG_PREFIX "main::Application(%p) %s"
+#define MAIN_APPLICATION_LOG(...) \
+    log::logprintf( \
+        MAIN_APPLICATION_LOG_PREFIX, \
+        this, \
+        format::printfString(__VA_ARGS__).c_str() \
+    )
+// MAIN_APPLICATION_LOG End
 // MAIN_EXAMPLE_LOG Start
 #include "log.h"
 #include "format.h"
@@ -266,6 +295,48 @@ class Application
             this->windowHeight = height;
         }
     // Application+setupWindow-embedded End
+    // Application+setupWindow-web Start
+    private:
+        SDL_Window *sdlWindow = 0;
+    public:
+        bool setupWindow(
+            const std::string &title,
+            int width,
+            int height
+        ) {
+            this->configureSDLGLContext();
+            this->sdlWindow =
+                SDL_CreateWindow(
+                    title.c_str(),
+                    SDL_WINDOWPOS_CENTERED,
+                    SDL_WINDOWPOS_CENTERED,
+                    width,
+                    height,
+                    SDL_WINDOW_OPENGL
+                );
+            if (!this->sdlWindow)
+            {
+                MAIN_APPLICATION_LOG(
+                    "ERROR Could not create SDL window: '%s'\n",
+                    SDL_GetError()
+                );
+                return false;
+            }
+    
+            SDL_GL_CreateContext(this->sdlWindow);
+            this->setupWindow(width, height);
+    
+            return true;
+        }
+        void configureSDLGLContext()
+        {
+            SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
+            SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
+            SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
+            SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+            SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+        }
+    // Application+setupWindow-web End
 
     // Application+Logging Start
     private:
@@ -375,6 +446,10 @@ struct Example
     {
 
 // Example End
+        // Example+MatchTilesTest Start
+        this->tearMatchTilesTestDown();
+        
+        // Example+MatchTilesTest End
         // Example+Theme Start
         this->tearThemeDown();
         
@@ -456,6 +531,72 @@ struct Example
             }
         }
     // Example+GameState End
+    // Example+InternalLayouts Start
+    private:
+        resource::Pool *internalLayouts;
+        void setupInternalLayouts()
+        {
+            // Create pool.
+            this->internalLayouts = new resource::Pool;
+    
+            // Register internal layouts.
+            {
+                resource::Resource res(
+                    "layouts",
+                    "X_shaped.layout",
+                    X_shaped_layout,
+                    X_shaped_layout_len
+                );
+                this->internalLayouts->addResource(res);
+            }
+            {
+                resource::Resource res(
+                    "layouts",
+                    "short-loss.layout",
+                    short_loss_layout,
+                    short_loss_layout_len
+                );
+                this->internalLayouts->addResource(res);
+            }
+            {
+                resource::Resource res(
+                    "layouts",
+                    "short-victory.layout",
+                    short_victory_layout,
+                    short_victory_layout_len
+                );
+                this->internalLayouts->addResource(res);
+            }
+        }
+        void tearInternalLayoutsDown()
+        {
+            delete this->internalLayouts;
+        }
+    // Example+InternalLayouts End
+    // Example+InternalThemes Start
+    private:
+        resource::Pool *internalThemes;
+        void setupInternalThemes()
+        {
+            // Create pool.
+            this->internalThemes = new resource::Pool;
+    
+            // Register internal themes.
+            {
+                resource::Resource res(
+                    "themes",
+                    "numbers-theme.png",
+                    numbers_theme_png,
+                    numbers_theme_png_len
+                );
+                this->internalThemes->addResource(res);
+            }
+        }
+        void tearInternalThemesDown()
+        {
+            delete this->internalThemes;
+        }
+    // Example+InternalThemes End
     // Example+MatchedTilesRemoval Start
     private:
         core::Reporter removedTiles;
@@ -508,8 +649,10 @@ struct Example
     private:
         void setupMatchTilesTest()
         {
+            this->setupInternalLayouts();
+            this->setupInternalThemes();
             this->setupDefaultLayoutTheme();
-            this->setupTiles();
+            this->setupTiles(time(0));
             this->setupNodeSelection();
             this->setupTileSelection();
             this->setupTileSelectionDepiction();
@@ -534,7 +677,7 @@ struct Example
         }
         void tearMatchTilesTestDown()
         {
-            this->tearNodeSelectionDown();
+            this->tearInternalLayoutsDown();
         }
     // Example+MatchTilesTest End
     // Example+NodeSelection Start

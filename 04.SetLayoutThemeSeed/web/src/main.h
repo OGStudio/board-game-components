@@ -33,6 +33,10 @@ freely, subject to the following restrictions:
 #include <SDL2/SDL.h>
 
 // Application+handleEvent-web End
+// Application+setupWindow-web Start
+#include <SDL2/SDL.h>
+
+// Application+setupWindow-web End
 
 // Application+HTTPClient Start
 #include "network.h"
@@ -97,6 +101,17 @@ freely, subject to the following restrictions:
 
 // Example+createTiles End
 
+// MAIN_APPLICATION_LOG Start
+#include "log.h"
+#include "format.h"
+#define MAIN_APPLICATION_LOG_PREFIX "main::Application(%p) %s"
+#define MAIN_APPLICATION_LOG(...) \
+    log::logprintf( \
+        MAIN_APPLICATION_LOG_PREFIX, \
+        this, \
+        format::printfString(__VA_ARGS__).c_str() \
+    )
+// MAIN_APPLICATION_LOG End
 // MAIN_EXAMPLE_LOG Start
 #include "log.h"
 #include "format.h"
@@ -300,6 +315,48 @@ class Application
             this->windowHeight = height;
         }
     // Application+setupWindow-embedded End
+    // Application+setupWindow-web Start
+    private:
+        SDL_Window *sdlWindow = 0;
+    public:
+        bool setupWindow(
+            const std::string &title,
+            int width,
+            int height
+        ) {
+            this->configureSDLGLContext();
+            this->sdlWindow =
+                SDL_CreateWindow(
+                    title.c_str(),
+                    SDL_WINDOWPOS_CENTERED,
+                    SDL_WINDOWPOS_CENTERED,
+                    width,
+                    height,
+                    SDL_WINDOW_OPENGL
+                );
+            if (!this->sdlWindow)
+            {
+                MAIN_APPLICATION_LOG(
+                    "ERROR Could not create SDL window: '%s'\n",
+                    SDL_GetError()
+                );
+                return false;
+            }
+    
+            SDL_GL_CreateContext(this->sdlWindow);
+            this->setupWindow(width, height);
+    
+            return true;
+        }
+        void configureSDLGLContext()
+        {
+            SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
+            SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
+            SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
+            SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+            SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+        }
+    // Application+setupWindow-web End
 
     // Application+HTTPClient Start
     public:
@@ -435,6 +492,10 @@ struct Example
         this->setupTheme();
         
         // Example+Theme End
+        // Example+SetLayoutThemeSeedTest Start
+        this->setupSetLayoutThemeSeedTest();
+        
+        // Example+SetLayoutThemeSeedTest End
         // Example+VBO Start
         this->setupSceneVBO();
         
@@ -445,6 +506,10 @@ struct Example
     {
 
 // Example End
+        // Example+SetLayoutThemeSeedTest Start
+        this->tearSetLayoutThemeSeedTestDown();
+        
+        // Example+SetLayoutThemeSeedTest End
         // Example+Theme Start
         this->tearThemeDown();
         
@@ -701,6 +766,101 @@ struct Example
             this->parameters = parameters;
         }
     // Example+Parameters End
+    // Example+SetLayoutThemeSeedTest Start
+    private:
+        core::Sequence setupSequence;
+        void setupSetLayoutThemeSeedTest()
+        {
+            this->setupInternalLayouts();
+            this->setupInternalThemes();
+            this->setupDefaultLayoutTheme();
+    
+            this->setupSequence.setActions({
+                "loadLayout",
+                "loadTheme",
+                "finishSetup",
+            });
+    
+            // Register actions.
+            CORE_REGISTER_SEQUENCE_ACTION(
+                this->setupSequence,
+                "loadLayout",
+                this->loadLayout()
+            );
+            CORE_REGISTER_SEQUENCE_ACTION(
+                this->setupSequence,
+                "loadTheme",
+                this->loadTheme()
+            );
+            CORE_REGISTER_SEQUENCE_ACTION(
+                this->setupSequence,
+                "finishSetup",
+                this->finishSetup()
+            );
+    
+            // Enable sequence.
+            this->setupSequence.setEnabled(true);
+        }
+        void tearSetLayoutThemeSeedTestDown()
+        {
+            this->tearInternalLayoutsDown();
+            //this->tearNodeSelectionDown();
+        }
+        core::Reporter *loadLayout()
+        {
+            // Do nothing if `layout` parameter is absent.
+            auto it = this->parameters.find("layout");
+            if (it == this->parameters.end())
+            {
+                return 0;
+            }
+    
+            // Load layout otherwise.
+            auto value = it->second;
+            return this->loadLayout(value);
+        }
+        core::Reporter *loadTheme()
+        {
+            // Do nothing if `theme` parameter is absent.
+            auto it = this->parameters.find("theme");
+            if (it == this->parameters.end())
+            {
+                return 0;
+            }
+    
+            // Load theme otherwise.
+            auto value = it->second;
+            return this->loadTheme(value);
+        }
+        core::Reporter *finishSetup()
+        {
+            this->setupTiles();
+            this->setupNodeSelection();
+            this->setupTileSelection();
+            this->setupTileSelectionDepiction();
+            this->setupTileMatching();
+            this->setupUnmatchedTilesDeselection();
+            this->setupMatchedTilesRemoval();
+            this->setupGameState();
+    
+            return 0;
+        }
+        void setupTiles()
+        {
+            // By default, use seed of the current time.
+            int seed = time(0);
+    
+            // Override it with the seed coming from parameters.
+            auto it = this->parameters.find("seed");
+            if (it != this->parameters.end())
+            {
+                seed = atoi(it->second.c_str());
+                MAIN_EXAMPLE_LOG("Using seed '%d'", seed);
+            }
+    
+            this->setupTiles(seed);
+        }
+    // Example+SetLayoutThemeSeedTest End
     // Example+Scene Start
     private:
         osg::ref_ptr<osg::MatrixTransform> scene;

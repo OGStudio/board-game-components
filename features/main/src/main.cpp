@@ -27,7 +27,9 @@ freely, subject to the following restrictions:
 
 using namespace omc;
 
-// FEATURE main-web/Loop
+// FEATURE main-web/LoopBegin
+            // FEATURE main+Input-web/Loop
+// FEATURE main-web/LoopEnd
 
 int main(int argc, char *argv[])
 {

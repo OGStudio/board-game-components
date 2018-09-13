@@ -296,6 +296,10 @@ struct Example
     {
 
 // Example End
+        // Example+MatchTilesTest Start
+        this->tearMatchTilesTestDown();
+        
+        // Example+MatchTilesTest End
         // Example+Theme Start
         this->tearThemeDown();
         
@@ -429,8 +433,10 @@ struct Example
     private:
         void setupMatchTilesTest()
         {
+            this->setupInternalLayouts();
+            this->setupInternalThemes();
             this->setupDefaultLayoutTheme();
-            this->setupTiles();
+            this->setupTiles(time(0));
             this->setupNodeSelection();
             this->setupTileSelection();
             this->setupTileSelectionDepiction();
@@ -455,7 +461,7 @@ struct Example
         }
         void tearMatchTilesTestDown()
         {
-            this->tearNodeSelectionDown();
+            this->tearInternalLayoutsDown();
         }
     // Example+MatchTilesTest End
     // Example+NodeSelection Start

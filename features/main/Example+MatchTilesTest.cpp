@@ -1,12 +1,17 @@
 FEATURE main.h/Setup
 this->setupMatchTilesTest();
 
+FEATURE main.h/TearDown
+this->tearMatchTilesTestDown();
+
 FEATURE main.h/Impl
 private:
     void setupMatchTilesTest()
     {
+        this->setupInternalLayouts();
+        this->setupInternalThemes();
         this->setupDefaultLayoutTheme();
-        this->setupTiles();
+        this->setupTiles(time(0));
         this->setupNodeSelection();
         this->setupTileSelection();
         this->setupTileSelectionDepiction();
@@ -31,5 +36,5 @@ private:
     }
     void tearMatchTilesTestDown()
     {
-        this->tearNodeSelectionDown();
+        this->tearInternalLayoutsDown();
     }

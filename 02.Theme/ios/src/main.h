@@ -56,7 +56,7 @@ freely, subject to the following restrictions:
 
 // Example+Theme End
 // Example+ThemeTest Start
-#include "tile-theme.png.h"
+#include "numbers-theme.png.h"
 #include "scene.h"
 #include <osg/MatrixTransform>
 
@@ -419,9 +419,9 @@ struct Example
             // Set texture to materials.
             resource::Resource texRes(
                 "textures",
-                "tile-theme.png",
-                tile_theme_png,
-                tile_theme_png_len
+                "numbers-theme.png",
+                numbers_theme_png,
+                numbers_theme_png_len
             );
             auto texture = resource::createTexture(texRes);
             this->themeMaterial->setTextureAttributeAndModes(0, texture);

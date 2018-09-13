@@ -1,9 +1,11 @@
 # main
+MAIN_APPLICATION_LOG
 Application
 Application+camera
 Application+frame+Reporting
 Application+handleEvent-web
 Application+setupWindow-embedded
+Application+setupWindow-web
 Application+Logging
 Application+Mouse
 Application+Rendering
@@ -14,6 +16,8 @@ Example+03
 Example+Game
 Example+GameState
 Example+DefaultLayoutTheme
+Example+InternalLayouts
+Example+InternalThemes
 Example+MatchedTilesRemoval
 Example+MatchTilesTest
 Example+NodeSelection
@@ -29,6 +33,7 @@ Example+VBO
 Example+UnmatchedTilesDeselection
 Example+createTiles
 
+main+Input-web
 main-web
 
 # core
@@ -63,6 +68,7 @@ trimmedString
 
 # resource
 RESOURCE_LOG
+Pool
 Resource
 ResourceStreamBuffer
 createTexture
