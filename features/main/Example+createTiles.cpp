@@ -13,6 +13,8 @@ osg::MatrixTransform* createTiles(
     osg::ref_ptr<osg::MatrixTransform> tileScene = new osg::MatrixTransform;
     // Correct the height for `tile-low.osgt` model.
     const float MODEL_HEIGHT_FACTOR = 1.5;
+    // Gap to use among times for enhanced visibility.
+    const float GAP = 0.05;
 
     int id = 0;
     // Generate tile nodes.
@@ -27,6 +29,12 @@ osg::MatrixTransform* createTiles(
         float x = pos.column;
         float y = pos.row * MODEL_HEIGHT_FACTOR;
         float z = pos.field;
+
+        // Add gap among tiles.
+        x += pos.column * GAP;
+        y += pos.row * MODEL_HEIGHT_FACTOR * GAP;
+        z += pos.field * GAP;
+
         scene::setSimplePosition(node, {x, y, z});
         // Set match id.
         int matchId = matchIds[id++];
