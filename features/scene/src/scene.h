@@ -45,6 +45,8 @@ namespace scene
 
 // FEATURE nodeAtPosition/Impl
 
+// FEATURE LinearInterpolator/Impl
+
 } // namespace scene
 } // namespace omc
 

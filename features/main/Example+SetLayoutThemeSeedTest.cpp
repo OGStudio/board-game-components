@@ -25,7 +25,7 @@ private:
         CORE_REGISTER_SEQUENCE_ACTION(
             this->setupSequence,
             "startLoading",
-            this->startLoading()
+            this->startColorLoading()
         );
         CORE_REGISTER_SEQUENCE_ACTION(
             this->setupSequence,
@@ -45,7 +45,7 @@ private:
         CORE_REGISTER_SEQUENCE_ACTION(
             this->setupSequence,
             "stopLoading",
-            this->stopLoading()
+            this->stopColorLoading()
         );
 
         // Enable sequence.
@@ -109,14 +109,4 @@ private:
         }
 
         this->setupTiles(seed);
-    }
-    core::Reporter *startLoading()
-    {
-        // TODO Start animation by frame.
-        return 0;
-    }
-    core::Reporter *stopLoading()
-    {
-        // TODO Stop animation by frame.
-        return 0;
     }

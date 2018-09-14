@@ -115,6 +115,7 @@ osg::Node *nodeAtPosition(
 }
 // nodeAtPosition End
 
+
 } // namespace scene
 } // namespace omc
 

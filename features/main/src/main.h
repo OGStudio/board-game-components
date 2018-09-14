@@ -111,6 +111,7 @@ namespace main
         // FEATURE Example+Theme/TearDown
         // FEATURE Example+Game/TearDown
 // FEATURE Example/Impl
+    // FEATURE Example+ColorLoading/Impl
     // FEATURE Example+DefaultLayoutTheme/Impl
     // FEATURE Example+Game/Impl
     // FEATURE Example+GameState/Impl
