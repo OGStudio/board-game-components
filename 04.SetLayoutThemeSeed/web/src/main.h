@@ -1048,15 +1048,63 @@ struct Example
     // Example+Theme End
     // Example+Tiles Start
     private:
+        typedef std::vector<mahjong::Tile> LogicalTiles;
         osg::ref_ptr<osg::MatrixTransform> tileScene;
         std::map<osg::Node *, mahjong::Tile> tileNodes;
     
         void setupTiles(int seed)
         {
-            // Order layout positions with seed.
-            auto positions = mahjong::orderedLayoutPositions(this->layout.positions, seed);
-            auto matchIds = mahjong::matchIds(positions.size());
+            // Initialize random number generator.
+            std::mt19937 random(seed);
     
+            mahjong::Layout::Positions positions;
+            mahjong::MatchIds matchIds;
+            LogicalTiles tiles;
+    
+            // Keep on generating logical tiles until we have turns.
+            while (!this->game->hasTurns())
+            {
+                MAIN_EXAMPLE_LOG("Generating logical tiles");
+                tiles = this->createLogicalTiles(random, positions, matchIds);
+                this->game->setTiles(tiles);
+            }
+    
+            this->setupVisualTiles(positions, tiles, matchIds);
+        }
+        LogicalTiles createLogicalTiles(
+            std::mt19937 &randomNumberGenerator,
+            mahjong::Layout::Positions &positions,
+            mahjong::MatchIds &matchIds
+        ) {
+            // Order layout positions.
+            positions =
+                mahjong::orderedLayoutPositions(
+                    this->layout.positions,
+                    randomNumberGenerator
+                );
+            // Create match ids.
+            matchIds = mahjong::matchIds(positions.size());
+    
+            // Create logical tiles.
+            LogicalTiles tiles;
+            for (int i = 0; i < positions.size(); ++i)
+            {
+                auto position = positions[i];
+                auto matchId = matchIds[i];
+    
+                mahjong::Tile tile;
+                tile.position = position;
+                tile.matchId = matchId;
+                tiles.push_back(tile);
+            }
+    
+            return tiles;
+        }
+        void setupVisualTiles(
+            const mahjong::Layout::Positions &positions,
+            const LogicalTiles &tiles,
+            const mahjong::MatchIds &matchIds
+        ) {
             // Create tile nodes.
             auto tileScene = this->createTiles(positions, matchIds);
             // Set default (non-selected) material.
@@ -1067,27 +1115,14 @@ struct Example
             this->scene->addChild(tileScene);
             this->app->setScene(this->scene);
     
-            // Create logical tiles.
-            int tilesCount = positions.size();
-            std::vector<mahjong::Tile> tiles;
-            for (int i = 0; i < tilesCount; ++i)
+            for (int i = 0; i < positions.size(); ++i)
             {
-                auto position = positions[i];
-                auto matchId = matchIds[i];
-    
-                mahjong::Tile tile;
-                tile.position = position;
-                tile.matchId = matchId;
-                tiles.push_back(tile);
-    
                 // Keep correspondence of visual tiles to logical ones.
                 auto node = tileScene->getChild(i);
+                auto tile = tiles[i];
                 this->tileNodes[node] = tile;
             }
-    
-            // Provide logical tiles to the game.
-            this->game->setTiles(tiles);
-            // Keep reference to tile nodes.
+            // Keep reference to tile scene.
             this->tileScene = tileScene;
         }
     // Example+Tiles End
@@ -1255,7 +1290,7 @@ struct Example
     // Make sure positions' count is equal to matchIds' one.
     osg::MatrixTransform* createTiles(
         const mahjong::Layout::Positions &positions,
-        mahjong::MatchIds &matchIds
+        const mahjong::MatchIds &matchIds
     ) {
         // Create scene to host tile nodes.
         osg::ref_ptr<osg::MatrixTransform> tileScene = new osg::MatrixTransform;

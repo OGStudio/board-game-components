@@ -7,7 +7,7 @@ FEATURE main.h/Impl
 // Make sure positions' count is equal to matchIds' one.
 osg::MatrixTransform* createTiles(
     const mahjong::Layout::Positions &positions,
-    mahjong::MatchIds &matchIds
+    const mahjong::MatchIds &matchIds
 ) {
     // Create scene to host tile nodes.
     osg::ref_ptr<osg::MatrixTransform> tileScene = new osg::MatrixTransform;

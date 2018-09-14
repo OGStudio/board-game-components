@@ -4,17 +4,14 @@ FEATURE mahjong.h/Include
 FEATURE mahjong.h/Impl
 Layout::Positions orderedLayoutPositions(
     Layout::Positions positions,
-    unsigned int seed
+    std::mt19937 &randomNumberGenerator
 ) {
-    // Initialize random number generator.
-    std::mt19937 random(seed);
-
     Layout::Positions orderedPositions;
 
     // Pick positions according to random number generator.
     while (auto positionsLeft = positions.size())
     {
-        auto id = random() % positionsLeft;
+        auto id = randomNumberGenerator() % positionsLeft;
         auto position = positions[id];
         positions.erase(positions.begin() + id);
         orderedPositions.push_back(position);
