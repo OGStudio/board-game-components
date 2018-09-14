@@ -849,12 +849,19 @@ struct Example
             this->setupDefaultLayoutTheme();
     
             this->setupSequence.setActions({
+                "startLoading",
                 "loadLayout",
                 "loadTheme",
                 "finishSetup",
+                "stopLoading",
             });
     
             // Register actions.
+            CORE_REGISTER_SEQUENCE_ACTION(
+                this->setupSequence,
+                "startLoading",
+                this->startLoading()
+            );
             CORE_REGISTER_SEQUENCE_ACTION(
                 this->setupSequence,
                 "loadLayout",
@@ -869,6 +876,11 @@ struct Example
                 this->setupSequence,
                 "finishSetup",
                 this->finishSetup()
+            );
+            CORE_REGISTER_SEQUENCE_ACTION(
+                this->setupSequence,
+                "stopLoading",
+                this->stopLoading()
             );
     
             // Enable sequence.
@@ -932,6 +944,16 @@ struct Example
             }
     
             this->setupTiles(seed);
+        }
+        core::Reporter *startLoading()
+        {
+            // TODO Start animation by frame.
+            return 0;
+        }
+        core::Reporter *stopLoading()
+        {
+            // TODO Stop animation by frame.
+            return 0;
         }
     // Example+SetLayoutThemeSeedTest End
     // Example+Scene Start
