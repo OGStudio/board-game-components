@@ -17,6 +17,7 @@ MAIN_EXAMPLE_LOG
 Example
 Example+04
 Example+SetLayoutThemeSeedTest
+Example+ColorLoading
 Example+Game
 Example+GameState
 Example+DefaultLayoutTheme
@@ -103,11 +104,11 @@ createShaderProgram
 setupCamera
 
 # scene
+LinearInterpolator
 degreesToQuaternion
+nodeAtPosition
 setSimplePosition
 setSimpleRotation
-
-nodeAtPosition
 
 # input
 Mouse
