@@ -844,40 +844,56 @@ struct Example
         core::Sequence setupSequence;
         void setupSetLayoutThemeSeedTest()
         {
-            this->setupInternalLayouts();
-            this->setupInternalThemes();
-            this->setupDefaultLayoutTheme();
+            this->setupSetup();
+            this->setupLoading();
     
-            this->setupSequence.setActions({
-                "loadLayout",
-                "loadTheme",
-                "finishSetup",
-            });
-    
-            // Register actions.
-            CORE_REGISTER_SEQUENCE_ACTION(
-                this->setupSequence,
-                "loadLayout",
-                this->loadLayout()
-            );
-            CORE_REGISTER_SEQUENCE_ACTION(
-                this->setupSequence,
-                "loadTheme",
-                this->loadTheme()
-            );
-            CORE_REGISTER_SEQUENCE_ACTION(
-                this->setupSequence,
-                "finishSetup",
-                this->finishSetup()
-            );
-    
-            // Enable sequence.
             this->setupSequence.setEnabled(true);
         }
         void tearSetLayoutThemeSeedTestDown()
         {
             this->tearInternalLayoutsDown();
-            //this->tearNodeSelectionDown();
+            this->tearInternalThemesDown();
+        }
+        // Setup.
+        void setupSetup()
+        {
+            this->setupSequence.setActions({
+                CORE_SEQUENCE_ACTION("startSetup", this->startSetup()),
+                CORE_SEQUENCE_ACTION("finishSetup", this->finishSetup()),
+            });
+        }
+        core::Reporter *startSetup()
+        {
+            this->setupInternalLayouts();
+            this->setupInternalThemes();
+            this->setupDefaultLayoutTheme();
+    
+            return 0;
+        }
+        core::Reporter *finishSetup()
+        {
+            this->setupTiles();
+            this->setupNodeSelection();
+            this->setupTileSelection();
+            this->setupTileSelectionDepiction();
+            this->setupTileMatching();
+            this->setupUnmatchedTilesDeselection();
+            this->setupMatchedTilesRemoval();
+            this->setupGameState();
+    
+            return 0;
+        }
+        // Loading.
+        void setupLoading()
+        {
+            this->setupSequence.insertAction(
+                CORE_SEQUENCE_ACTION("loadLayout", this->loadLayout()),
+                "finishSetup"
+            );
+            this->setupSequence.insertAction(
+                CORE_SEQUENCE_ACTION("loadTheme", this->loadTheme()),
+                "finishSetup"
+            );
         }
         core::Reporter *loadLayout()
         {
@@ -904,19 +920,6 @@ struct Example
             // Load theme otherwise.
             auto value = it->second;
             return this->loadTheme(value);
-        }
-        core::Reporter *finishSetup()
-        {
-            this->setupTiles();
-            this->setupNodeSelection();
-            this->setupTileSelection();
-            this->setupTileSelectionDepiction();
-            this->setupTileMatching();
-            this->setupUnmatchedTilesDeselection();
-            this->setupMatchedTilesRemoval();
-            this->setupGameState();
-    
-            return 0;
         }
         void setupTiles()
         {

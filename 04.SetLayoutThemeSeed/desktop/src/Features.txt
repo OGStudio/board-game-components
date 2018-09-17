@@ -39,8 +39,8 @@ main-desktop
 main+Arguments-desktop
 
 # core
+CORE_SEQUENCE_ACTION
 CORE_SEQUENCE_LOG
-CORE_REGISTER_SEQUENCE_ACTION
 Reporter
 Sequence
 
