@@ -14,7 +14,6 @@ MAIN_EXAMPLE_LOG
 Example
 Example+04
 Example+SetLayoutThemeSeedTest
-Example+ColorLoading
 Example+Game
 Example+GameState
 Example+DefaultLayoutTheme

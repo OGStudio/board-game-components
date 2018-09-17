@@ -14,12 +14,19 @@ private:
         this->setupDefaultLayoutTheme();
 
         this->setupSequence.setActions({
+            "startLoading",
             "loadLayout",
             "loadTheme",
             "finishSetup",
+            "stopLoading",
         });
 
         // Register actions.
+        CORE_REGISTER_SEQUENCE_ACTION(
+            this->setupSequence,
+            "startLoading",
+            this->startColorLoading()
+        );
         CORE_REGISTER_SEQUENCE_ACTION(
             this->setupSequence,
             "loadLayout",
@@ -34,6 +41,11 @@ private:
             this->setupSequence,
             "finishSetup",
             this->finishSetup()
+        );
+        CORE_REGISTER_SEQUENCE_ACTION(
+            this->setupSequence,
+            "stopLoading",
+            this->stopColorLoading()
         );
 
         // Enable sequence.

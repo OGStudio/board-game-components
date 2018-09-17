@@ -1,22 +1,20 @@
 # main
-MAIN_APPLICATION_LOG
 Application
 Application+camera
 Application+frame+Reporting
-Application+handleEvent-web
-Application+setupWindow-embedded
-Application+setupWindow-web
+Application+run
+Application+setupWindow-desktop
 Application+HTTPClient
 Application+HTTPClientProcessor
 Application+Logging
 Application+Mouse
 Application+Rendering
-Application+WindowResizing-web
 
 MAIN_EXAMPLE_LOG
 Example
-Example+04
+Example+05
 Example+SetLayoutThemeSeedTest
+Example+ColorLoading
 Example+Game
 Example+GameState
 Example+DefaultLayoutTheme
@@ -34,15 +32,12 @@ Example+TileSelectionDepiction
 Example+StaticPluginOSG
 Example+StaticPluginPNG
 Example+UnmatchedTilesDeselection
-Example+VBO
 Example+createTiles
 Example+loadLayout
 Example+loadTheme
 
-main-web
-main+Arguments-web
-main+Input-web
-main+WindowResizing-web
+main-desktop
+main+Arguments-desktop
 
 # core
 CORE_SEQUENCE_LOG
@@ -73,7 +68,7 @@ logLevelToString
 logprintf
 
 # format
-urlQueryToParameters
+commandLineArgumentsToParameters
 printfString
 splitString
 stringStartsWith
@@ -98,7 +93,7 @@ stringToResourceContents
 # render
 RENDER_TILE_THEME_LOG
 TileTheme
-VBOSetupVisitor
+createGraphicsContext-desktop
 createShaderProgram
 setupCamera
 
@@ -117,5 +112,5 @@ MouseButtons
 HTTPClient
 HTTPClientProcessor
 HTTPRequest
-HTTPRequestProcessorFetch
-fetch
+HTTPRequestProcessorMongoose
+mongoose

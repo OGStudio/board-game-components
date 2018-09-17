@@ -29,14 +29,6 @@ freely, subject to the following restrictions:
 #include "core.h"
 
 // Application+frame+Reporting End
-// Application+handleEvent-web Start
-#include <SDL2/SDL.h>
-
-// Application+handleEvent-web End
-// Application+setupWindow-web Start
-#include <SDL2/SDL.h>
-
-// Application+setupWindow-web End
 
 // Application+HTTPClient Start
 #include "network.h"
@@ -57,10 +49,6 @@ freely, subject to the following restrictions:
 #include <osgGA/TrackballManipulator>
 
 // Application+Rendering End
-// Application+WindowResizing-web Start
-#include <emscripten/html5.h>
-
-// Application+WindowResizing-web End
 
 // Example+DefaultLayoutTheme Start
 #include "mahjong.h"
@@ -93,10 +81,6 @@ freely, subject to the following restrictions:
 #include "tile-low.osgt.h"
 
 // Example+Theme End
-// Example+VBO Start
-#include "render.h"
-
-// Example+VBO End
 
 // Example+createTiles Start
 #include "mahjong.h"
@@ -105,17 +89,6 @@ freely, subject to the following restrictions:
 
 // Example+createTiles End
 
-// MAIN_APPLICATION_LOG Start
-#include "log.h"
-#include "format.h"
-#define MAIN_APPLICATION_LOG_PREFIX "main::Application(%p) %s"
-#define MAIN_APPLICATION_LOG(...) \
-    log::logprintf( \
-        MAIN_APPLICATION_LOG_PREFIX, \
-        this, \
-        format::printfString(__VA_ARGS__).c_str() \
-    )
-// MAIN_APPLICATION_LOG End
 // MAIN_EXAMPLE_LOG Start
 #include "log.h"
 #include "format.h"
@@ -180,10 +153,6 @@ class Application
             this->setupHTTPClientProcessor();
             
             // Application+HTTPClientProcessor End
-            // Application+WindowResizing-web Start
-            this->setupWindowResizing();
-            
-            // Application+WindowResizing-web End
 // Application Start
         }
         ~Application()
@@ -230,141 +199,32 @@ class Application
             this->frameReporter.report();
         }
     // Application+frame+Reporting End
-    // Application+handleEvent-web Start
-    private:
-        bool fingerEventsDetected = false;
+    // Application+run Start
     public:
-        bool handleEvent(const SDL_Event &e)
+        void run()
         {
-            // Get event queue.
-            osgViewer::GraphicsWindow *gw =
-                dynamic_cast<osgViewer::GraphicsWindow *>(
-                    this->viewer->getCamera()->getGraphicsContext());
-            if (!gw)
+            while (!this->viewer->done())
             {
-                return false;
+                this->frame();
             }
-            osgGA::EventQueue &queue = *(gw->getEventQueue());
-    
-            // Detect finger events.
-            if (
-                e.type == SDL_FINGERMOTION ||
-                e.type == SDL_FINGERDOWN ||
-                e.type == SDL_FINGERUP
-            ) {
-                this->fingerEventsDetected = true;
-            }
-            // Handle mouse events unless finger events are detected.
-            if (!this->fingerEventsDetected)
-            {
-                return this->handleMouseEvent(e, queue);
-            }
-            // Handle finger events.
-            return this->handleFingerEvent(e, queue);
         }
-    
-    private:
-        bool handleFingerEvent(const SDL_Event &e, osgGA::EventQueue &queue)
-        {
-            int absX = this->windowWidth * e.tfinger.x;
-            int absY = this->windowHeight * e.tfinger.y;
-            auto correctedY = -(this->windowHeight - absY);
-            switch (e.type)
-            {
-                case SDL_FINGERMOTION:
-                    queue.mouseMotion(absX, correctedY);
-                    return true;
-                case SDL_FINGERDOWN: 
-                    queue.mouseButtonPress(absX, correctedY, e.tfinger.fingerId);
-                    return true;
-                case SDL_FINGERUP:
-                    queue.mouseButtonRelease(absX, correctedY, e.tfinger.fingerId);
-                    return true;
-                default:
-                    break;
-            }
-            return false;
-        }
-    
-        bool handleMouseEvent(const SDL_Event &e, osgGA::EventQueue &queue)
-        {
-            switch (e.type)
-            {
-                case SDL_MOUSEMOTION: {
-                    auto correctedY = -(this->windowHeight - e.motion.y);
-                    queue.mouseMotion(e.motion.x, correctedY);
-                    return true;
-                }
-                case SDL_MOUSEBUTTONDOWN: {
-                    auto correctedY = -(this->windowHeight - e.button.y);
-                    queue.mouseButtonPress(e.button.x, correctedY, e.button.button);
-                    return true;
-                }
-                case SDL_MOUSEBUTTONUP: {
-                    auto correctedY = -(this->windowHeight - e.button.y);
-                    queue.mouseButtonRelease(e.button.x, correctedY, e.button.button);
-                    return true;
-                }
-                default:
-                    break;
-            }
-            return false;
-        }
-    // Application+handleEvent-web End
-    // Application+setupWindow-embedded Start
-    private:
-        int windowWidth;
-        int windowHeight;
+    // Application+run End
+    // Application+setupWindow-desktop Start
     public:
-        void setupWindow(int width, int height)
-        {
-            this->viewer->setUpViewerAsEmbeddedInWindow(0, 0, width, height);
-            this->windowWidth = width;
-            this->windowHeight = height;
-        }
-    // Application+setupWindow-embedded End
-    // Application+setupWindow-web Start
-    private:
-        SDL_Window *sdlWindow = 0;
-    public:
-        bool setupWindow(
+        void setupWindow(
             const std::string &title,
+            int x,
+            int y,
             int width,
             int height
         ) {
-            this->configureSDLGLContext();
-            this->sdlWindow =
-                SDL_CreateWindow(
-                    title.c_str(),
-                    SDL_WINDOWPOS_CENTERED,
-                    SDL_WINDOWPOS_CENTERED,
-                    width,
-                    height,
-                    SDL_WINDOW_OPENGL
-                );
-            if (!this->sdlWindow)
-            {
-                MAIN_APPLICATION_LOG(
-                    "ERROR Could not create SDL window: '%s'\n",
-                    SDL_GetError()
-                );
-                return false;
-            }
-    
-            SDL_GL_CreateContext(this->sdlWindow);
-            this->setupWindow(width, height);
-    
-            return true;
+            osg::GraphicsContext *gc =
+                render::createGraphicsContext(title, x, y, width, height);
+            // Configure viewer's camera with FOVY and window size.
+            osg::Camera *cam = this->viewer->getCamera();
+            render::setupCamera(cam, gc, 30, width, height);
         }
-        void configureSDLGLContext()
-        {
-            SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
-            SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
-            SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
-            SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-            SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-        }
-    // Application+setupWindow-web End
+    // Application+setupWindow-desktop End
 
     // Application+HTTPClient Start
     public:
@@ -464,78 +324,10 @@ class Application
             delete this->viewer;
         }
     // Application+Rendering End
-    // Application+WindowResizing-web Start
-    public:
-        void resizeWindowToCanvasSize()
-        {
-            // Do nothing if canvas size retrieval fails.
-            int width;
-            int height;
-            if (!canvasSize(&width, &height))
-            {
-                return;
-            }
-    
-            // Do nothing if size is the same.
-            int currentWidth;
-            int currentHeight;
-            SDL_GetWindowSize(this->sdlWindow, &currentWidth, &currentHeight);
-            if (
-                width == currentWidth &&
-                height == currentHeight
-            ) {
-                return;
-            }
-    
-            // Resize SDL window.
-            SDL_SetWindowSize(this->sdlWindow, width, height);
-            // Resize OSG window.
-            this->setupWindow(width, height);
-        }
-    private:
-        void setupWindowResizing()
-        {
-            emscripten_set_resize_callback(
-                0,
-                this,
-                EM_FALSE,
-                Application::resizeWindow
-            );
-        }
-        bool canvasSize(int *width, int *height)
-        {
-            double w;
-            double h;
-            auto result = emscripten_get_element_css_size("canvas", &w, &h);
-            if (result >= 0)
-            {
-                *width = w;
-                *height = h;
-                return true;
-            }
-            return false;
-        }
-        static EM_BOOL resizeWindow(int, const EmscriptenUiEvent *, void *userData)
-        {
-            Application *app = reinterpret_cast<Application *>(userData);
-    
-            // Make sure application instance exists.
-            if (!app)
-            {
-                return EM_FALSE;
-            }
-    
-            app->resizeWindowToCanvasSize();
-            return EM_TRUE;
-        }
-    // Application+WindowResizing-web End
 // Application Start
 };
 // Application End
 
-// Example+04 Start
-const auto EXAMPLE_TITLE = "OMC-04: Set layout, theme, seed";
-// Example+04 End
 
 // Example Start
 struct Example
@@ -569,10 +361,6 @@ struct Example
         this->setupSetLayoutThemeSeedTest();
         
         // Example+SetLayoutThemeSeedTest End
-        // Example+VBO Start
-        this->setupSceneVBO();
-        
-        // Example+VBO End
 // Example Start
     }
     ~Example()
@@ -596,6 +384,75 @@ struct Example
     }
 
 // Example End
+    // Example+ColorLoading Start
+    private:
+        const std::string loadingAnimationCallbackName = "LoadingAnimation";
+        osg::Timer loadingTimer;
+        scene::LinearInterpolator interpolator;
+        const float loadingAnimationDelay = 0.2;
+    
+        core::Reporter *startColorLoading()
+        {
+            this->resetBackground();
+            // Configure blinking interpolation.
+            this->interpolator.keyValues = {
+                {0, 0},
+                {0.5, 0.5}, // Change color to 0.5 in 0.5s.
+                {1, 0}, // Change color back to 0 in 0.5s.
+            };
+            this->startColorLoadingAnimation();
+    
+            return 0;
+        }
+        core::Reporter *stopColorLoading()
+        {
+            this->stopColorLoadingAnimation();
+            // Make sure we reset background after the last background animation.
+            this->app->frameReporter.addOneTimeCallback(
+                [&] {
+                    this->resetBackground();
+                }
+            );
+            return 0;
+        }
+        void startColorLoadingAnimation()
+        {
+            this->loadingTimer.setStartTick();
+    
+            this->app->frameReporter.addCallback(
+                [&] {
+                    auto elapsed = this->loadingTimer.time_s();
+                    // Make sure delay passed.
+                    elapsed -= this->loadingAnimationDelay;
+                    if (elapsed < 0)
+                    {
+                        return;
+                    }
+                    this->animateColorLoading(elapsed);
+                },
+                this->loadingAnimationCallbackName
+            );
+        }
+        void stopColorLoadingAnimation()
+        {
+            this->app->frameReporter.removeCallback(
+                this->loadingAnimationCallbackName
+            );
+        }
+        void animateColorLoading(float elapsed)
+        {
+            // Keep `elapsed` in [0; 1] range by using only fractional part.
+            float intpart;
+            elapsed = modf(elapsed, &intpart);
+    
+            auto value = this->interpolator.valueFor(elapsed);
+            this->app->camera()->setClearColor({value, value, value, 0});
+        }
+        void resetBackground()
+        {
+            this->app->camera()->setClearColor({0, 0, 0, 0});
+        }
+    // Example+ColorLoading End
     // Example+DefaultLayoutTheme Start
     private:
         mahjong::Layout layout;
@@ -1268,23 +1125,6 @@ struct Example
             this->selectedTilesChanged.report();
         }
     // Example+UnmatchedTilesDeselection End
-    // Example+VBO Start
-    private:
-        void setupSceneVBO()
-        {
-            // Do nothing for an empty scene.
-            if (!this->scene.valid())
-            {
-                return;
-            }
-            // Use VBO and EBO instead of display lists.
-            // CRITICAL for:
-            // * mobile
-            // * web (Emscripten) to skip FULL_ES2 emulation flag
-            render::VBOSetupVisitor vbo;
-            this->scene->accept(vbo);
-        }
-    // Example+VBO End
  
     // Example+createTiles Start
     // Make sure positions' count is equal to matchIds' one.

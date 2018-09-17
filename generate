@@ -20,6 +20,7 @@ COMPONENTS="
 02.Theme
 03.MatchTiles
 04.SetLayoutThemeSeed
+05.ColorfulStatus
 "
 
 # Platform -> Path to Features.txt
