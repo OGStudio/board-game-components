@@ -1,9 +1,9 @@
 FEATURE main.h/Setup
-this->setupSetLayoutThemeSeedTest();
+this->setupColorfulStatusTest();
 
 FEATURE main.h/Impl
 private:
-    void setupSetLayoutThemeSeedTest()
+    void setupColorfulStatusTest()
     {
         this->setupSequence.setEnabled(true);
     }

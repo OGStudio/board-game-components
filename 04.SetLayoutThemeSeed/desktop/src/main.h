@@ -360,6 +360,10 @@ struct Example
         this->setupTheme();
         
         // Example+Theme End
+        // Example+SetLayoutThemeSeed Start
+        this->setupSetLayoutThemeSeed();
+        
+        // Example+SetLayoutThemeSeed End
         // Example+SetLayoutThemeSeedTest Start
         this->setupSetLayoutThemeSeedTest();
         
@@ -370,10 +374,10 @@ struct Example
     {
 
 // Example End
-        // Example+SetLayoutThemeSeedTest Start
-        this->tearSetLayoutThemeSeedTestDown();
+        // Example+SetLayoutThemeSeed Start
+        this->tearSetLayoutThemeSeedDown();
         
-        // Example+SetLayoutThemeSeedTest End
+        // Example+SetLayoutThemeSeed End
         // Example+Theme Start
         this->tearThemeDown();
         
@@ -630,22 +634,22 @@ struct Example
             this->parameters = parameters;
         }
     // Example+Parameters End
-    // Example+SetLayoutThemeSeedTest Start
+    // Example+SetLayoutThemeSeed Start
     private:
         core::Sequence setupSequence;
-        void setupSetLayoutThemeSeedTest()
+        void setupSetLayoutThemeSeed()
         {
             this->setupSetup();
             this->setupLoading();
-    
-            this->setupSequence.setEnabled(true);
         }
-        void tearSetLayoutThemeSeedTestDown()
+        void tearSetLayoutThemeSeedDown()
         {
             this->tearInternalLayoutsDown();
             this->tearInternalThemesDown();
         }
+    
         // Setup.
+    
         void setupSetup()
         {
             this->setupSequence.setActions({
@@ -674,7 +678,9 @@ struct Example
     
             return 0;
         }
-        // Loading.
+    
+        // Layout and theme loading.
+    
         void setupLoading()
         {
             this->setupSequence.insertAction(
@@ -726,6 +732,13 @@ struct Example
             }
     
             this->setupTiles(seed);
+        }
+    // Example+SetLayoutThemeSeed End
+    // Example+SetLayoutThemeSeedTest Start
+    private:
+        void setupSetLayoutThemeSeedTest()
+        {
+            this->setupSequence.setEnabled(true);
         }
     // Example+SetLayoutThemeSeedTest End
     // Example+Scene Start

@@ -1,10 +1,33 @@
+FEATURE main.h/Setup
+this->setupColorfulStatus();
+
 FEATURE main.h/Impl
 private:
+    void setupColorfulStatus()
+    {
+        this->setupLoadingAnimation();
+        //this->setupLoss();
+        //this->setupVictory();
+    }
+
+    // Loading animation.
+
     const std::string loadingAnimationCallbackName = "LoadingAnimation";
     osg::Timer loadingTimer;
     scene::LinearInterpolator interpolator;
     const float loadingAnimationDelay = 0.2;
 
+    void setupLoadingAnimation()
+    {
+        this->setupSequence.insertAction(
+            CORE_SEQUENCE_ACTION("startLoading", this->startColorLoading()),
+            "loadLayout"
+        );
+        this->setupSequence.insertAction(
+            CORE_SEQUENCE_ACTION("stopLoading", this->stopColorLoading()),
+            "finishSetup"
+        );
+    }
     core::Reporter *startColorLoading()
     {
         this->resetBackground();

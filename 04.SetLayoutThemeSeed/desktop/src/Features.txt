@@ -13,7 +13,6 @@ Application+Rendering
 MAIN_EXAMPLE_LOG
 Example
 Example+04
-Example+SetLayoutThemeSeedTest
 Example+Game
 Example+GameState
 Example+DefaultLayoutTheme
@@ -23,6 +22,8 @@ Example+MatchedTilesRemoval
 Example+NodeSelection
 Example+Parameters
 Example+Scene
+Example+SetLayoutThemeSeed
+Example+SetLayoutThemeSeedTest
 Example+Theme
 Example+Tiles
 Example+TileMatching

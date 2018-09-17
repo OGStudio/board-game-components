@@ -328,6 +328,9 @@ class Application
 };
 // Application End
 
+// Example+05 Start
+const auto EXAMPLE_TITLE = "OMC-05: Colorful status";
+// Example+05 End
 
 // Example Start
 struct Example
@@ -357,20 +360,28 @@ struct Example
         this->setupTheme();
         
         // Example+Theme End
-        // Example+SetLayoutThemeSeedTest Start
-        this->setupSetLayoutThemeSeedTest();
+        // Example+SetLayoutThemeSeed Start
+        this->setupSetLayoutThemeSeed();
         
-        // Example+SetLayoutThemeSeedTest End
+        // Example+SetLayoutThemeSeed End
+        // Example+ColorfulStatus Start
+        this->setupColorfulStatus();
+        
+        // Example+ColorfulStatus End
+        // Example+ColorfulStatusTest Start
+        this->setupColorfulStatusTest();
+        
+        // Example+ColorfulStatusTest End
 // Example Start
     }
     ~Example()
     {
 
 // Example End
-        // Example+SetLayoutThemeSeedTest Start
-        this->tearSetLayoutThemeSeedTestDown();
+        // Example+SetLayoutThemeSeed Start
+        this->tearSetLayoutThemeSeedDown();
         
-        // Example+SetLayoutThemeSeedTest End
+        // Example+SetLayoutThemeSeed End
         // Example+Theme Start
         this->tearThemeDown();
         
@@ -384,13 +395,33 @@ struct Example
     }
 
 // Example End
-    // Example+ColorLoading Start
+    // Example+ColorfulStatus Start
     private:
+        void setupColorfulStatus()
+        {
+            this->setupLoadingAnimation();
+            //this->setupLoss();
+            //this->setupVictory();
+        }
+    
+        // Loading animation.
+    
         const std::string loadingAnimationCallbackName = "LoadingAnimation";
         osg::Timer loadingTimer;
         scene::LinearInterpolator interpolator;
         const float loadingAnimationDelay = 0.2;
     
+        void setupLoadingAnimation()
+        {
+            this->setupSequence.insertAction(
+                CORE_SEQUENCE_ACTION("startLoading", this->startColorLoading()),
+                "loadLayout"
+            );
+            this->setupSequence.insertAction(
+                CORE_SEQUENCE_ACTION("stopLoading", this->stopColorLoading()),
+                "finishSetup"
+            );
+        }
         core::Reporter *startColorLoading()
         {
             this->resetBackground();
@@ -452,7 +483,14 @@ struct Example
         {
             this->app->camera()->setClearColor({0, 0, 0, 0});
         }
-    // Example+ColorLoading End
+    // Example+ColorfulStatus End
+    // Example+ColorfulStatusTest Start
+    private:
+        void setupColorfulStatusTest()
+        {
+            this->setupSequence.setEnabled(true);
+        }
+    // Example+ColorfulStatusTest End
     // Example+DefaultLayoutTheme Start
     private:
         mahjong::Layout layout;
@@ -696,22 +734,22 @@ struct Example
             this->parameters = parameters;
         }
     // Example+Parameters End
-    // Example+SetLayoutThemeSeedTest Start
+    // Example+SetLayoutThemeSeed Start
     private:
         core::Sequence setupSequence;
-        void setupSetLayoutThemeSeedTest()
+        void setupSetLayoutThemeSeed()
         {
             this->setupSetup();
             this->setupLoading();
-    
-            this->setupSequence.setEnabled(true);
         }
-        void tearSetLayoutThemeSeedTestDown()
+        void tearSetLayoutThemeSeedDown()
         {
             this->tearInternalLayoutsDown();
             this->tearInternalThemesDown();
         }
+    
         // Setup.
+    
         void setupSetup()
         {
             this->setupSequence.setActions({
@@ -740,7 +778,9 @@ struct Example
     
             return 0;
         }
-        // Loading.
+    
+        // Layout and theme loading.
+    
         void setupLoading()
         {
             this->setupSequence.insertAction(
@@ -793,7 +833,7 @@ struct Example
     
             this->setupTiles(seed);
         }
-    // Example+SetLayoutThemeSeedTest End
+    // Example+SetLayoutThemeSeed End
     // Example+Scene Start
     private:
         osg::ref_ptr<osg::MatrixTransform> scene;

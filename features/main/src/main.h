@@ -94,6 +94,7 @@ namespace main
 // FEATURE Example+02/Title
 // FEATURE Example+03/Title
 // FEATURE Example+04/Title
+// FEATURE Example+05/Title
 
 // FEATURE Example/Setup
         // FEATURE Example+Parameters/Setup
@@ -103,15 +104,19 @@ namespace main
         // FEATURE Example+ThemeTest/Setup
         // FEATURE Example+LayoutTest/Setup
         // FEATURE Example+MatchTilesTest/Setup
+        // FEATURE Example+SetLayoutThemeSeed/Setup
         // FEATURE Example+SetLayoutThemeSeedTest/Setup
+        // FEATURE Example+ColorfulStatus/Setup
+        // FEATURE Example+ColorfulStatusTest/Setup
         // FEATURE Example+VBO/Setup
 // FEATURE Example/TearDown
         // FEATURE Example+MatchTilesTest/TearDown
-        // FEATURE Example+SetLayoutThemeSeedTest/TearDown
+        // FEATURE Example+SetLayoutThemeSeed/TearDown
         // FEATURE Example+Theme/TearDown
         // FEATURE Example+Game/TearDown
 // FEATURE Example/Impl
-    // FEATURE Example+ColorLoading/Impl
+    // FEATURE Example+ColorfulStatus/Impl
+    // FEATURE Example+ColorfulStatusTest/Impl
     // FEATURE Example+DefaultLayoutTheme/Impl
     // FEATURE Example+Game/Impl
     // FEATURE Example+GameState/Impl
@@ -122,6 +127,7 @@ namespace main
     // FEATURE Example+MatchTilesTest/Impl
     // FEATURE Example+NodeSelection/Impl
     // FEATURE Example+Parameters/Impl
+    // FEATURE Example+SetLayoutThemeSeed/Impl
     // FEATURE Example+SetLayoutThemeSeedTest/Impl
     // FEATURE Example+Scene/Impl
     // FEATURE Example+Theme/Impl

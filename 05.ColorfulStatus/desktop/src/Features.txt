@@ -13,8 +13,8 @@ Application+Rendering
 MAIN_EXAMPLE_LOG
 Example
 Example+05
-Example+SetLayoutThemeSeedTest
-Example+ColorLoading
+Example+ColorfulStatus
+Example+ColorfulStatusTest
 Example+Game
 Example+GameState
 Example+DefaultLayoutTheme
@@ -24,6 +24,7 @@ Example+MatchedTilesRemoval
 Example+NodeSelection
 Example+Parameters
 Example+Scene
+Example+SetLayoutThemeSeed
 Example+Theme
 Example+Tiles
 Example+TileMatching
@@ -40,8 +41,8 @@ main-desktop
 main+Arguments-desktop
 
 # core
+CORE_SEQUENCE_ACTION
 CORE_SEQUENCE_LOG
-CORE_REGISTER_SEQUENCE_ACTION
 Reporter
 Sequence
 
