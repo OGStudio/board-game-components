@@ -400,8 +400,7 @@ struct Example
         void setupColorfulStatus()
         {
             this->setupLoadingAnimation();
-            //this->setupLoss();
-            //this->setupVictory();
+            this->setupFinishAnimation();
         }
     
         // Loading animation.
@@ -482,6 +481,33 @@ struct Example
         void resetBackground()
         {
             this->app->camera()->setClearColor({0, 0, 0, 0});
+        }
+    
+        // Finish animation.
+    
+        void setupFinishAnimation()
+        {
+            this->finishedGame.addCallback(
+                [&] {
+                    this->animateFinish();
+                }
+            );
+        }
+        void animateFinish()
+        {
+            float r = 0;
+            float g = 0;
+            // Display green color upon victory.
+            if (this->isGameVictorious)
+            {
+                g = 0.5;
+            }
+            // Display red color upon loss.
+            else
+            {
+                r = 0.5;
+            }
+            this->app->camera()->setClearColor({r, g, 0, 0});
         }
     // Example+ColorfulStatus End
     // Example+ColorfulStatusTest Start
