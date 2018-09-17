@@ -533,9 +533,9 @@ class Application
 };
 // Application End
 
-// Example+04 Start
-const auto EXAMPLE_TITLE = "OMC-04: Set layout, theme, seed";
-// Example+04 End
+// Example+05 Start
+const auto EXAMPLE_TITLE = "OMC-05: Colorful status";
+// Example+05 End
 
 // Example Start
 struct Example
@@ -565,10 +565,18 @@ struct Example
         this->setupTheme();
         
         // Example+Theme End
-        // Example+SetLayoutThemeSeedTest Start
-        this->setupSetLayoutThemeSeedTest();
+        // Example+SetLayoutThemeSeed Start
+        this->setupSetLayoutThemeSeed();
         
-        // Example+SetLayoutThemeSeedTest End
+        // Example+SetLayoutThemeSeed End
+        // Example+ColorfulStatus Start
+        this->setupColorfulStatus();
+        
+        // Example+ColorfulStatus End
+        // Example+ColorfulStatusTest Start
+        this->setupColorfulStatusTest();
+        
+        // Example+ColorfulStatusTest End
         // Example+VBO Start
         this->setupSceneVBO();
         
@@ -579,6 +587,10 @@ struct Example
     {
 
 // Example End
+        // Example+SetLayoutThemeSeed Start
+        this->tearSetLayoutThemeSeedDown();
+        
+        // Example+SetLayoutThemeSeed End
         // Example+Theme Start
         this->tearThemeDown();
         
@@ -592,6 +604,128 @@ struct Example
     }
 
 // Example End
+    // Example+ColorfulStatus Start
+    private:
+        void setupColorfulStatus()
+        {
+            this->setupLoadingAnimation();
+            this->setupFinishAnimation();
+        }
+    
+        // Loading animation.
+    
+        const std::string loadingAnimationCallbackName = "LoadingAnimation";
+        osg::Timer loadingTimer;
+        scene::LinearInterpolator interpolator;
+        const float loadingAnimationDelay = 0.2;
+    
+        void setupLoadingAnimation()
+        {
+            this->setupSequence.insertAction(
+                CORE_SEQUENCE_ACTION("startLoading", this->startColorLoading()),
+                "loadLayout"
+            );
+            this->setupSequence.insertAction(
+                CORE_SEQUENCE_ACTION("stopLoading", this->stopColorLoading()),
+                "finishSetup"
+            );
+        }
+        core::Reporter *startColorLoading()
+        {
+            this->resetBackground();
+            // Configure blinking interpolation.
+            this->interpolator.keyValues = {
+                {0, 0},
+                {0.5, 0.5}, // Change color to 0.5 in 0.5s.
+                {1, 0}, // Change color back to 0 in 0.5s.
+            };
+            this->startColorLoadingAnimation();
+    
+            return 0;
+        }
+        core::Reporter *stopColorLoading()
+        {
+            this->stopColorLoadingAnimation();
+            // Make sure we reset background after the last background animation.
+            this->app->frameReporter.addOneTimeCallback(
+                [&] {
+                    this->resetBackground();
+                }
+            );
+            return 0;
+        }
+        void startColorLoadingAnimation()
+        {
+            this->loadingTimer.setStartTick();
+    
+            this->app->frameReporter.addCallback(
+                [&] {
+                    auto elapsed = this->loadingTimer.time_s();
+                    // Make sure delay passed.
+                    elapsed -= this->loadingAnimationDelay;
+                    if (elapsed < 0)
+                    {
+                        return;
+                    }
+                    this->animateColorLoading(elapsed);
+                },
+                this->loadingAnimationCallbackName
+            );
+        }
+        void stopColorLoadingAnimation()
+        {
+            this->app->frameReporter.removeCallback(
+                this->loadingAnimationCallbackName
+            );
+        }
+        void animateColorLoading(float elapsed)
+        {
+            // Keep `elapsed` in [0; 1] range by using only fractional part.
+            float intpart;
+            elapsed = modf(elapsed, &intpart);
+    
+            auto value = this->interpolator.valueFor(elapsed);
+            this->app->camera()->setClearColor({value, value, value, 0});
+        }
+        void resetBackground()
+        {
+            this->app->camera()->setClearColor({0, 0, 0, 0});
+        }
+    
+        // Finish animation.
+    
+        void setupFinishAnimation()
+        {
+            this->finishedGame.addCallback(
+                [&] {
+                    this->animateFinish();
+                }
+            );
+        }
+        void animateFinish()
+        {
+            float r = 0;
+            float g = 0;
+            // Display green color upon victory.
+            if (this->isGameVictorious)
+            {
+                g = 0.5;
+            }
+            // Display red color upon loss.
+            else
+            {
+                r = 0.5;
+            }
+            this->app->camera()->setClearColor({r, g, 0, 0});
+        }
+    // Example+ColorfulStatus End
+    // Example+ColorfulStatusTest Start
+    private:
+        void setupColorfulStatusTest()
+        {
+            this->setupSequence.setEnabled(true);
+        }
+    // Example+ColorfulStatusTest End
     // Example+DefaultLayoutTheme Start
     private:
         mahjong::Layout layout;
@@ -835,13 +969,106 @@ struct Example
             this->parameters = parameters;
         }
     // Example+Parameters End
-    // Example+SetLayoutThemeSeedTest Start
+    // Example+SetLayoutThemeSeed Start
     private:
-        void setupSetLayoutThemeSeedTest()
+        core::Sequence setupSequence;
+        void setupSetLayoutThemeSeed()
         {
-            this->setupSequence.setEnabled(true);
+            this->setupSetup();
+            this->setupLoading();
         }
-    // Example+SetLayoutThemeSeedTest End
+        void tearSetLayoutThemeSeedDown()
+        {
+            this->tearInternalLayoutsDown();
+            this->tearInternalThemesDown();
+        }
+    
+        // Setup.
+    
+        void setupSetup()
+        {
+            this->setupSequence.setActions({
+                CORE_SEQUENCE_ACTION("startSetup", this->startSetup()),
+                CORE_SEQUENCE_ACTION("finishSetup", this->finishSetup()),
+            });
+        }
+        core::Reporter *startSetup()
+        {
+            this->setupInternalLayouts();
+            this->setupInternalThemes();
+            this->setupDefaultLayoutTheme();
+    
+            return 0;
+        }
+        core::Reporter *finishSetup()
+        {
+            this->setupTiles();
+            this->setupNodeSelection();
+            this->setupTileSelection();
+            this->setupTileSelectionDepiction();
+            this->setupTileMatching();
+            this->setupUnmatchedTilesDeselection();
+            this->setupMatchedTilesRemoval();
+            this->setupGameState();
+    
+            return 0;
+        }
+    
+        // Layout and theme loading.
+    
+        void setupLoading()
+        {
+            this->setupSequence.insertAction(
+                CORE_SEQUENCE_ACTION("loadLayout", this->loadLayout()),
+                "finishSetup"
+            );
+            this->setupSequence.insertAction(
+                CORE_SEQUENCE_ACTION("loadTheme", this->loadTheme()),
+                "finishSetup"
+            );
+        }
+        core::Reporter *loadLayout()
+        {
+            // Do nothing if `layout` parameter is absent.
+            auto it = this->parameters.find("layout");
+            if (it == this->parameters.end())
+            {
+                return 0;
+            }
+    
+            // Load layout otherwise.
+            auto value = it->second;
+            return this->loadLayout(value);
+        }
+        core::Reporter *loadTheme()
+        {
+            // Do nothing if `theme` parameter is absent.
+            auto it = this->parameters.find("theme");
+            if (it == this->parameters.end())
+            {
+                return 0;
+            }
+    
+            // Load theme otherwise.
+            auto value = it->second;
+            return this->loadTheme(value);
+        }
+        void setupTiles()
+        {
+            // By default, use seed of the current time.
+            int seed = time(0);
+    
+            // Override it with the seed coming from parameters.
+            auto it = this->parameters.find("seed");
+            if (it != this->parameters.end())
+            {
+                seed = atoi(it->second.c_str());
+                MAIN_EXAMPLE_LOG("Using seed '%d'", seed);
+            }
+    
+            this->setupTiles(seed);
+        }
+    // Example+SetLayoutThemeSeed End
     // Example+Scene Start
     private:
         osg::ref_ptr<osg::MatrixTransform> scene;

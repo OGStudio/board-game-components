@@ -15,9 +15,9 @@ Application+WindowResizing-web
 
 MAIN_EXAMPLE_LOG
 Example
-Example+04
-Example+SetLayoutThemeSeedTest
-Example+ColorLoading
+Example+05
+Example+ColorfulStatus
+Example+ColorfulStatusTest
 Example+Game
 Example+GameState
 Example+DefaultLayoutTheme
@@ -27,6 +27,7 @@ Example+MatchedTilesRemoval
 Example+NodeSelection
 Example+Parameters
 Example+Scene
+Example+SetLayoutThemeSeed
 Example+Theme
 Example+Tiles
 Example+TileMatching
@@ -46,8 +47,8 @@ main+Input-web
 main+WindowResizing-web
 
 # core
+CORE_SEQUENCE_ACTION
 CORE_SEQUENCE_LOG
-CORE_REGISTER_SEQUENCE_ACTION
 Reporter
 Sequence
 
