@@ -50,6 +50,20 @@ freely, subject to the following restrictions:
 #include "mahjong.h"
 
 // Example+DefaultLayoutTheme End
+// Example+InternalLayouts Start
+#include "X_shaped.layout.h"
+#include "short-loss.layout.h"
+#include "short-victory.layout.h"
+
+#include "resource.h"
+
+// Example+InternalLayouts End
+// Example+InternalThemes Start
+#include "numbers-theme.png.h"
+
+#include "resource.h"
+
+// Example+InternalThemes End
 // Example+Scene Start
 #include <osg/MatrixTransform>
 
@@ -381,6 +395,72 @@ struct Example
             }
         }
     // Example+GameState End
+    // Example+InternalLayouts Start
+    private:
+        resource::Pool *internalLayouts;
+        void setupInternalLayouts()
+        {
+            // Create pool.
+            this->internalLayouts = new resource::Pool;
+    
+            // Register internal layouts.
+            {
+                resource::Resource res(
+                    "layouts",
+                    "X_shaped.layout",
+                    X_shaped_layout,
+                    X_shaped_layout_len
+                );
+                this->internalLayouts->addResource(res);
+            }
+            {
+                resource::Resource res(
+                    "layouts",
+                    "short-loss.layout",
+                    short_loss_layout,
+                    short_loss_layout_len
+                );
+                this->internalLayouts->addResource(res);
+            }
+            {
+                resource::Resource res(
+                    "layouts",
+                    "short-victory.layout",
+                    short_victory_layout,
+                    short_victory_layout_len
+                );
+                this->internalLayouts->addResource(res);
+            }
+        }
+        void tearInternalLayoutsDown()
+        {
+            delete this->internalLayouts;
+        }
+    // Example+InternalLayouts End
+    // Example+InternalThemes Start
+    private:
+        resource::Pool *internalThemes;
+        void setupInternalThemes()
+        {
+            // Create pool.
+            this->internalThemes = new resource::Pool;
+    
+            // Register internal themes.
+            {
+                resource::Resource res(
+                    "themes",
+                    "numbers-theme.png",
+                    numbers_theme_png,
+                    numbers_theme_png_len
+                );
+                this->internalThemes->addResource(res);
+            }
+        }
+        void tearInternalThemesDown()
+        {
+            delete this->internalThemes;
+        }
+    // Example+InternalThemes End
     // Example+MatchedTilesRemoval Start
     private:
         core::Reporter removedTiles;
