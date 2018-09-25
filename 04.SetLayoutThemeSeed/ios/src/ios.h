@@ -22,36 +22,37 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "main.h"
-// FEATURE library-android/Include
-// FEATURE library-ios/Include
-// FEATURE library+httpClient-android/Include
+#ifndef OGS_MAHJONG_COMPONENTS_IOS_H
+#define OGS_MAHJONG_COMPONENTS_IOS_H
 
-// FEATURE library+Ex01+JNI-android/Impl
-// FEATURE library+Ex02+JNI-android/Impl
-// FEATURE library+Ex03+JNI-android/Impl
-// FEATURE library+Ex04+JNI-android/Impl
-// FEATURE library+Ex05+JNI-android/Impl
+#import <UIKit/UIKit.h>
 
-using namespace omc;
+// AppDelegate Start
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
+    @property (nonatomic, strong) UIWindow *window;
+@end
 
-// Example instance.
-main::Example *example = 0;
+// AppDelegate End
+// HTTPClientProcessor-ios Start
+@interface HTTPClientProcessor : NSObject
 
-// FEATURE library-android/NamespaceStart
-// FEATURE library-ios/NamespaceStart
+- (void)process;
 
-// FEATURE library+init-android/Impl
-// FEATURE library+init-ios/Impl
-// FEATURE library+frame-android/Impl
-// FEATURE library+frame-ios/Impl
-// FEATURE library+handleMousePress-android/Impl
-// FEATURE library+jniStrings-android/Impl
+@end
 
-// FEATURE library+httpClient-android/Impl
-// FEATURE library+httpClient-ios/Impl
+// HTTPClientProcessor-ios End
 
-// FEATURE library-android/NamespaceEnd
-// FEATURE library-ios/NamespaceEnd
+// RenderVC Start
+@interface RenderVC : UIViewController
 
-// FEATURE library-openscenegraph/Impl
+// RenderVC End
+    // RenderVC+FrameReporting Start
+    @property (nonatomic, copy) void (^frame)();
+    
+    // RenderVC+FrameReporting End
+// RenderVC Start
+@end
+
+// RenderVC End
+
+#endif // OGS_MAHJONG_COMPONENTS_IOS_H

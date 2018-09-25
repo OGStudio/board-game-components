@@ -7,8 +7,8 @@ Application+Mouse
 Application+Rendering
 Application+camera
 Application+frame+Reporting
-Application+run
-Application+setupWindow-desktop
+Application+handleMousePress-android
+Application+setupWindow-embedded
 
 MAIN_EXAMPLE_LOG
 Example
@@ -31,13 +31,18 @@ Example+TileSelection
 Example+TileSelectionDepiction
 Example+StaticPluginOSG
 Example+StaticPluginPNG
+Example+VBO
 Example+UnmatchedTilesDeselection
 Example+createTiles
 Example+loadLayout
 Example+loadTheme
 
-main-desktop
-main+Arguments-desktop
+library+Ex04+JNI-android
+
+library-android
+library+init-android
+library+frame-android
+library+handleMousePress-android
 
 # core
 CORE_SEQUENCE_ACTION
@@ -63,14 +68,12 @@ tilePositionToInt
 
 # log
 Logger
-log-default
+log-android
 logLevelToString
 logprintf
 
 # format
-commandLineArgumentsToParameters
 printfString
-splitString
 stringStartsWith
 trimmedString
 
@@ -87,15 +90,15 @@ extension
 isPathRemote
 node
 setTextureImage
+splitString
 string
 stringToResourceContents
 
 # render
 RENDER_TILE_THEME_LOG
 TileTheme
-createGraphicsContext-desktop
+VBOSetupVisitor
 createShaderProgram
-setupCamera
 
 # scene
 LinearInterpolator
@@ -112,5 +115,3 @@ MouseButtons
 HTTPClient
 HTTPClientProcessor
 HTTPRequest
-HTTPRequestProcessorMongoose
-mongoose

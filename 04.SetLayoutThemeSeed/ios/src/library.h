@@ -22,36 +22,35 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "main.h"
-// FEATURE library-android/Include
-// FEATURE library-ios/Include
-// FEATURE library+httpClient-android/Include
+#ifndef OGS_MAHJONG_COMPONENTS_LIBRARY_H
+#define OGS_MAHJONG_COMPONENTS_LIBRARY_H
 
-// FEATURE library+Ex01+JNI-android/Impl
-// FEATURE library+Ex02+JNI-android/Impl
-// FEATURE library+Ex03+JNI-android/Impl
-// FEATURE library+Ex04+JNI-android/Impl
-// FEATURE library+Ex05+JNI-android/Impl
+// library+init-ios Start
+// Forward declare UIView for Objective-C++ and C++.
+#ifdef __OBJC__
+    @class UIView;
+#else
+    class UIView;
+#endif
 
-using namespace omc;
+// library+init-ios End
 
-// Example instance.
-main::Example *example = 0;
+namespace library
+{
 
-// FEATURE library-android/NamespaceStart
-// FEATURE library-ios/NamespaceStart
+// library+frame-ios Start
+// Rendering.
+void frame();
 
-// FEATURE library+init-android/Impl
-// FEATURE library+init-ios/Impl
-// FEATURE library+frame-android/Impl
-// FEATURE library+frame-ios/Impl
-// FEATURE library+handleMousePress-android/Impl
-// FEATURE library+jniStrings-android/Impl
+// library+frame-ios End
+// library+init-ios Start
+// Initialization.
+UIView *init(int width, int height, float scale, UIView *parentView);
 
-// FEATURE library+httpClient-android/Impl
-// FEATURE library+httpClient-ios/Impl
+// library+init-ios End
 
-// FEATURE library-android/NamespaceEnd
-// FEATURE library-ios/NamespaceEnd
 
-// FEATURE library-openscenegraph/Impl
+} // namespace library.
+
+#endif // OGS_MAHJONG_COMPONENTS_LIBRARY_H
+

@@ -1,14 +1,20 @@
+# ios
+AppDelegate
+AppDelegate+HTTPClientProcessor-ios
+AppDelegate+RenderVC
+HTTPClientProcessor-ios
+RenderVC
+RenderVC+FrameReporting
+
 # main
 Application
 Application+HTTPClient
-Application+HTTPClientProcessor
 Application+Logging
 Application+Mouse
 Application+Rendering
 Application+camera
 Application+frame+Reporting
-Application+run
-Application+setupWindow-desktop
+Application+setupWindow-ios
 
 MAIN_EXAMPLE_LOG
 Example
@@ -31,13 +37,15 @@ Example+TileSelection
 Example+TileSelectionDepiction
 Example+StaticPluginOSG
 Example+StaticPluginPNG
+Example+VBO
 Example+UnmatchedTilesDeselection
 Example+createTiles
 Example+loadLayout
 Example+loadTheme
 
-main-desktop
-main+Arguments-desktop
+library-ios
+library+init-ios
+library+frame-ios
 
 # core
 CORE_SEQUENCE_ACTION
@@ -68,9 +76,7 @@ logLevelToString
 logprintf
 
 # format
-commandLineArgumentsToParameters
 printfString
-splitString
 stringStartsWith
 trimmedString
 
@@ -93,7 +99,8 @@ stringToResourceContents
 # render
 RENDER_TILE_THEME_LOG
 TileTheme
-createGraphicsContext-desktop
+VBOSetupVisitor
+createGraphicsContext-ios
 createShaderProgram
 setupCamera
 
@@ -110,7 +117,4 @@ MouseButtons
 
 # network
 HTTPClient
-HTTPClientProcessor
 HTTPRequest
-HTTPRequestProcessorMongoose
-mongoose
