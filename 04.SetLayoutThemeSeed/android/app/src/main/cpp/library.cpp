@@ -27,10 +27,16 @@ freely, subject to the following restrictions:
 #include <jni.h>
 
 // library-android End
+// library+httpClient-android Start
+#include "format.h"
+
+// library+httpClient-android End
 
 // library+Ex04+JNI-android Start
 #define JNI_FUNC(FUNC_NAME) \
     JNIEXPORT void JNICALL Java_org_opengamestudio_omc04_library_ ## FUNC_NAME
+#define JNI_FUNC_ARRAY(FUNC_NAME) \
+    JNIEXPORT jobjectArray JNICALL Java_org_opengamestudio_omc04_library_ ## FUNC_NAME
 #define JNI_ARG JNIEnv *env, jobject /* this */
 // library+Ex04+JNI-android End
 
@@ -74,7 +80,77 @@ JNI_FUNC(handleMousePress)(JNI_ARG, jboolean down, jfloat x, jfloat y)
     example->app->handleMousePress(down == JNI_TRUE, x, y);
 }
 // library+handleMousePress-android End
+// library+jniStrings-android Start
+// Convert C++ strings to JNI ones.
+jobjectArray jniStrings(JNIEnv *env, const std::vector<std::string> items)
+{
+    // NOTE According to https://stackoverflow.com/questions/6238785/newstringutf-and-freeing-memory
+    // NOTE we don't need to free memory of New* calls because these are Java's local references.
+    // NOTE Since we pass them to Java (later), we don't need to do anything about them.
+    jclass stringType = env->FindClass("java/lang/String");
+    jobjectArray result = env->NewObjectArray(items.size(), stringType, 0);
+    int id = 0;
+    for (auto item : items)
+    {
+        jstring jniItem = env->NewStringUTF(item.c_str());
+        env->SetObjectArrayElement(result, id++, jniItem);
+    }
+    return result;
+}
+// library+jniStrings-android End
 
+// library+httpClient-android Start
+// Pop next pending request and execute it (implicitely mark it as IN_PROGRESS).
+JNI_FUNC_ARRAY(httpClientExecuteNextRequest)(JNI_ARG)
+{
+    std::vector<std::string> requestParts;
+    auto request = example->app->httpClient->nextPendingRequest();
+    if (request)
+    {
+        request->status = network::HTTPRequest::IN_PROGRESS;
+        intptr_t id = reinterpret_cast<intptr_t>(request);
+        std::string sid = format::printfString("%ld", id);
+        requestParts.push_back(sid);
+        requestParts.push_back(request->url);
+        requestParts.push_back(request->data);
+    }
+    return jniStrings(env, requestParts);
+}
+
+JNI_FUNC(httpClientCompleteRequest)(
+    JNI_ARG,
+    jstring requestId,
+    jboolean status,
+    jstring response
+) {
+    // Get request id.
+    const char *cid = env->GetStringUTFChars(requestId, 0);
+    std::string sid(cid);
+    intptr_t id = ::strtoll(sid.c_str(), 0, 10);
+    env->ReleaseStringUTFChars(requestId, cid);
+
+    // Try to get request from id.
+    auto request = reinterpret_cast<network::HTTPRequest *>(id);
+    if (!request)
+    {
+        return;
+    }
+
+    // Report result of the request.
+    request->status = network::HTTPRequest::COMPLETED;
+    const char *creply = env->GetStringUTFChars(response, 0);
+    std::string reply(creply);
+    if (status == JNI_TRUE)
+    {
+        request->success(reply);
+    }
+    else
+    {
+        request->failure(reply);
+    }
+    env->ReleaseStringUTFChars(response, creply);
+}
+// library+httpClient-android End
 
 // library-android Start
 } // extern "C".

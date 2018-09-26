@@ -1,7 +1,6 @@
 # main
 Application
 Application+HTTPClient
-Application+HTTPClientProcessor
 Application+Logging
 Application+Mouse
 Application+Rendering
@@ -43,6 +42,8 @@ library-android
 library+init-android
 library+frame-android
 library+handleMousePress-android
+library+httpClient-android
+library+jniStrings-android
 
 # core
 CORE_SEQUENCE_ACTION
@@ -113,5 +114,4 @@ MouseButtons
 
 # network
 HTTPClient
-HTTPClientProcessor
 HTTPRequest
