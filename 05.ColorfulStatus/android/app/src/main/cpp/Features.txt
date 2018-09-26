@@ -1,14 +1,13 @@
 # main
 Application
 Application+HTTPClient
-Application+HTTPClientProcessor
 Application+Logging
 Application+Mouse
 Application+Rendering
 Application+camera
 Application+frame+Reporting
-Application+run
-Application+setupWindow-desktop
+Application+handleMousePress-android
+Application+setupWindow-embedded
 
 MAIN_EXAMPLE_LOG
 Example
@@ -32,13 +31,20 @@ Example+TileSelection
 Example+TileSelectionDepiction
 Example+StaticPluginOSG
 Example+StaticPluginPNG
+Example+VBO
 Example+UnmatchedTilesDeselection
 Example+createTiles
 Example+loadLayout
 Example+loadTheme
 
-main-desktop
-main+Arguments-desktop
+library+Ex05+JNI-android
+
+library-android
+library+init-android
+library+frame-android
+library+handleMousePress-android
+library+httpClient-android
+library+jniStrings-android
 
 # core
 CORE_SEQUENCE_ACTION
@@ -64,12 +70,11 @@ tilePositionToInt
 
 # log
 Logger
-log-default
+log-android
 logLevelToString
 logprintf
 
 # format
-commandLineArgumentsToParameters
 printfString
 splitString
 stringStartsWith
@@ -94,9 +99,8 @@ stringToResourceContents
 # render
 RENDER_TILE_THEME_LOG
 TileTheme
-createGraphicsContext-desktop
+VBOSetupVisitor
 createShaderProgram
-setupCamera
 
 # scene
 LinearInterpolator
@@ -111,7 +115,4 @@ MouseButtons
 
 # network
 HTTPClient
-HTTPClientProcessor
 HTTPRequest
-HTTPRequestProcessorMongoose
-mongoose

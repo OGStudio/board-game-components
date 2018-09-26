@@ -29,14 +29,6 @@ freely, subject to the following restrictions:
 #include "core.h"
 
 // Application+frame+Reporting End
-// Application+handleEvent-web Start
-#include <SDL2/SDL.h>
-
-// Application+handleEvent-web End
-// Application+setupWindow-web Start
-#include <SDL2/SDL.h>
-
-// Application+setupWindow-web End
 
 // Application+HTTPClient Start
 #include "network.h"
@@ -57,10 +49,6 @@ freely, subject to the following restrictions:
 #include <osgGA/TrackballManipulator>
 
 // Application+Rendering End
-// Application+WindowResizing-web Start
-#include <emscripten/html5.h>
-
-// Application+WindowResizing-web End
 
 // Example+ColorfulStatus Start
 #include <cmath>
@@ -109,17 +97,6 @@ freely, subject to the following restrictions:
 
 // Example+createTiles End
 
-// MAIN_APPLICATION_LOG Start
-#include "log.h"
-#include "format.h"
-#define MAIN_APPLICATION_LOG_PREFIX "main::Application(%p) %s"
-#define MAIN_APPLICATION_LOG(...) \
-    log::logprintf( \
-        MAIN_APPLICATION_LOG_PREFIX, \
-        this, \
-        format::printfString(__VA_ARGS__).c_str() \
-    )
-// MAIN_APPLICATION_LOG End
 // MAIN_EXAMPLE_LOG Start
 #include "log.h"
 #include "format.h"
@@ -180,24 +157,12 @@ class Application
             this->setupHTTPClient();
             
             // Application+HTTPClient End
-            // Application+HTTPClientProcessor Start
-            this->setupHTTPClientProcessor();
-            
-            // Application+HTTPClientProcessor End
-            // Application+WindowResizing-web Start
-            this->setupWindowResizing();
-            
-            // Application+WindowResizing-web End
 // Application Start
         }
         ~Application()
         {
 
 // Application End
-            // Application+HTTPClientProcessor Start
-            this->tearHTTPClientProcessorDown();
-            
-            // Application+HTTPClientProcessor End
             // Application+HTTPClient Start
             this->tearHTTPClientDown();
             
@@ -234,87 +199,22 @@ class Application
             this->frameReporter.report();
         }
     // Application+frame+Reporting End
-    // Application+handleEvent-web Start
-    private:
-        bool fingerEventsDetected = false;
+    // Application+handleMousePress-android Start
     public:
-        bool handleEvent(const SDL_Event &e)
+        void handleMousePress(bool down, float x, float y)
         {
-            // Get event queue.
-            osgViewer::GraphicsWindow *gw =
-                dynamic_cast<osgViewer::GraphicsWindow *>(
-                    this->viewer->getCamera()->getGraphicsContext());
-            if (!gw)
+            auto queue = this->viewer->getEventQueue();
+            float correctedY = (this->windowHeight - y);
+            if (down)
             {
-                return false;
+                queue->mouseButtonPress(x, correctedY, 1 /* LMB */);
             }
-            osgGA::EventQueue &queue = *(gw->getEventQueue());
-    
-            // Detect finger events.
-            if (
-                e.type == SDL_FINGERMOTION ||
-                e.type == SDL_FINGERDOWN ||
-                e.type == SDL_FINGERUP
-            ) {
-                this->fingerEventsDetected = true;
-            }
-            // Handle mouse events unless finger events are detected.
-            if (!this->fingerEventsDetected)
+            else
             {
-                return this->handleMouseEvent(e, queue);
+                queue->mouseButtonRelease(x, correctedY, 1 /* LMB */);
             }
-            // Handle finger events.
-            return this->handleFingerEvent(e, queue);
         }
-    
-    private:
-        bool handleFingerEvent(const SDL_Event &e, osgGA::EventQueue &queue)
-        {
-            int absX = this->windowWidth * e.tfinger.x;
-            int absY = this->windowHeight * e.tfinger.y;
-            auto correctedY = -(this->windowHeight - absY);
-            switch (e.type)
-            {
-                case SDL_FINGERMOTION:
-                    queue.mouseMotion(absX, correctedY);
-                    return true;
-                case SDL_FINGERDOWN: 
-                    queue.mouseButtonPress(absX, correctedY, e.tfinger.fingerId);
-                    return true;
-                case SDL_FINGERUP:
-                    queue.mouseButtonRelease(absX, correctedY, e.tfinger.fingerId);
-                    return true;
-                default:
-                    break;
-            }
-            return false;
-        }
-    
-        bool handleMouseEvent(const SDL_Event &e, osgGA::EventQueue &queue)
-        {
-            switch (e.type)
-            {
-                case SDL_MOUSEMOTION: {
-                    auto correctedY = -(this->windowHeight - e.motion.y);
-                    queue.mouseMotion(e.motion.x, correctedY);
-                    return true;
-                }
-                case SDL_MOUSEBUTTONDOWN: {
-                    auto correctedY = -(this->windowHeight - e.button.y);
-                    queue.mouseButtonPress(e.button.x, correctedY, e.button.button);
-                    return true;
-                }
-                case SDL_MOUSEBUTTONUP: {
-                    auto correctedY = -(this->windowHeight - e.button.y);
-                    queue.mouseButtonRelease(e.button.x, correctedY, e.button.button);
-                    return true;
-                }
-                default:
-                    break;
-            }
-            return false;
-        }
-    // Application+handleEvent-web End
+    // Application+handleMousePress-android End
     // Application+setupWindow-embedded Start
     private:
         int windowWidth;
@@ -327,48 +227,6 @@ class Application
             this->windowHeight = height;
         }
     // Application+setupWindow-embedded End
-    // Application+setupWindow-web Start
-    private:
-        SDL_Window *sdlWindow = 0;
-    public:
-        bool setupWindow(
-            const std::string &title,
-            int width,
-            int height
-        ) {
-            this->configureSDLGLContext();
-            this->sdlWindow =
-                SDL_CreateWindow(
-                    title.c_str(),
-                    SDL_WINDOWPOS_CENTERED,
-                    SDL_WINDOWPOS_CENTERED,
-                    width,
-                    height,
-                    SDL_WINDOW_OPENGL
-                );
-            if (!this->sdlWindow)
-            {
-                MAIN_APPLICATION_LOG(
-                    "ERROR Could not create SDL window: '%s'\n",
-                    SDL_GetError()
-                );
-                return false;
-            }
-    
-            SDL_GL_CreateContext(this->sdlWindow);
-            this->setupWindow(width, height);
-    
-            return true;
-        }
-        void configureSDLGLContext()
-        {
-            SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
-            SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
-            SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
-            SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-            SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-        }
-    // Application+setupWindow-web End
 
     // Application+HTTPClient Start
     public:
@@ -383,29 +241,6 @@ class Application
             delete this->httpClient;
         }
     // Application+HTTPClient End
-    // Application+HTTPClientProcessor Start
-    public:
-        network::HTTPClientProcessor *httpClientProcessor;
-    private:
-        const std::string httpClientProcessorCallbackName = "HTTPClientProcessor";
-    
-        void setupHTTPClientProcessor()
-        {
-            this->httpClientProcessor = new network::HTTPClientProcessor(this->httpClient);
-            // Subscribe processor to be processed each frame.
-            this->frameReporter.addCallback(
-                [&] {
-                    this->httpClientProcessor->process();
-                },
-                this->httpClientProcessorCallbackName
-            );
-        }
-        void tearHTTPClientProcessorDown()
-        {
-            this->frameReporter.removeCallback(this->httpClientProcessorCallbackName);
-            delete this->httpClientProcessor;
-        }
-    // Application+HTTPClientProcessor End
     // Application+Logging Start
     private:
         log::Logger *logger;
@@ -468,71 +303,6 @@ class Application
             delete this->viewer;
         }
     // Application+Rendering End
-    // Application+WindowResizing-web Start
-    public:
-        void resizeWindowToCanvasSize()
-        {
-            // Do nothing if canvas size retrieval fails.
-            int width;
-            int height;
-            if (!canvasSize(&width, &height))
-            {
-                return;
-            }
-    
-            // Do nothing if size is the same.
-            int currentWidth;
-            int currentHeight;
-            SDL_GetWindowSize(this->sdlWindow, &currentWidth, &currentHeight);
-            if (
-                width == currentWidth &&
-                height == currentHeight
-            ) {
-                return;
-            }
-    
-            // Resize SDL window.
-            SDL_SetWindowSize(this->sdlWindow, width, height);
-            // Resize OSG window.
-            this->setupWindow(width, height);
-        }
-    private:
-        void setupWindowResizing()
-        {
-            emscripten_set_resize_callback(
-                0,
-                this,
-                EM_FALSE,
-                Application::resizeWindow
-            );
-        }
-        bool canvasSize(int *width, int *height)
-        {
-            double w;
-            double h;
-            auto result = emscripten_get_element_css_size("canvas", &w, &h);
-            if (result >= 0)
-            {
-                *width = w;
-                *height = h;
-                return true;
-            }
-            return false;
-        }
-        static EM_BOOL resizeWindow(int, const EmscriptenUiEvent *, void *userData)
-        {
-            Application *app = reinterpret_cast<Application *>(userData);
-    
-            // Make sure application instance exists.
-            if (!app)
-            {
-                return EM_FALSE;
-            }
-    
-            app->resizeWindowToCanvasSize();
-            return EM_TRUE;
-        }
-    // Application+WindowResizing-web End
 // Application Start
 };
 // Application End

@@ -50,6 +50,10 @@ freely, subject to the following restrictions:
 
 // Application+Rendering End
 
+// Example+ColorfulStatus Start
+#include <cmath>
+
+// Example+ColorfulStatus End
 // Example+DefaultLayoutTheme Start
 #include "mahjong.h"
 
@@ -472,7 +476,7 @@ struct Example
         void animateColorLoading(float elapsed)
         {
             // Keep `elapsed` in [0; 1] range by using only fractional part.
-            float intpart;
+            double intpart;
             elapsed = modf(elapsed, &intpart);
     
             auto value = this->interpolator.valueFor(elapsed);

@@ -35,6 +35,7 @@ freely, subject to the following restrictions:
 // FEATURE Application+Rendering/Include
 // FEATURE Application+WindowResizing-web/Include
 
+// FEATURE Example+ColorfulStatus/Include
 // FEATURE Example+DefaultLayoutTheme/Include
 // FEATURE Example+InternalLayouts/Include
 // FEATURE Example+InternalThemes/Include

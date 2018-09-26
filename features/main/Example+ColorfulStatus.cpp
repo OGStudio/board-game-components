@@ -1,3 +1,6 @@
+FEATURE main.h/Include
+#include <cmath>
+
 FEATURE main.h/Setup
 this->setupColorfulStatus();
 
@@ -78,7 +81,7 @@ private:
     void animateColorLoading(float elapsed)
     {
         // Keep `elapsed` in [0; 1] range by using only fractional part.
-        float intpart;
+        double intpart;
         elapsed = modf(elapsed, &intpart);
 
         auto value = this->interpolator.valueFor(elapsed);
