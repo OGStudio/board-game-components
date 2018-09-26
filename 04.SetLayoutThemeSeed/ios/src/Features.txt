@@ -46,6 +46,7 @@ Example+loadTheme
 library-ios
 library+init-ios
 library+frame-ios
+library+httpClient-ios
 
 # core
 CORE_SEQUENCE_ACTION
@@ -77,6 +78,7 @@ logprintf
 
 # format
 printfString
+splitString
 stringStartsWith
 trimmedString
 
